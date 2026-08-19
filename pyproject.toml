@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "travel-plan"
+version = "1.0.0"
+description = "Deterministic OpenCode travel planning skill"
+requires-python = ">=3.11"
+
+[project.scripts]
+travel-plan = "travel_plan.main:cli"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

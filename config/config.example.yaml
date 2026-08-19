@@ -1,0 +1,12 @@
+qdrant_top_k: 24
+daily_start_time: "08:30"
+daily_latest_end_time: "21:30"
+lunch_window: ["11:30", "13:30"]
+dinner_window: ["17:30", "20:00"]
+max_pois_per_day: 4
+hotel_change_min_gain: 60
+review_max_retries: 2
+transport_mode: public_transit
+mock_mode: true
+state_dir: data/state
+

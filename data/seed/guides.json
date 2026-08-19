@@ -1,0 +1,182 @@
+[
+  {
+    "poi_id": 1001,
+    "city": "上海",
+    "semantic_description": "亲子 科技 梦幻 夜景",
+    "text": "上海迪士尼适合亲子 科技 梦幻 夜景主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1002,
+    "city": "上海",
+    "semantic_description": "科技 亲子 雨天",
+    "text": "上海科技馆适合科技 亲子 雨天主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1003,
+    "city": "上海",
+    "semantic_description": "城市 夜景 建筑",
+    "text": "外滩适合城市 夜景 建筑主题，可与黄浦区域景点组合。"
+  },
+  {
+    "poi_id": 1004,
+    "city": "上海",
+    "semantic_description": "历史 园林 本帮",
+    "text": "豫园适合历史 园林 本帮主题，可与黄浦区域景点组合。"
+  },
+  {
+    "poi_id": 1005,
+    "city": "上海",
+    "semantic_description": "历史 艺术 雨天",
+    "text": "上海博物馆适合历史 艺术 雨天主题，可与黄浦区域景点组合。"
+  },
+  {
+    "poi_id": 1006,
+    "city": "上海",
+    "semantic_description": "自然 亲子 轻松",
+    "text": "世纪公园适合自然 亲子 轻松主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1007,
+    "city": "上海",
+    "semantic_description": "科技 城市 夜景",
+    "text": "东方明珠适合科技 城市 夜景主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1008,
+    "city": "上海",
+    "semantic_description": "自然 亲子 科普",
+    "text": "上海自然博物馆适合自然 亲子 科普主题，可与静安区域景点组合。"
+  },
+  {
+    "poi_id": 1009,
+    "city": "上海",
+    "semantic_description": "科技 宇宙 亲子",
+    "text": "上海天文馆适合科技 宇宙 亲子主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1010,
+    "city": "上海",
+    "semantic_description": "水乡 历史 轻松",
+    "text": "朱家角古镇适合水乡 历史 轻松主题，可与青浦区域景点组合。"
+  },
+  {
+    "poi_id": 1011,
+    "city": "上海",
+    "semantic_description": "艺术 美食 街区",
+    "text": "田子坊适合艺术 美食 街区主题，可与黄浦区域景点组合。"
+  },
+  {
+    "poi_id": 1012,
+    "city": "上海",
+    "semantic_description": "建筑 夜生活",
+    "text": "新天地适合建筑 夜生活主题，可与黄浦区域景点组合。"
+  },
+  {
+    "poi_id": 1013,
+    "city": "上海",
+    "semantic_description": "建筑 漫步",
+    "text": "武康路适合建筑 漫步主题，可与徐汇区域景点组合。"
+  },
+  {
+    "poi_id": 1014,
+    "city": "上海",
+    "semantic_description": "阅读 建筑 雨天",
+    "text": "徐家汇书院适合阅读 建筑 雨天主题，可与徐汇区域景点组合。"
+  },
+  {
+    "poi_id": 1015,
+    "city": "上海",
+    "semantic_description": "植物 自然 亲子",
+    "text": "上海植物园适合植物 自然 亲子主题，可与徐汇区域景点组合。"
+  },
+  {
+    "poi_id": 1016,
+    "city": "上海",
+    "semantic_description": "森林 户外 亲子",
+    "text": "共青森林公园适合森林 户外 亲子主题，可与杨浦区域景点组合。"
+  },
+  {
+    "poi_id": 1017,
+    "city": "上海",
+    "semantic_description": "高空 城市 夜景",
+    "text": "上海中心观光厅适合高空 城市 夜景主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1018,
+    "city": "上海",
+    "semantic_description": "艺术 夜景 雨天",
+    "text": "浦东美术馆适合艺术 夜景 雨天主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1019,
+    "city": "上海",
+    "semantic_description": "艺术 建筑 雨天",
+    "text": "中华艺术宫适合艺术 建筑 雨天主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1020,
+    "city": "上海",
+    "semantic_description": "海洋 亲子 雨天",
+    "text": "上海海洋水族馆适合海洋 亲子 雨天主题，可与浦东区域景点组合。"
+  },
+  {
+    "poi_id": 1021,
+    "city": "上海",
+    "semantic_description": "公园 轻松",
+    "text": "复兴公园适合公园 轻松主题，可与黄浦区域景点组合。"
+  },
+  {
+    "poi_id": 1022,
+    "city": "上海",
+    "semantic_description": "寺庙 历史",
+    "text": "龙华寺适合寺庙 历史主题，可与徐汇区域景点组合。"
+  },
+  {
+    "poi_id": 1023,
+    "city": "上海",
+    "semantic_description": "电影 亲子",
+    "text": "上海影视乐园适合电影 亲子主题，可与松江区域景点组合。"
+  },
+  {
+    "poi_id": 1024,
+    "city": "上海",
+    "semantic_description": "遗址 夜景",
+    "text": "广富林文化遗址适合遗址 夜景主题，可与松江区域景点组合。"
+  },
+  {
+    "poi_id": 1025,
+    "city": "上海",
+    "semantic_description": "自然 植物 亲子",
+    "text": "辰山植物园适合自然 植物 亲子主题，可与松江区域景点组合。"
+  },
+  {
+    "poi_id": 1026,
+    "city": "上海",
+    "semantic_description": "动物 亲子 户外",
+    "text": "上海动物园适合动物 亲子 户外主题，可与长宁区域景点组合。"
+  },
+  {
+    "poi_id": 1027,
+    "city": "上海",
+    "semantic_description": "海洋 亲子 雨天",
+    "text": "长风海洋世界适合海洋 亲子 雨天主题，可与普陀区域景点组合。"
+  },
+  {
+    "poi_id": 1028,
+    "city": "上海",
+    "semantic_description": "城市 漫步 夜景",
+    "text": "苏州河步道适合城市 漫步 夜景主题，可与静安区域景点组合。"
+  },
+  {
+    "poi_id": 1029,
+    "city": "上海",
+    "semantic_description": "历史 纪念 雨天",
+    "text": "四行仓库适合历史 纪念 雨天主题，可与静安区域景点组合。"
+  },
+  {
+    "poi_id": 1030,
+    "city": "上海",
+    "semantic_description": "艺术 创意 街区",
+    "text": "M50创意园适合艺术 创意 街区主题，可与普陀区域景点组合。"
+  }
+]
