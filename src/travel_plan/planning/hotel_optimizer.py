@@ -16,16 +16,19 @@ class HotelOptimizer:
         alt=hotels[1]; change_day=max(2,(req.days+1)//2)
         if savings_override is None:
             from travel_plan.retrieval.map_client import Location
+            def loc_node(n): return Location(n.name,float(n.metadata["lat"]),float(n.metadata["lon"]))
+            def commute(h,nodes):
+                if not nodes:return 0
+                hl=Location(h.name,h.lat,h.lon)
+                return self.map.route(hl,loc_node(nodes[0]),req.transport).duration_min+self.map.route(loc_node(nodes[-1]),hl,req.transport).duration_min
             saving=0
             for day in days[change_day-1:]:
                 attractions=[n for n in day.nodes if n.type=="attraction"]
-                if attractions:
-                    target=next((h for h in hotels if h.name==attractions[0].name),None)
-                    if target: saving+=0
-                    # District proxy avoids a full all-POI map matrix.
-                    saving += 50 if alt.district in day.theme and base.district not in day.theme else 10
+                saving+=commute(base,attractions)-commute(alt,attractions)
         else:saving=savings_override
-        migration=30;handling=35;luggage_penalty=25;extra=max(0,alt.nightly_price-base.nightly_price)*(req.days-change_day+1)/10
+        from travel_plan.retrieval.map_client import Location
+        migration=30 if savings_override is not None else self.map.route(Location(base.name,base.lat,base.lon),Location(alt.name,alt.lat,alt.lon),req.transport).duration_min
+        handling=35;luggage_penalty=25 if req.has_luggage else 0;extra=max(0,alt.nightly_price-base.nightly_price)*(req.days-change_day+1)/10
         gain=round(saving-migration-handling-luggage_penalty-extra,1); threshold=self.config.hotel_change_min_gain
         if gain<=threshold:return [HotelSegment(base.hotel_id,base.name,1,req.days,base.nightly_price)],HotelDecision("KEEP",gain,f"net gain {gain} <= threshold {threshold}")
         segments=[HotelSegment(base.hotel_id,base.name,1,change_day-1,base.nightly_price),HotelSegment(alt.hotel_id,alt.name,change_day,req.days,alt.nightly_price)]

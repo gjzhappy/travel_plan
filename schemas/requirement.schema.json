@@ -1,1 +1,12 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["city","days","start_date","party","pace","transport","walking","lodging_strategy","max_hotel_changes","budget"],"properties":{"city":{"type":"string","minLength":1},"days":{"type":"integer","minimum":1,"maximum":30},"start_date":{"type":"string","format":"date"},"party":{"type":"object","required":["adult","child"],"properties":{"adult":{"type":"integer","minimum":0},"child":{"type":"integer","minimum":0}}},"pace":{"enum":["relaxed","moderate","intensive"]},"transport":{"enum":["public_transit","driving","walking"]},"walking":{"enum":["low","medium","high"]},"lodging_strategy":{"enum":["fixed","flexible"]},"max_hotel_changes":{"type":"integer","minimum":0},"budget":{"type":"number","minimum":0}}}
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","additionalProperties":false,
+ "required":["city","days","start_date","party","interests","pace","transport","walking","must_visit","rejected_pois","rejected_categories","food_preferences","include_meals","lodging_strategy","max_hotel_changes","budget","scope","target_day","target_node_id","target_poi_name","target_meal","replacement_constraints"],
+ "properties":{
+  "city":{"type":"string","minLength":1},"days":{"type":"integer","minimum":1,"maximum":30},"start_date":{"type":"string","format":"date"},
+  "party":{"type":"object","additionalProperties":false,"required":["adult","child"],"properties":{"adult":{"type":"integer","minimum":0},"child":{"type":"integer","minimum":0}}},
+  "interests":{"type":"array","items":{"type":"string"}},"pace":{"enum":["relaxed","moderate","intensive"]},"transport":{"enum":["public_transit","driving","walking"]},"walking":{"enum":["low","medium","high"]},
+  "must_visit":{"type":"array","items":{"type":"string"}},"rejected_pois":{"type":"array","items":{"type":"string"}},"rejected_categories":{"type":"array","items":{"type":"string"}},"food_preferences":{"type":"array","items":{"type":"string"}},"include_meals":{"type":"boolean"},
+  "lodging_strategy":{"enum":["fixed","flexible"]},"max_hotel_changes":{"type":"integer","minimum":0},"budget":{"type":"number","minimum":0},"retrieval_query":{"type":"string"},"has_luggage":{"type":"boolean"},
+  "scope":{"enum":["GLOBAL","DAY","NODE","MEAL"]},"target_day":{"type":["integer","null"]},"target_node_id":{"type":["string","null"]},"target_poi_name":{"type":["string","null"]},"target_meal":{"enum":["lunch","dinner",null]},"replacement_constraints":{"type":"array","items":{"type":"string"}}
+ }
+}

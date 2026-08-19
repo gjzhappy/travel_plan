@@ -14,3 +14,9 @@ class ValidationError(TravelError):
     """A plan remains invalid after safe repair."""
 class ReviewError(TravelError):
     """Review output is malformed."""
+class AgentOutputValidationError(TravelError):
+    """A named agent returned JSON that does not satisfy its boundary schema."""
+class AmbiguousTargetNodeError(TravelError):
+    """A NODE modification did not identify exactly one node."""
+class LockedPlanConflict(TravelError):
+    """A requested modification conflicts with a locked day."""

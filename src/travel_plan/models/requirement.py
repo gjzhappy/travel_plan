@@ -30,6 +30,12 @@ class Requirement:
     budget: float = 5000
     retrieval_query: str = ""
     has_luggage: bool = True
+    scope: str = "GLOBAL"
+    target_day: int | None = None
+    target_node_id: str | None = None
+    target_poi_name: str | None = None
+    target_meal: str | None = None
+    replacement_constraints: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         errors = []
@@ -40,6 +46,7 @@ class Requirement:
         if self.transport not in {"public_transit", "driving", "walking"}: errors.append("invalid transport")
         if self.walking not in {"low", "medium", "high"}: errors.append("invalid walking")
         if self.lodging_strategy not in {"fixed", "flexible"}: errors.append("invalid lodging_strategy")
+        if self.scope not in {"GLOBAL", "DAY", "NODE", "MEAL"}: errors.append("invalid scope")
         try: date.fromisoformat(self.start_date)
         except ValueError: errors.append("start_date must be ISO date")
         if self.party.adult < 0 or self.party.child < 0 or self.party.adult + self.party.child < 1: errors.append("invalid party")
@@ -50,4 +57,3 @@ class Requirement:
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> "Requirement":
         data = dict(value); data["party"] = Party(**data.get("party", {})); return cls(**data)
-
