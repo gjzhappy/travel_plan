@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["trip_id","days","hotels","budget"],"properties":{"trip_id":{"type":"string"},"days":{"type":"array","items":{"type":"object","required":["day","date","nodes"]}},"hotels":{"type":"array"},"budget":{"type":"object","required":["tickets","meals","hotels","transport","total"]}}}

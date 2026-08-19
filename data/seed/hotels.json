@@ -1,0 +1,42 @@
+[
+  {
+    "hotel_id": 3001,
+    "name": "人民广场酒店",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.23,
+    "lon": 121.47,
+    "nightly_price": 420,
+    "luggage_storage": 1
+  },
+  {
+    "hotel_id": 3002,
+    "name": "迪士尼度假酒店",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.14,
+    "lon": 121.66,
+    "nightly_price": 520,
+    "luggage_storage": 1
+  },
+  {
+    "hotel_id": 3003,
+    "name": "徐家汇酒店",
+    "city": "上海",
+    "district": "徐汇",
+    "lat": 31.19,
+    "lon": 121.44,
+    "nightly_price": 380,
+    "luggage_storage": 1
+  },
+  {
+    "hotel_id": 3004,
+    "name": "静安中心酒店",
+    "city": "上海",
+    "district": "静安",
+    "lat": 31.24,
+    "lon": 121.45,
+    "nightly_price": 450,
+    "luggage_storage": 1
+  }
+]

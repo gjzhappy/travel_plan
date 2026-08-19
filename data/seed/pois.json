@@ -1,0 +1,1586 @@
+[
+  {
+    "poi_id": 1001,
+    "name": "上海迪士尼",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.2,
+    "lon": 121.42999999999999,
+    "category": "主题乐园",
+    "ticket_price": 399,
+    "duration_min": 480,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "亲子 科技 梦幻 夜景",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1002,
+    "name": "上海科技馆",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.224999999999998,
+    "lon": 121.455,
+    "category": "科技",
+    "ticket_price": 45,
+    "duration_min": 180,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": null,
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "科技 亲子 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1003,
+    "name": "外滩",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.25,
+    "lon": 121.47999999999999,
+    "category": "夜景",
+    "ticket_price": 0,
+    "duration_min": 120,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "城市 夜景 建筑",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1004,
+    "name": "豫园",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.275,
+    "lon": 121.505,
+    "category": "园林",
+    "ticket_price": 40,
+    "duration_min": 120,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "历史 园林 本帮",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1005,
+    "name": "上海博物馆",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.3,
+    "lon": 121.53,
+    "category": "博物馆",
+    "ticket_price": 0,
+    "duration_min": 150,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": null,
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "历史 艺术 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1006,
+    "name": "世纪公园",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.325,
+    "lon": 121.55499999999999,
+    "category": "自然",
+    "ticket_price": 10,
+    "duration_min": 120,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "自然 亲子 轻松",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1007,
+    "name": "东方明珠",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.349999999999998,
+    "lon": 121.58,
+    "category": "夜景",
+    "ticket_price": 199,
+    "duration_min": 150,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "科技 城市 夜景",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1008,
+    "name": "上海自然博物馆",
+    "city": "上海",
+    "district": "静安",
+    "lat": 31.2,
+    "lon": 121.38,
+    "category": "博物馆",
+    "ticket_price": 30,
+    "duration_min": 180,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "自然 亲子 科普",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1009,
+    "name": "上海天文馆",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.224999999999998,
+    "lon": 121.405,
+    "category": "科技",
+    "ticket_price": 100,
+    "duration_min": 210,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "科技 宇宙 亲子",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1010,
+    "name": "朱家角古镇",
+    "city": "上海",
+    "district": "青浦",
+    "lat": 31.25,
+    "lon": 121.42999999999999,
+    "category": "古镇",
+    "ticket_price": 0,
+    "duration_min": 240,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "水乡 历史 轻松",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1011,
+    "name": "田子坊",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.275,
+    "lon": 121.455,
+    "category": "街区",
+    "ticket_price": 0,
+    "duration_min": 100,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "艺术 美食 街区",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1012,
+    "name": "新天地",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.3,
+    "lon": 121.47999999999999,
+    "category": "街区",
+    "ticket_price": 0,
+    "duration_min": 90,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "建筑 夜生活",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1013,
+    "name": "武康路",
+    "city": "上海",
+    "district": "徐汇",
+    "lat": 31.325,
+    "lon": 121.505,
+    "category": "街区",
+    "ticket_price": 0,
+    "duration_min": 100,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "建筑 漫步",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1014,
+    "name": "徐家汇书院",
+    "city": "上海",
+    "district": "徐汇",
+    "lat": 31.349999999999998,
+    "lon": 121.53,
+    "category": "文化",
+    "ticket_price": 0,
+    "duration_min": 90,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "阅读 建筑 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1015,
+    "name": "上海植物园",
+    "city": "上海",
+    "district": "徐汇",
+    "lat": 31.2,
+    "lon": 121.55499999999999,
+    "category": "自然",
+    "ticket_price": 15,
+    "duration_min": 150,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "植物 自然 亲子",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1016,
+    "name": "共青森林公园",
+    "city": "上海",
+    "district": "杨浦",
+    "lat": 31.224999999999998,
+    "lon": 121.58,
+    "category": "自然",
+    "ticket_price": 15,
+    "duration_min": 180,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "森林 户外 亲子",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1017,
+    "name": "上海中心观光厅",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.25,
+    "lon": 121.38,
+    "category": "夜景",
+    "ticket_price": 180,
+    "duration_min": 120,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "高空 城市 夜景",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1018,
+    "name": "浦东美术馆",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.275,
+    "lon": 121.405,
+    "category": "艺术",
+    "ticket_price": 100,
+    "duration_min": 150,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "艺术 夜景 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1019,
+    "name": "中华艺术宫",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.3,
+    "lon": 121.42999999999999,
+    "category": "艺术",
+    "ticket_price": 0,
+    "duration_min": 150,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "艺术 建筑 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1020,
+    "name": "上海海洋水族馆",
+    "city": "上海",
+    "district": "浦东",
+    "lat": 31.325,
+    "lon": 121.455,
+    "category": "亲子",
+    "ticket_price": 160,
+    "duration_min": 180,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "海洋 亲子 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1021,
+    "name": "复兴公园",
+    "city": "上海",
+    "district": "黄浦",
+    "lat": 31.349999999999998,
+    "lon": 121.47999999999999,
+    "category": "自然",
+    "ticket_price": 0,
+    "duration_min": 70,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "公园 轻松",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1022,
+    "name": "龙华寺",
+    "city": "上海",
+    "district": "徐汇",
+    "lat": 31.2,
+    "lon": 121.505,
+    "category": "历史",
+    "ticket_price": 10,
+    "duration_min": 90,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "寺庙 历史",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1023,
+    "name": "上海影视乐园",
+    "city": "上海",
+    "district": "松江",
+    "lat": 31.224999999999998,
+    "lon": 121.53,
+    "category": "主题乐园",
+    "ticket_price": 80,
+    "duration_min": 180,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "电影 亲子",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1024,
+    "name": "广富林文化遗址",
+    "city": "上海",
+    "district": "松江",
+    "lat": 31.25,
+    "lon": 121.55499999999999,
+    "category": "历史",
+    "ticket_price": 40,
+    "duration_min": 180,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "遗址 夜景",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1025,
+    "name": "辰山植物园",
+    "city": "上海",
+    "district": "松江",
+    "lat": 31.275,
+    "lon": 121.58,
+    "category": "自然",
+    "ticket_price": 60,
+    "duration_min": 240,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "自然 植物 亲子",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1026,
+    "name": "上海动物园",
+    "city": "上海",
+    "district": "长宁",
+    "lat": 31.3,
+    "lon": 121.38,
+    "category": "亲子",
+    "ticket_price": 40,
+    "duration_min": 240,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "动物 亲子 户外",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1027,
+    "name": "长风海洋世界",
+    "city": "上海",
+    "district": "普陀",
+    "lat": 31.325,
+    "lon": 121.405,
+    "category": "亲子",
+    "ticket_price": 180,
+    "duration_min": 180,
+    "reservation_required": 1,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "海洋 亲子 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1028,
+    "name": "苏州河步道",
+    "city": "上海",
+    "district": "静安",
+    "lat": 31.349999999999998,
+    "lon": 121.42999999999999,
+    "category": "街区",
+    "ticket_price": 0,
+    "duration_min": 100,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "城市 漫步 夜景",
+    "outdoor": 1
+  },
+  {
+    "poi_id": 1029,
+    "name": "四行仓库",
+    "city": "上海",
+    "district": "静安",
+    "lat": 31.2,
+    "lon": 121.455,
+    "category": "博物馆",
+    "ticket_price": 0,
+    "duration_min": 100,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "历史 纪念 雨天",
+    "outdoor": 0
+  },
+  {
+    "poi_id": 1030,
+    "name": "M50创意园",
+    "city": "上海",
+    "district": "普陀",
+    "lat": 31.224999999999998,
+    "lon": 121.47999999999999,
+    "category": "艺术",
+    "ticket_price": 0,
+    "duration_min": 100,
+    "reservation_required": 0,
+    "opening_hours": {
+      "weekly_hours": {
+        "mon": [
+          "09:00",
+          "20:00"
+        ],
+        "tue": [
+          "09:00",
+          "20:00"
+        ],
+        "wed": [
+          "09:00",
+          "20:00"
+        ],
+        "thu": [
+          "09:00",
+          "20:00"
+        ],
+        "fri": [
+          "09:00",
+          "20:00"
+        ],
+        "sat": [
+          "09:00",
+          "20:00"
+        ],
+        "sun": [
+          "09:00",
+          "20:00"
+        ]
+      },
+      "special_dates": {
+        "2026-10-01": [
+          "08:30",
+          "21:00"
+        ]
+      },
+      "latest_entry_time": "18:30"
+    },
+    "semantic_description": "艺术 创意 街区",
+    "outdoor": 1
+  }
+]

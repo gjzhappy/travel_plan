@@ -1,0 +1,42 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test, type-checker, linter and coverage output
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Generated SQLite databases (rebuild with scripts/init_db.py)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Runtime trip state and plan versions
+data/state/
+state/
+trip_state/
+.trip_state/
+.travel_state/
+
+# Qdrant/local vector database storage
+qdrant_storage/
+storage/collections/
+
+# OS and IDE metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
