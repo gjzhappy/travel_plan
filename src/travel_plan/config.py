@@ -14,7 +14,8 @@ class Config:
     transport_mode: str = "public_transit"
     mock_mode: bool = True
     state_dir: str = "data/state"
+    agent_mode: str = "real"
+    route_candidate_limit: int = 6
 
 
 DEFAULT_CONFIG = Config()
-
