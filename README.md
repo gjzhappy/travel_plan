@@ -92,6 +92,9 @@ PYTHONPATH=src pytest -q
 `--state-dir` 时位于对应目录）。事件包含行程与父/当前 plan version、顺序号、事件类型、
 执行者和最小决策详情，可追踪 Agent、Review、Replan、Validator 和版本保存。事件写入是
 best-effort：失败只记录 warning，不会改变规划、校验或持久化流程。
+`TraceReader` 可只读解析该文件，并通过 `timeline()` 或 `render()` 生成按追加顺序排列的
+可解释时间线；缺少 trace 时返回空时间线，损坏的事件则报告其文件与行号。Reader 不调用
+Agent、Planner 或 Validator，也不修改行程状态。
 
 每次调用写 `data/state/<trip_id>/version_N.json` 和 `current.json`；这些运行时状态被
 `.gitignore` 排除。锁定、拒绝项和拒绝
