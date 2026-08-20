@@ -9,6 +9,7 @@ from travel_plan.conversation.replanner import Replanner
 from travel_plan.errors import AmbiguousTargetNodeError,LockedPlanConflict,ValidationError
 from travel_plan.models.requirement import Requirement
 from travel_plan.models.trip import Budget,TripPlan
+from travel_plan.observability.event_trace import EventTrace
 from travel_plan.planning.hotel_optimizer import HotelOptimizer
 from travel_plan.planning.meal_planner import MealPlanner
 from travel_plan.planning.route_planner import RoutePlanner
@@ -22,21 +23,28 @@ class TravelWorkflow:
         self.retrieval=retrieval;self.facts=facts;self.map=map_client;self.state=StateManager(state_dir);self.config=config
         self.requirements=OpenCodeRequirementAgent(agent_client) if agent_client else RequirementAgent()
         self.reviewer=OpenCodeReviewAgent(agent_client) if agent_client else ReviewAgent()
+        self.events=EventTrace(state_dir)
         self.route=RoutePlanner(map_client,config);self.meals=MealPlanner(map_client,config);self.hotels=HotelOptimizer(map_client,config);self.validator=HardValidator(config)
     def execute(self,text,trip_id=None):
         trip_id=trip_id or f"trip_{uuid.uuid4().hex[:8]}";prior=self.state.load(trip_id);existing=Requirement.from_dict(prior.requirements) if prior else None
+        version=1 if prior is None else prior.version+1;parent_version=prior.version if prior else None
+        self._event(trip_id,version,parent_version,"WORKFLOW_STARTED","workflow",{"has_prior_plan":prior is not None})
         parsed=self.requirements.parse(text,existing,prior.current_plan if prior else None) if isinstance(self.requirements,OpenCodeRequirementAgent) else self.requirements.parse(text,existing)
         req,intent=parsed
+        self._event(trip_id,version,parent_version,"AGENT_COMPLETED","requirement-agent",{"scope":intent.get("scope","GLOBAL")})
         if prior and intent.get("lock_day"):
             locked=list(prior.locked_items);item=f"DAY:{intent['lock_day']}"
             if item not in locked:locked.append(item)
             state=TripState(trip_id,prior.version+1,req.to_dict(),locked,req.rejected_pois,req.rejected_categories,prior.current_plan);self.state.save(state)
+            self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"LOCK_DAY","lock_day":intent["lock_day"]})
             return prior.current_plan,state,MarkdownRenderer().render(_plan_from_dict(prior.current_plan))
         hotels=self.facts.hotels(req.city);restaurants=self.facts.restaurants(req.city);shortlist=self.retrieval.shortlist(req)
         if not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants)
         else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items)
-        plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,prior.locked_items if prior else [])
+        self._event(trip_id,version,parent_version,"PLAN_GENERATED","planner",{"scope":intent["scope"]})
+        plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,prior.locked_items if prior else [],version,parent_version)
         version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(),prior.locked_items if prior else [],req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
+        self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"PLAN"})
         return plan.to_dict(),state,MarkdownRenderer().render(plan)
     def _global(self,trip_id,shortlist,req,hotels,restaurants):
         days=self.route.plan(shortlist,req,hotels[0])
@@ -59,39 +67,54 @@ class TravelWorkflow:
             p=max(candidates,key=lambda x:x.priority);target.name=p.name;target.poi_id=p.poi_id;target.cost=p.ticket_price;target.metadata.update({"category":p.category,"priority":p.priority,"lat":p.lat,"lon":p.lon,"must_visit":p.name in req.must_visit})
             self.meals.insert(day,restaurants,req,hotels[0])
         self.recompute_derived(plan,req);return plan
-    def _validate_review_replan(self,plan,shortlist,req,hotels,restaurants,locked):
+    def _validate_review_replan(self,plan,shortlist,req,hotels,restaurants,locked,version,parent_version):
         issues=self.validator.validate(plan,req)
-        if issues: plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
+        self._validator_event(plan.trip_id,version,parent_version,"INITIAL",issues)
+        if issues:
+            plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
+            self._validator_event(plan.trip_id,version,parent_version,"AFTER_REPAIR",issues)
         review=None
         for retry in range(self.config.review_max_retries+1):
             review=self.reviewer.review(req,plan,plan.evidence);plan.review_count+=1
+            self._event(plan.trip_id,version,parent_version,"REVIEW_COMPLETED","review-agent",{"review_number":plan.review_count,"passed":review.passed,"issues":[asdict(issue) for issue in review.issues]})
             if review.passed:break
             if retry==self.config.review_max_retries:break
             # The review message returns to the intent layer before any code acts.
             # Agents communicate JSON, while Python retains all planning authority.
             req=self.requirements.refine(req,review,plan)
+            self._event(plan.trip_id,version,parent_version,"AGENT_COMPLETED","requirement-agent",{"task":"refine_intent_from_review","review_number":plan.review_count,"scope":req.scope})
             shortlist=self.retrieval.shortlist(req)
-            scope=req.scope;affected=req.target_day
+            scope=req.scope;affected=req.target_day;did_replan=False
             if scope=="GLOBAL":
                 review_count=plan.review_count
                 candidate=self._global(plan.trip_id,shortlist,req,hotels,restaurants)
                 plan=Replanner().apply("GLOBAL",plan,candidate,locked_items=locked)
                 plan.review_count=review_count
+                did_replan=True
             elif affected and f"DAY:{affected}" not in locked:
                 replacement=self.route.plan_day(shortlist,req,hotels[0],affected);self.meals.insert(replacement,restaurants,req,hotels[0])
                 candidate=deepcopy(plan);old=next(d for d in candidate.days if d.day==affected);candidate.days[candidate.days.index(old)]=replacement
                 plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
+                did_replan=True
+            if did_replan:
+                self._event(plan.trip_id,version,parent_version,"REPLAN_COMPLETED","replanner",{"trigger_review_number":plan.review_count,"scope":scope,"target_day":affected})
             self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
+            self._validator_event(plan.trip_id,version,parent_version,"AFTER_REPLAN",issues)
             if issues:plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
         # Acceptance is fail-closed: review exhaustion may leave experience
         # findings for display, but no plan with a hard validation issue may be
         # returned, rendered, or persisted as the current state.
         issues=self.validator.validate(plan,req)
+        self._validator_event(plan.trip_id,version,parent_version,"FINAL_GATE",issues)
         if issues:
             details="; ".join(f"{issue.code}: {issue.message}" for issue in issues)
             raise ValidationError(f"plan rejected by final validation gate: {details}")
         plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]
         return plan,req
+    def _event(self,trip_id,version,parent_version,event_type,actor,details=None):
+        self.events.record(trip_id,version,parent_version,event_type,actor,details)
+    def _validator_event(self,trip_id,version,parent_version,stage,issues):
+        self._event(trip_id,version,parent_version,"VALIDATOR_BLOCKED" if issues else "VALIDATOR_PASSED","validator",{"stage":stage,"issues":[asdict(issue) for issue in issues]})
     def recompute_derived(self,plan,req):
         people=req.party.adult+req.party.child
         plan.budget=Budget(tickets=sum(n.cost*people for d in plan.days for n in d.nodes if n.type=="attraction"),meals=sum(n.cost for d in plan.days for n in d.nodes if n.type in {"lunch","dinner"}),hotels=sum(s.nightly_price*(s.end_day-s.start_day+1) for s in plan.hotels),transport=sum(n.duration_min*.3 for d in plan.days for n in d.nodes if n.transport_mode))
