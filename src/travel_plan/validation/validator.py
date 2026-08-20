@@ -17,7 +17,7 @@ class HardValidator:
                 start=datetime.strptime(n.start_time,"%H:%M").time();end=datetime.strptime(n.end_time,"%H:%M").time()
                 if end<=start:issues.append(ValidationIssue("invalid_duration",f"{n.name} ends before it starts",day.day,n.name))
                 if previous_end and start<previous_end:issues.append(ValidationIssue("overlap",f"{n.name} overlaps previous node",day.day,n.name))
-                previous_end=max(previous_end,start) if previous_end else end
+                previous_end=max(previous_end,end) if previous_end else end
                 if n.type=="attraction":
                     hours=n.metadata.get("opening_hours",{})
                     if not can_visit(hours,date.fromisoformat(day.date),start,int((datetime.combine(date.today(),end)-datetime.combine(date.today(),start)).seconds/60)):
@@ -34,4 +34,3 @@ class HardValidator:
         if len(plan.hotels)-1>req.max_hotel_changes:issues.append(ValidationIssue("hotel_changes_exceeded","too many hotel changes"))
         if plan.budget.total>req.budget:issues.append(ValidationIssue("budget_exceeded",f"estimated {plan.budget.total} > budget {req.budget}"))
         return issues
-
