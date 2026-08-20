@@ -7,6 +7,29 @@ from travel_plan.agents.client import load_schema
 CN={"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9,"十":10}
 def _number(text): return int(text) if text.isdigit() else CN.get(text,1)
 
+# Review feedback may refine where and how code should replan, but it is not a
+# new user instruction.  Keeping this allow-list here makes that boundary
+# deterministic and prevents an agent response from silently rewriting the
+# user's dates, party, budget, exclusions, or other explicit preferences.
+_REVIEW_REFINEMENT_FIELDS = {
+    "scope", "target_day", "target_node_id", "target_poi_name", "target_meal",
+}
+
+
+def preserve_user_intent(original: Requirement, proposed: Requirement) -> Requirement:
+    """Apply only review-owned refinements to a copy of user-owned intent."""
+    result = deepcopy(original)
+    for field_name in _REVIEW_REFINEMENT_FIELDS:
+        setattr(result, field_name, deepcopy(getattr(proposed, field_name)))
+    result.replacement_constraints = list(dict.fromkeys(
+        original.replacement_constraints + proposed.replacement_constraints
+    ))
+    additions = proposed.retrieval_query.removeprefix(original.retrieval_query).strip()
+    result.retrieval_query = " ".join(
+        part for part in (original.retrieval_query, additions) if part
+    )
+    return result
+
 class RequirementAgent:
     """Offline deterministic adapter; OpenCode may replace interpretation with its agent JSON."""
     def parse(self,text:str,existing:Requirement|None=None)->tuple[Requirement,dict]:
@@ -63,7 +86,7 @@ class RequirementAgent:
         req.replacement_constraints=list(dict.fromkeys(req.replacement_constraints+feedback))
         if any(kind in {"too_tiring","too_tight","day_unbalanced"} for kind in feedback):req.pace="relaxed"
         req.retrieval_query=" ".join(x for x in [req.retrieval_query,*feedback] if x)
-        return req
+        return preserve_user_intent(requirement,req)
 
 class OpenCodeRequirementAgent:
     def __init__(self,client): self.client=client;self.schema=load_schema("requirement")
@@ -79,4 +102,4 @@ class OpenCodeRequirementAgent:
             "review_feedback":review.to_dict(),
             "current_plan":current_plan.to_dict() if hasattr(current_plan,"to_dict") else current_plan,
         },self.schema)
-        return Requirement.from_dict(raw)
+        return preserve_user_intent(requirement,Requirement.from_dict(raw))

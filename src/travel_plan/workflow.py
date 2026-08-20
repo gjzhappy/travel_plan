@@ -6,7 +6,7 @@ from travel_plan.agents.review_agent import ReviewAgent,OpenCodeReviewAgent
 from travel_plan.config import DEFAULT_CONFIG
 from travel_plan.conversation.state_manager import StateManager,TripState
 from travel_plan.conversation.replanner import Replanner
-from travel_plan.errors import AmbiguousTargetNodeError,LockedPlanConflict
+from travel_plan.errors import AmbiguousTargetNodeError,LockedPlanConflict,ValidationError
 from travel_plan.models.requirement import Requirement
 from travel_plan.models.trip import Budget,TripPlan
 from travel_plan.planning.hotel_optimizer import HotelOptimizer
@@ -83,7 +83,15 @@ class TravelWorkflow:
                 plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
             self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
             if issues:plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
-        plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]+[asdict(x) for x in issues];return plan,req
+        # Acceptance is fail-closed: review exhaustion may leave experience
+        # findings for display, but no plan with a hard validation issue may be
+        # returned, rendered, or persisted as the current state.
+        issues=self.validator.validate(plan,req)
+        if issues:
+            details="; ".join(f"{issue.code}: {issue.message}" for issue in issues)
+            raise ValidationError(f"plan rejected by final validation gate: {details}")
+        plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]
+        return plan,req
     def recompute_derived(self,plan,req):
         people=req.party.adult+req.party.child
         plan.budget=Budget(tickets=sum(n.cost*people for d in plan.days for n in d.nodes if n.type=="attraction"),meals=sum(n.cost for d in plan.days for n in d.nodes if n.type in {"lunch","dinner"}),hotels=sum(s.nightly_price*(s.end_day-s.start_day+1) for s in plan.hotels),transport=sum(n.duration_min*.3 for d in plan.days for n in d.nodes if n.transport_mode))
