@@ -88,6 +88,11 @@ PYTHONPATH=src pytest -q
 
 ## 状态、证据与限制
 
+每个行程的观察性事件以 JSONL 追加到 `data/state/<trip_id>/events.jsonl`（自定义
+`--state-dir` 时位于对应目录）。事件包含行程与父/当前 plan version、顺序号、事件类型、
+执行者和最小决策详情，可追踪 Agent、Review、Replan、Validator 和版本保存。事件写入是
+best-effort：失败只记录 warning，不会改变规划、校验或持久化流程。
+
 每次调用写 `data/state/<trip_id>/version_N.json` 和 `current.json`；这些运行时状态被
 `.gitignore` 排除。锁定、拒绝项和拒绝
 分类均为显式状态，不依赖聊天记忆。结果区分 SQLite 事实、Qdrant 语义、mock/真实 API
