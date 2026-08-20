@@ -5,6 +5,7 @@ from travel_plan.agents.requirement_agent import RequirementAgent,OpenCodeRequir
 from travel_plan.agents.review_agent import ReviewAgent,OpenCodeReviewAgent
 from travel_plan.config import DEFAULT_CONFIG
 from travel_plan.conversation.state_manager import StateManager,TripState
+from travel_plan.conversation.replanner import Replanner
 from travel_plan.errors import AmbiguousTargetNodeError,LockedPlanConflict
 from travel_plan.models.requirement import Requirement
 from travel_plan.models.trip import Budget,TripPlan
@@ -34,7 +35,7 @@ class TravelWorkflow:
         hotels=self.facts.hotels(req.city);restaurants=self.facts.restaurants(req.city);shortlist=self.retrieval.shortlist(req)
         if not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants)
         else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items)
-        plan=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,prior.locked_items if prior else [])
+        plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,prior.locked_items if prior else [])
         version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(),prior.locked_items if prior else [],req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
         return plan.to_dict(),state,MarkdownRenderer().render(plan)
     def _global(self,trip_id,shortlist,req,hotels,restaurants):
@@ -66,11 +67,23 @@ class TravelWorkflow:
             review=self.reviewer.review(req,plan,plan.evidence);plan.review_count+=1
             if review.passed:break
             if retry==self.config.review_max_retries:break
-            affected=next((x.day for x in review.issues if x.day and f"DAY:{x.day}" not in locked),None)
-            if affected:
-                replacement=self.route.plan_day(shortlist,req,hotels[0],affected);self.meals.insert(replacement,restaurants,req,hotels[0]);old=next(d for d in plan.days if d.day==affected);plan.days[plan.days.index(old)]=replacement
+            # The review message returns to the intent layer before any code acts.
+            # Agents communicate JSON, while Python retains all planning authority.
+            req=self.requirements.refine(req,review,plan)
+            shortlist=self.retrieval.shortlist(req)
+            scope=req.scope;affected=req.target_day
+            if scope=="GLOBAL":
+                review_count=plan.review_count
+                candidate=self._global(plan.trip_id,shortlist,req,hotels,restaurants)
+                plan=Replanner().apply("GLOBAL",plan,candidate,locked_items=locked)
+                plan.review_count=review_count
+            elif affected and f"DAY:{affected}" not in locked:
+                replacement=self.route.plan_day(shortlist,req,hotels[0],affected);self.meals.insert(replacement,restaurants,req,hotels[0])
+                candidate=deepcopy(plan);old=next(d for d in candidate.days if d.day==affected);candidate.days[candidate.days.index(old)]=replacement
+                plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
             self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
-        plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]+[asdict(x) for x in issues];return plan
+            if issues:plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
+        plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]+[asdict(x) for x in issues];return plan,req
     def recompute_derived(self,plan,req):
         people=req.party.adult+req.party.child
         plan.budget=Budget(tickets=sum(n.cost*people for d in plan.days for n in d.nodes if n.type=="attraction"),meals=sum(n.cost for d in plan.days for n in d.nodes if n.type in {"lunch","dinner"}),hotels=sum(s.nightly_price*(s.end_day-s.start_day+1) for s in plan.hotels),transport=sum(n.duration_min*.3 for d in plan.days for n in d.nodes if n.transport_mode))
