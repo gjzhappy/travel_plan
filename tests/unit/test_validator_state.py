@@ -14,6 +14,22 @@ def test_luggage_chain_and_budget(tmp_path):
  codes={x.code for x in HardValidator(Config()).validate(plan,Requirement(include_meals=False,budget=100,lodging_strategy="flexible",max_hotel_changes=1))}
  assert {"luggage_chain","budget_exceeded"}<=codes
  nodes.insert(1,Node("luggage_drop","B","08:10","08:30"));assert "luggage_chain" not in {x.code for x in HardValidator(Config()).validate(plan,Requirement(include_meals=False,budget=2000,lodging_strategy="flexible",max_hotel_changes=1))}
+
+
+def test_consecutive_nodes_do_not_overlap():
+ nodes=[Node("attraction","A","09:00","10:00"),Node("attraction","B","10:00","11:00"),Node("attraction","C","11:00","12:00")]
+ plan=TripPlan("x",[DayPlan(1,"2026-08-19","",nodes)],[],Budget())
+ issues=HardValidator(Config()).validate(plan,Requirement(include_meals=False))
+ assert "overlap" not in {issue.code for issue in issues}
+
+
+def test_third_node_overlapping_second_is_detected():
+ nodes=[Node("attraction","A","09:00","10:00"),Node("attraction","B","10:00","11:00"),Node("attraction","C","10:30","12:00")]
+ plan=TripPlan("x",[DayPlan(1,"2026-08-19","",nodes)],[],Budget())
+ issues=HardValidator(Config()).validate(plan,Requirement(include_meals=False))
+ assert "overlap" in {issue.code for issue in issues}
+
+
 def test_versions_readable(tmp_path):
  sm=StateManager(tmp_path);sm.save(TripState("t",1,{}));sm.save(TripState("t",2,{}));sm.save(TripState("t",3,{}))
  assert [sm.load("t",i).version for i in (1,2,3)]==[1,2,3]
