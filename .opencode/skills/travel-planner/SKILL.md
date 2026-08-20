@@ -22,8 +22,10 @@ main agent may not improvise, skip, reorder, or replace deterministic stages:
 12. run Hard Validator unconditionally.
 13. run conservative Code Repair, then validate again; unsafe failures remain explicit.
 14. invoke **review-agent** unconditionally with requirement, complete plan and evidence.
-15. on review failure invoke scoped Replanner (`GLOBAL`, `DAY`, `NODE`, `MEAL`), then
-    the affected code planners and Hard Validator, then Review Agent again.
+15. on review failure pass the structured Review JSON back to **requirement-agent** to
+    refine intent; validate the revised Requirement JSON, then invoke scoped Replanner
+    (`GLOBAL`, `DAY`, `NODE`, `MEAL`), the affected code planners and Hard Validator,
+    then Review Agent again.
 16. allow at most two review/replan retries; return best effort plus remaining issues.
 17. render Markdown or JSON.
 18. save `trip_state`.

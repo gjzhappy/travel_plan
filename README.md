@@ -11,10 +11,11 @@
         → Qdrant semantic top-k → SQLite facts → weather/code shortlist
         → Route Planner → Map → Meal Planner → Hotel Optimizer
         → Hard Validator → Code Repair → Review Agent
-        → scoped Replanner (最多两轮) → Renderer → trip_state/version
+        → Review JSON → Requirement Agent → validated refined intent
+        → scoped Replanner (最多两轮) → Validator/Review → Renderer → trip_state/version
 ```
 
-只有两个 Agent：Requirement Agent 理解“用户要什么”，Review Agent 只发现疲劳、
+只有两个 Agent：Requirement Agent 理解“用户要什么”并将 Review JSON 翻译为约束，Review Agent 只发现疲劳、
 重复、偏好缺失等体验问题。它们均无权规划或修改路线。Route Planner 使用小规模
 排列搜索和明确 score，把优先级、区域、交通、等待、开放/最晚入场、游玩时长、
 紧凑度、重复类型真正纳入计算；因此不会产生不可审计的 LLM 猜测。

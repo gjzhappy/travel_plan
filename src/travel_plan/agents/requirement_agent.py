@@ -1,4 +1,5 @@
 import re
+from copy import deepcopy
 from datetime import date
 from travel_plan.models.requirement import Party, Requirement
 from travel_plan.agents.client import load_schema
@@ -46,9 +47,36 @@ class RequirementAgent:
         req=Requirement(city,days,existing.start_date if existing else date.today().isoformat(),party,interests,pace,"public_transit" if "公共交通" in text or not existing else existing.transport,"low" if "少走路" in text else (existing.walking if existing else "medium"),must,rejected,rejected_categories,foods,True,lodging,changes,budget," ".join(interests+must+(["亲子"] if party.child else [])),True,scope,day_no,None,target_name,meal if scope=="MEAL" else None,foods if scope=="MEAL" else [])
         return req,{"scope":scope,"day":day_no,"meal":"dinner" if "晚" in text else "lunch","lock_day":lock}
 
+    def refine(self,requirement,review,current_plan=None):
+        """Deterministically translate reviewer feedback into planning constraints.
+
+        This is the offline implementation of the intent-agent boundary.  It does
+        not select places or edit a plan; it only returns a revised Requirement.
+        """
+        req=deepcopy(requirement)
+        actionable=next((issue for issue in review.issues if issue.day is not None),review.issues[0] if review.issues else None)
+        if not actionable:return req
+        req.scope=actionable.scope
+        req.target_day=actionable.day
+        req.target_meal="dinner" if actionable.scope=="MEAL" else None
+        feedback=[issue.type for issue in review.issues]
+        req.replacement_constraints=list(dict.fromkeys(req.replacement_constraints+feedback))
+        if any(kind in {"too_tiring","too_tight","day_unbalanced"} for kind in feedback):req.pace="relaxed"
+        req.retrieval_query=" ".join(x for x in [req.retrieval_query,*feedback] if x)
+        return req
+
 class OpenCodeRequirementAgent:
     def __init__(self,client): self.client=client;self.schema=load_schema("requirement")
     def parse(self,text,existing=None,current_plan=None):
         raw=self.client.invoke("requirement-agent",{"user_text":text,"trip_state_requirement":existing.to_dict() if existing else None,"current_plan":current_plan},self.schema)
         req=Requirement.from_dict(raw)
         return req,{"scope":req.scope,"day":req.target_day,"meal":req.target_meal,"lock_day":None,"target_node_id":req.target_node_id,"target_poi_name":req.target_poi_name}
+
+    def refine(self,requirement,review,current_plan=None):
+        raw=self.client.invoke("requirement-agent",{
+            "task":"refine_intent_from_review",
+            "trip_state_requirement":requirement.to_dict(),
+            "review_feedback":review.to_dict(),
+            "current_plan":current_plan.to_dict() if hasattr(current_plan,"to_dict") else current_plan,
+        },self.schema)
+        return Requirement.from_dict(raw)

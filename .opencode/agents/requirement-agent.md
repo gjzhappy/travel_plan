@@ -13,3 +13,8 @@ transport/walking, must/rejected POIs/categories, meals, food, lodging, changes,
 retrieval query and modification intent (`GLOBAL|DAY|NODE|MEAL`). Preserve state unless
 explicitly changed. Never select POIs/hotels, order or schedule nodes, call maps, alter a
 locked plan, or output a guide.
+
+The orchestrator may instead send `task: refine_intent_from_review`, the current
+Requirement, structured `review_feedback`, and the immutable current plan. Translate
+that feedback into revised scope/target/replacement constraints and return the same
+Requirement JSON contract. Do not choose a repair, POI, route, meal, or hotel.
