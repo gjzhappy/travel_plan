@@ -24,3 +24,19 @@ def test_meals_insert_preference_budget_and_detour():
  MealPlanner(MockMapClient(),Config()).insert(day,restaurants,req,hotel)
  assert {n.type for n in day.nodes}>={"lunch","dinner"};assert all(n.name=="火锅店" for n in day.nodes if n.type in {"lunch","dinner"})
 
+
+def test_route_order_changes_when_transport_cost_changes():
+ class DirectedTransport:
+  def __init__(self, durations): self.durations=durations
+  def route(self, origin, destination, preference=None):
+   from travel_plan.retrieval.transport_provider import TransportResult
+   duration=self.durations.get((origin.name,destination.name),5)
+   return TransportResult("metro",duration,1,3,0,"rule_estimate")
+ hotel=SimpleNamespace(name="hotel",lat=31,lon=121)
+ pois=[p(11,"A","中心",50),p(12,"B","中心",50)]
+ req=Requirement(days=1,start_date="2026-08-19",pace="relaxed",include_meals=False)
+ first=RoutePlanner(DirectedTransport({("hotel","A"):5,("A","B"):5,("hotel","B"):60}),Config()).plan(pois,req,hotel)
+ second=RoutePlanner(DirectedTransport({("hotel","A"):60,("hotel","B"):5,("B","A"):5}),Config()).plan(pois,req,hotel)
+ assert [n.name for n in first[0].nodes]==["A","B"]
+ assert [n.name for n in second[0].nodes]==["B","A"]
+ assert first[0].route_score != 0 and second[0].route_score != 0

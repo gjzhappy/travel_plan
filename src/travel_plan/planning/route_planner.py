@@ -11,7 +11,7 @@ def _dt(day:date,clock:str): return datetime.combine(day,datetime.strptime(clock
 def _loc(x): return Location(x.name,x.lat,x.lon)
 
 class RoutePlanner:
-    def __init__(self,map_client,config:Config): self.map=map_client; self.config=config
+    def __init__(self,transport_provider,config:Config): self.transport=transport_provider; self.config=config
     def plan(self,pois,req,hotel):
         limits={"relaxed":3,"moderate":4,"intensive":5}; cap=min(limits[req.pace],self.config.max_pois_per_day)
         remaining=list(pois); days=[]
@@ -48,20 +48,27 @@ class RoutePlanner:
         pace={"relaxed":(15,"20:00",1.4),"moderate":(10,"21:00",1.0),"intensive":(5,"22:00",.7)}[req.pace]
         buffer_min,latest_end,tightness=pace
         best=None
+        mobility_sensitive = bool(req.party.child) or req.walking=="low" or bool(
+            {"亲子", "家庭", "儿童", "老人", "老年"}.intersection(req.interests)
+        )
         for order in permutations(pois):
-            now=_dt(day,self.config.daily_start_time); current=hotel; nodes=[]; total_priority=transport=waiting=repeated=0; previous_cat=None; valid=True
+            now=_dt(day,self.config.daily_start_time); current=hotel; nodes=[]; total_priority=transport=transport_penalty=waiting=repeated=0; previous_cat=None; valid=True
             for p in order:
-                leg=self.map.route(_loc(current),_loc(p),mode); arrival=now+timedelta(minutes=leg.duration_min); window=hours_for_day(p.opening_hours,day)
+                leg=self.transport.route(_loc(current),_loc(p),mode); arrival=now+timedelta(minutes=leg.duration_min); window=hours_for_day(p.opening_hours,day)
                 if not window: valid=False;break
                 start=max(arrival,datetime.combine(day,window[0])); latest=p.opening_hours.get("latest_entry_time")
                 if latest and start.time()>datetime.strptime(latest,"%H:%M").time():valid=False;break
                 end=start+timedelta(minutes=p.duration_min)
                 if end.time()>window[1] or end>_dt(day,min(self.config.daily_latest_end_time,latest_end)):valid=False;break
                 wait=max(0,int((start-arrival).total_seconds()/60)); waiting+=wait; transport+=leg.duration_min
+                if mobility_sensitive:
+                    transport_penalty += leg.walking_minutes + leg.transfer_count * 10
+                elif req.walking=="high" or req.budget <= 1000:
+                    transport_penalty += leg.duration_min * (0.15 if leg.mode=="taxi" else 0)
                 repeated+=int(previous_cat==p.category); previous_cat=p.category; total_priority+=p.priority
-                nodes.append(Node("attraction",p.name,start.strftime("%H:%M"),end.strftime("%H:%M"),p.poi_id,mode,leg.distance_km,leg.duration_min,p.ticket_price,{"category":p.category,"priority":p.priority,"must_visit":p.name in req.must_visit,"opening_hours":p.opening_hours,"reservation_required":p.reservation_required,"latest_entry_time":latest,"lat":p.lat,"lon":p.lon}))
+                nodes.append(Node("attraction",p.name,start.strftime("%H:%M"),end.strftime("%H:%M"),p.poi_id,leg.mode,leg.distance_km,leg.duration_min,p.ticket_price,{"category":p.category,"priority":p.priority,"must_visit":p.name in req.must_visit,"opening_hours":p.opening_hours,"reservation_required":p.reservation_required,"latest_entry_time":latest,"lat":p.lat,"lon":p.lon}))
                 now=end+timedelta(minutes=buffer_min);current=p
             if valid:
-                score=route_score(total_priority,transport,waiting,max(0,(transport+sum(p.duration_min for p in order)-600)*tightness),repeated)
+                score=route_score(total_priority,transport+transport_penalty,waiting,max(0,(transport+sum(p.duration_min for p in order)-600)*tightness),repeated)
                 if best is None or score>best[1]: best=(nodes,score)
         return best
