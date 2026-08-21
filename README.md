@@ -95,6 +95,20 @@ PYTHONPATH=src python scripts/demo.py
 PYTHONPATH=src pytest -q
 ```
 
+### Web Demo
+
+Web 界面是现有 Travel Engine 的轻量展示层，不引入新 Agent，也不改变规划、校验、
+状态或事件链路。启动后访问 `http://127.0.0.1:8000`：
+
+```bash
+PYTHONPATH=src python -m travel_plan.web.server
+```
+
+在首页用自然语言描述需求，生成后可查看按日时间轴、上海路线示意地图、景点与餐饮、
+住宿和预算。折叠的“为什么这样安排”使用规划结果中的事实和评分生成确定性展示文案；
+普通界面不暴露 Agent、检索、Validator 和 Event Trace 等技术细节。Web API 为
+`POST /api/plans`，请求体格式为 `{"request": "...", "trip_id": "可选"}`。
+
 测试覆盖解析、开放/特殊日期/最晚入场、语义与事实职责、天气降权、路线 score、
 餐饮偏好/预算/绕路、酒店 KEEP/CHANGE、行李闭环、硬校验、Review、四种 Scope、锁定、
 持久版本及首次规划—餐饮修改—按日修改—锁定的端到端链路。

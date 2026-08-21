@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>漫游上海 · 智能行程规划</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/"><span class="brand-mark">游</span><span>漫游上海<small>TRAVEL PLANNER</small></span></a><div class="status"><i></i> 本地规划引擎已就绪</div></header>
+  <main>
+    <section class="hero" id="hero">
+      <div class="eyebrow">SHANGHAI · CURATED FOR YOU</div>
+      <h1>把期待说给我们，<br><em>路线交给时间。</em></h1>
+      <p>从一段自然语言开始，生成兼顾开放时间、交通距离与旅行节奏的上海行程。</p>
+      <form id="planner-form">
+        <label for="request">这次旅行，你想怎样度过？</label>
+        <textarea id="request" rows="3" required>上海3天，2个成人，喜欢建筑、艺术和本帮菜，不要太赶，公共交通优先，少走路，必须去外滩。</textarea>
+        <div class="form-foot"><div class="suggestions"><button type="button" data-add="亲子友好">亲子友好</button><button type="button" data-add="喜欢夜景">夜景</button><button type="button" data-add="预算3000元">预算 ¥3000</button></div><button class="submit" type="submit"><span>生成我的行程</span><b>→</b></button></div>
+      </form>
+      <div class="trust"><span>✓ 基于真实地点信息</span><span>✓ 确定性路线计算</span><span>✓ 默认离线运行</span></div>
+    </section>
+
+    <section class="loading hidden" id="loading"><div class="loader"></div><h2>正在编排行程</h2><p id="loading-copy">核对开放时间与地点距离…</p></section>
+    <section class="error hidden" id="error"><b>没有成功生成行程</b><span></span><button type="button">返回修改</button></section>
+
+    <section class="result hidden" id="result">
+      <div class="result-head"><div><div class="eyebrow">YOUR SHANGHAI JOURNEY</div><h2>属于你的上海时光</h2><p id="trip-meta"></p></div><button class="secondary" id="restart">重新规划</button></div>
+      <div class="layout">
+        <aside class="map-card"><div class="map-title"><span>路线地图</span><small id="map-caption"></small></div><div class="map" id="map"><svg id="route-map" viewBox="0 0 520 570" role="img" aria-label="上海每日路线示意地图"></svg><div class="map-key" id="map-key"></div></div></aside>
+        <div class="itinerary"><div class="day-tabs" id="day-tabs"></div><div id="day-panel"></div></div>
+      </div>
+      <section class="stay-budget"><div><span class="section-kicker">STAY</span><h3>住宿安排</h3><div id="hotels"></div></div><div><span class="section-kicker">ESTIMATE</span><h3>费用概览</h3><div class="budget" id="budget"></div></div></section>
+      <details class="why"><summary><span><b>为什么这样安排？</b><small>查看路线背后的考虑</small></span><i>＋</i></summary><div id="explanation"></div></details>
+    </section>
+  </main>
+  <footer>TRAVEL PLAN <span>·</span> 让每一次出发，都从容有序</footer>
+  <script src="/app.js"></script>
+</body></html>
