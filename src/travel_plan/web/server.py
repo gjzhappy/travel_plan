@@ -99,7 +99,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         if resource is None:
             self._json(HTTPStatus.OK, self._plan_response(record))
         elif resource == "versions":
-            self._json(HTTPStatus.OK, [self._plan_response(item) for item in self.repository.versions(plan_id)])
+            self._json(HTTPStatus.OK, [self._version_response(item) for item in self.repository.versions(plan_id)])
         elif resource == "events":
             self._json(HTTPStatus.OK, record.events)
         elif resource == "review":
@@ -130,6 +130,17 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
     @staticmethod
     def _plan_response(record):
         return {"plan_id": record.plan_id, "version": record.version, "plan": record.display_result}
+
+    @staticmethod
+    def _version_response(record):
+        """Return a self-contained, read-only visualization snapshot."""
+        return {
+            "plan_id": record.plan_id,
+            "version": record.version,
+            "plan": record.display_result,
+            "events": record.events,
+            "review": record.review,
+        }
 
     def _json(self, status: HTTPStatus, payload):
         body = json.dumps(payload, ensure_ascii=False).encode()

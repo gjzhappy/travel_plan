@@ -106,8 +106,9 @@ PYTHONPATH=src python -m travel_plan.web.server
 
 在首页用自然语言描述需求，生成后可查看按日时间轴、上海路线示意地图、景点与餐饮、
 住宿和预算。折叠的“为什么这样安排”使用规划结果中的事实和评分生成确定性展示文案；
-普通界面不暴露 Agent、检索、Validator 和 Event Trace 等技术细节。Web API 为
-`POST /api/plans`，请求体格式为 `{"request": "...", "trip_id": "可选"}`。
+路线图只投影当前选中日期中已有的坐标，不在浏览器中计算或重排路线。切换历史版本时，
+行程、Event Trace 和 Review 结论作为同一个只读快照同步展示，避免跨版本混用。Web API 为
+`POST /api/plans`，请求体格式为 `{"request": "..."}`。
 
 测试覆盖解析、开放/特殊日期/最晚入场、语义与事实职责、天气降权、路线 score、
 餐饮偏好/预算/绕路、酒店 KEEP/CHANGE、行李闭环、硬校验、Review、四种 Scope、锁定、

@@ -79,6 +79,10 @@ def test_plan_api_lifecycle_preserves_versions_and_exposes_workflow_outputs(tmp_
         _, versions = request_json(base, f"/api/plans/{plan_id}/versions")
         assert [item["version"] for item in versions] == [1, 2]
         assert json.dumps(versions[0]["plan"], sort_keys=True, ensure_ascii=False) == original
+        assert [event["stage"] for event in versions[0]["events"]] == [
+            "REQUIREMENT", "ROUTE_PLAN", "VALIDATE", "REVIEW",
+        ]
+        assert versions[0]["review"]["passed"] is True
 
         _, events = request_json(base, f"/api/plans/{plan_id}/events")
         assert [event["stage"] for event in events] == ["REQUIREMENT", "ROUTE_PLAN", "VALIDATE", "REVIEW"]
