@@ -1,3 +1,4 @@
+import hashlib
 import math
 from typing import Iterable
 
@@ -27,3 +28,28 @@ class QdrantSemanticRepository:
 
 # Backward-compatible offline name; runtime construction uses the honest class name.
 QdrantRepository=OfflineSemanticRepository
+
+COLLECTION_NAME = "shanghai_travel_poi"
+MOCK_VECTOR_SIZE = 64
+
+
+def deterministic_mock_embedding(text: str, size: int = MOCK_VECTOR_SIZE) -> list[float]:
+    """Return a stable, normalized feature-hash embedding without network or model I/O."""
+    vector = [0.0] * size
+    for token in sorted(_tokens(text)):
+        digest = hashlib.sha256(token.encode("utf-8")).digest()
+        index = int.from_bytes(digest[:4], "big") % size
+        vector[index] += 1.0 if digest[4] & 1 else -1.0
+    norm = math.sqrt(sum(value * value for value in vector)) or 1.0
+    return [round(value / norm, 8) for value in vector]
+
+
+def qdrant_points(pois: Iterable[dict]) -> list[dict]:
+    """Build deterministic Qdrant-shaped points from canonical POI source rows."""
+    points = []
+    for poi in pois:
+        payload = {key: poi[key] for key in ("poi_id", "name", "category", "tags", "description")}
+        payload["city"] = "上海"
+        text = " ".join([poi["name"], poi["category"], *poi["tags"], poi["description"]])
+        points.append({"id": poi["poi_id"], "vector": deterministic_mock_embedding(text), "payload": payload})
+    return points

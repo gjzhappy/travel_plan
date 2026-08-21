@@ -9,7 +9,10 @@ from travel_plan.workflow import TravelWorkflow
 
 def build_workflow(root=Path("."),state_dir=None,config=DEFAULT_CONFIG):
     seed_dir=root/"data/seed"
-    facts=SQLiteRepository(root/"data/travel.db",seed_dir=seed_dir,auto_initialize=True);docs=json.loads((seed_dir/"guides.json").read_text(encoding="utf-8"))
+    facts=SQLiteRepository(root/"data/travel.db",seed_dir=seed_dir,auto_initialize=True)
+    source=seed_dir.resolve().parent/"source/shanghai_pois.json"
+    pois=json.loads(source.read_text(encoding="utf-8"))
+    docs=[{"poi_id":p["poi_id"],"city":"上海","semantic_description":" ".join(p["tags"]),"text":p["description"]} for p in pois]
     providers=ProviderFactory.create(config)
     vectors=OfflineSemanticRepository(docs);retrieval=RetrievalService(vectors,facts,providers.weather,config.qdrant_top_k)
     return TravelWorkflow(retrieval,facts,providers.map,state_dir or root/config.state_dir,config,providers.agent)

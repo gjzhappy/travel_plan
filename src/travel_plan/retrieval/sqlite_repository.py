@@ -23,7 +23,10 @@ class SQLiteRepository:
     def get_pois(self,ids:list[int]) -> list[POI]:
         if not ids:return []
         rows=self._rows(f"SELECT * FROM pois WHERE poi_id IN ({','.join('?'*len(ids))})",ids)
-        return [POI(**{**dict(r),"opening_hours":json.loads(r["opening_hours"]),"reservation_required":bool(r["reservation_required"]),"outdoor":bool(r["outdoor"])}) for r in rows]
+        return [POI(**{**dict(r),"opening_hours":json.loads(r["opening_hours"]),
+            "tags":json.loads(r["tags"]), "special_dates":json.loads(r["special_dates"]),
+            "reservation_required":bool(r["reservation_required"]),"outdoor":bool(r["outdoor"]),
+            "ticket_required":bool(r["ticket_required"]), "indoor":bool(r["indoor"])}) for r in rows]
     def all_pois(self,city:str)->list[POI]: return self.get_pois([r["poi_id"] for r in self._rows("SELECT poi_id FROM pois WHERE city=?",(city,))])
     def restaurants(self,city:str)->list[Restaurant]:
         return [Restaurant(**{**dict(r),"opening_hours":json.loads(r["opening_hours"])}) for r in self._rows("SELECT restaurant_id,name,cuisine,district,lat,lon,price_per_person,opening_hours FROM restaurants WHERE city=?",(city,))]
