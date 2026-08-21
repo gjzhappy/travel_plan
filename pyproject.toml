@@ -10,8 +10,11 @@ requires-python = ">=3.11"
 
 [project.scripts]
 travel-plan = "travel_plan.main:cli"
+travel-plan-web = "travel_plan.web.server:cli"
+
+[tool.setuptools.package-data]
+"travel_plan.web" = ["static/*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-
