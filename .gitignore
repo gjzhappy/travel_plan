@@ -34,6 +34,7 @@ trip_state/
 # Qdrant/local vector database storage
 qdrant_storage/
 storage/collections/
+data/generated/
 
 # OS and IDE metadata
 .DS_Store
