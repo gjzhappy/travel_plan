@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/"><span class="brand-mark">游</span><span>漫游上海<small>TRAVEL PLANNER</small></span></a><div class="top-actions"><div class="status"><i></i> 本地规划引擎已就绪</div><button class="explain-toggle" id="explain-toggle" type="button" aria-pressed="false"><span>◇</span> 查看规划依据</button></div></header>
+  <header class="topbar"><a class="brand" href="/"><span class="brand-mark">游</span><span>漫游上海<small>TRAVEL PLANNER</small></span></a><div class="status"><i></i> 本地规划引擎已就绪</div></header>
   <main>
     <section class="hero" id="hero">
       <div class="eyebrow">SHANGHAI · CURATED FOR YOU</div>
@@ -31,14 +31,21 @@
         <div class="itinerary"><div class="day-tabs" id="day-tabs"></div><div id="day-panel"></div></div>
       </div>
       <section class="stay-budget"><div><span class="section-kicker">STAY</span><h3>住宿安排</h3><div id="hotels"></div></div><div><span class="section-kicker">ESTIMATE</span><h3>费用概览</h3><div class="budget" id="budget"></div></div></section>
-      <section class="explain-layer" id="explain-layer" aria-hidden="true">
-        <div class="explain-head"><div><span class="section-kicker">EXPLAINABILITY</span><h3>规划依据</h3><p>以下内容用于理解和审阅规划过程，不影响上方的用户行程。</p></div><span class="judge-badge">高级解释层</span></div>
-        <div class="plan-identity"><span>计划 ID <b id="plan-id"></b></span><span>当前快照 <b id="plan-version"></b></span></div><div class="version-list" id="versions"></div>
-        <div class="explain-notice" id="explain-notice"></div><div class="source-strip" id="explain-sources"></div>
-        <details class="why" open><summary><span><b>每日事实与证据</b><small>只呈现 WebPlanDTO 与 Evidence 中已有字段</small></span><i>＋</i></summary><div id="explanation"></div></details>
-        <details class="why"><summary><span><b>硬约束校验</b><small>展示 Validator 最终门禁的记录结果</small></span><i>＋</i></summary><div class="validator-result" id="validator"></div></details>
-        <details class="why"><summary><span><b>确定性工作流</b><small>按顺序查看已记录的 Event Trace</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
-        <details class="why"><summary><span><b>体验审核</b><small>查看 Review Agent 的非决定性体验建议</small></span><i>＋</i></summary><div class="review-result" id="review"></div></details>
+      <section class="explain-layer" id="explain-layer">
+        <details class="explain-overview">
+          <summary><span><span class="section-kicker">WHY THIS PLAN</span><b>为什么这样安排？</b><small>查看推荐原因与规划依据</small></span><i>＋</i></summary>
+          <div class="explain-content">
+            <p class="explain-intro">这些说明来自当前行程及规划过程中已记录的信息，帮助你按需了解每一天的取舍。</p>
+            <details class="why" open><summary><span><b>每日安排依据</b><small>景点组合、路上时间与路线评分</small></span><i>＋</i></summary><div id="explanation"></div></details>
+            <details class="why"><summary><span><b>更多规划细节</b><small>版本、信息来源、约束校验与过程记录</small></span><i>＋</i></summary><div class="technical-details">
+              <div class="plan-identity"><span>计划 ID <b id="plan-id"></b></span><span>当前快照 <b id="plan-version"></b></span></div><div class="version-list" id="versions"></div>
+              <div class="explain-notice" id="explain-notice"></div><div class="source-strip" id="explain-sources"></div>
+              <details class="detail-group"><summary><span><b>约束校验</b><small>最终门禁的记录结果</small></span><i>＋</i></summary><div class="validator-result" id="validator"></div></details>
+              <details class="detail-group"><summary><span><b>规划过程</b><small>按顺序查看已记录的事件</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
+              <details class="detail-group"><summary><span><b>体验审核</b><small>查看行程体验建议</small></span><i>＋</i></summary><div class="review-result" id="review"></div></details>
+            </div></details>
+          </div>
+        </details>
       </section>
       <section class="modify-card"><div><span class="section-kicker">ITERATE</span><h3>还想调整？</h3><p>告诉我们哪里需要变化，其余满意的安排会尽量保留。</p></div><form id="modify-form"><select id="modify-scope" aria-label="修改范围"><option value="GLOBAL">整份行程</option><option value="DAY">某一天</option><option value="NODE">某个景点</option><option value="MEAL">餐饮安排</option></select><input id="modify-target" placeholder="哪一天或地点（可选）"><input id="modify-instruction" required placeholder="例如：第二天换成博物馆，节奏轻松一点"><button class="submit" type="submit">更新行程 <b>→</b></button></form></section>
     </section>
