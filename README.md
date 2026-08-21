@@ -63,14 +63,27 @@ PYTHONPATH=src python scripts/demo.py
 
 SQLite 是票价、坐标、时长、预约和结构化营业时间的最终事实源。Qdrant 只保存语义
 描述/攻略切片并返回 similarity。默认 `mock_mode: true` 使用内存语义 fallback、
-`MockMapClient` 和 `MockWeatherClient`，测试及 Demo 无网络依赖。生产环境可启动 Qdrant：
+`MockMapClient` 和 `MockWeatherClient`，测试及 Demo 无网络依赖。语义层通过
+`EmbeddingProvider` 边界使用 `BAAI/bge-small-zh-v1.5`，模型首次缓存后可完全离线、
+批量且确定性地生成归一化向量。POI 事实仍在 SQLite；自然语言攻略只进入 Qdrant。
+
+首次联网下载模型并生成 POI + 35 条攻略的向量制品：
+
+```bash
+python scripts/build_embeddings.py --download
+```
+
+后续断网运行不加 `--download`；也可用 `--model-path /path/to/cached/model` 显式指定本地模型。
+向量制品位于被忽略的 `data/generated/`。启动 Qdrant：
 
 ```bash
 docker run --rm -p 6333:6333 qdrant/qdrant
 ```
 
-然后运行 `python scripts/build_qdrant.py`，用版本管理的 `guides.json` / `pois.json`
-payload 重建 collection。`qdrant_storage/` 等本地向量存储同样是生成物，不进入 Git。
+然后运行 `python scripts/build_qdrant.py`，将制品写入兼容原代码的
+`shanghai_travel_poi` collection。collection 以 `type=poi/guide` 区分 81 个 POI 与攻略，
+攻略命中会展开其 `poi_ids`，再由 SQLite 完成事实补全；Qdrant 不负责最终路线选择。
+`qdrant_storage/` 等本地向量存储同样是生成物，不进入 Git。
 真实地图/天气配置应在
 私有配置中提供 API key 与 provider endpoint，并实例化 `RealMapClient` /
 `RealWeatherClient`；示例参数集中在 `config/config.example.yaml`，切勿提交密钥。
