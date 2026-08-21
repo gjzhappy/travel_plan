@@ -1,8 +1,8 @@
 import logging, uuid
 from copy import deepcopy
 from dataclasses import asdict
-from travel_plan.agents.requirement_agent import RequirementAgent,OpenCodeRequirementAgent
-from travel_plan.agents.review_agent import ReviewAgent,OpenCodeReviewAgent
+from travel_plan.agents.requirement_agent import OpenCodeRequirementAgent
+from travel_plan.agents.review_agent import OpenCodeReviewAgent
 from travel_plan.config import DEFAULT_CONFIG
 from travel_plan.conversation.state_manager import StateManager,TripState
 from travel_plan.conversation.replanner import Replanner
@@ -21,30 +21,30 @@ log=logging.getLogger("travel_plan")
 class TravelWorkflow:
     def __init__(self,retrieval,facts,map_client,state_dir="data/state",config=DEFAULT_CONFIG,agent_client=None):
         self.retrieval=retrieval;self.facts=facts;self.map=map_client;self.state=StateManager(state_dir);self.config=config
-        self.requirements=OpenCodeRequirementAgent(agent_client) if agent_client else RequirementAgent()
-        self.reviewer=OpenCodeReviewAgent(agent_client) if agent_client else ReviewAgent()
+        self.requirements=OpenCodeRequirementAgent(agent_client)
+        self.reviewer=OpenCodeReviewAgent(agent_client)
         self.events=EventTrace(state_dir)
         self.route=RoutePlanner(map_client,config);self.meals=MealPlanner(map_client,config);self.hotels=HotelOptimizer(map_client,config);self.validator=HardValidator(config)
     def execute(self,text,trip_id=None):
         trip_id=trip_id or f"trip_{uuid.uuid4().hex[:8]}";prior=self.state.load(trip_id);existing=Requirement.from_dict(prior.requirements) if prior else None
         version=1 if prior is None else prior.version+1;parent_version=prior.version if prior else None
         self._event(trip_id,version,parent_version,"WORKFLOW_STARTED","workflow",{"has_prior_plan":prior is not None})
-        parsed=self.requirements.parse(text,existing,prior.current_plan if prior else None) if isinstance(self.requirements,OpenCodeRequirementAgent) else self.requirements.parse(text,existing)
+        parsed=self.requirements.parse(text,existing,prior.current_plan if prior else None)
         req,intent=parsed
         self._event(trip_id,version,parent_version,"AGENT_COMPLETED","requirement-agent",{"scope":intent.get("scope","GLOBAL")})
-        if prior and intent.get("lock_day"):
-            locked=list(prior.locked_items);item=f"DAY:{intent['lock_day']}"
+        locked=list(prior.locked_items) if prior else []
+        lock_day=intent.get("lock_day")
+        if lock_day:
+            item=f"DAY:{lock_day}"
             if item not in locked:locked.append(item)
-            state=TripState(trip_id,prior.version+1,req.to_dict(),locked,req.rejected_pois,req.rejected_categories,prior.current_plan);self.state.save(state)
-            self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"LOCK_DAY","lock_day":intent["lock_day"]})
-            return prior.current_plan,state,MarkdownRenderer().render(_plan_from_dict(prior.current_plan))
         hotels=self.facts.hotels(req.city);restaurants=self.facts.restaurants(req.city);shortlist=self.retrieval.shortlist(req)
-        if not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants)
+        if prior and lock_day: plan=_plan_from_dict(prior.current_plan)
+        elif not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants)
         else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items)
         self._event(trip_id,version,parent_version,"PLAN_GENERATED","planner",{"scope":intent["scope"]})
-        plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,prior.locked_items if prior else [],version,parent_version)
-        version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(),prior.locked_items if prior else [],req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
-        self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"PLAN"})
+        plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,locked,version,parent_version)
+        version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(),locked,req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
+        self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"LOCK_DAY" if lock_day else "PLAN","lock_day":lock_day})
         return plan.to_dict(),state,MarkdownRenderer().render(plan)
     def _global(self,trip_id,shortlist,req,hotels,restaurants):
         days=self.route.plan(shortlist,req,hotels[0])

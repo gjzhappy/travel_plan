@@ -13,8 +13,9 @@ class Config:
     review_max_retries: int = 2
     transport_mode: str = "public_transit"
     mock_mode: bool = True
+    mock_reference_date: str = "2026-01-01"
+    mock_retrieved_at: str = "2026-01-01T00:00:00Z"
     state_dir: str = "data/state"
-    agent_mode: str = "real"
     route_candidate_limit: int = 6
 
 
