@@ -1,0 +1,4300 @@
+[
+  {
+    "poi_id": 1001,
+    "name": "外滩",
+    "category": "城市地标",
+    "tags": [
+      "万国建筑",
+      "黄浦江",
+      "夜景"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验万国建筑、黄浦江、夜景。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.24,
+    "longitude": 121.49,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1002,
+    "name": "东方明珠广播电视塔",
+    "category": "城市地标",
+    "tags": [
+      "观景台",
+      "夜景",
+      "亲子"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验观景台、夜景、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2397,
+    "longitude": 121.4998,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1003,
+    "name": "上海中心大厦上海之巅",
+    "category": "城市地标",
+    "tags": [
+      "高空观景",
+      "天际线",
+      "夜景"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验高空观景、天际线、夜景。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2335,
+    "longitude": 121.5056,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1004,
+    "name": "金茂大厦88层观光厅",
+    "category": "城市地标",
+    "tags": [
+      "高空观景",
+      "建筑",
+      "夜景"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验高空观景、建筑、夜景。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2354,
+    "longitude": 121.505,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1005,
+    "name": "上海环球金融中心观光厅",
+    "category": "城市地标",
+    "tags": [
+      "高空观景",
+      "天际线",
+      "摄影"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验高空观景、天际线、摄影。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2346,
+    "longitude": 121.5074,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 4,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1006,
+    "name": "北外滩国客中心",
+    "category": "城市地标",
+    "tags": [
+      "滨江",
+      "天际线",
+      "摄影"
+    ],
+    "description": "上海虹口区真实旅游点位，适合体验滨江、天际线、摄影。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2492,
+    "longitude": 121.4981,
+    "district": "虹口",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 4,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1007,
+    "name": "陆家嘴中心绿地",
+    "category": "城市地标",
+    "tags": [
+      "城市公园",
+      "建筑",
+      "休闲"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验城市公园、建筑、休闲。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2363,
+    "longitude": 121.5033,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 4,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1008,
+    "name": "世博文化公园",
+    "category": "自然公园",
+    "tags": [
+      "大公园",
+      "温室",
+      "亲子"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验大公园、温室、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1856,
+    "longitude": 121.4872,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1009,
+    "name": "豫园",
+    "category": "历史文化",
+    "tags": [
+      "江南园林",
+      "古建筑",
+      "传统文化"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验江南园林、古建筑、传统文化。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2272,
+    "longitude": 121.4921,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1010,
+    "name": "上海城隍庙",
+    "category": "历史文化",
+    "tags": [
+      "道教",
+      "老城厢",
+      "小吃"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验道教、老城厢、小吃。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.23,
+    "longitude": 121.4915,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1011,
+    "name": "田子坊",
+    "category": "历史文化",
+    "tags": [
+      "石库门",
+      "弄堂",
+      "文创"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验石库门、弄堂、文创。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.208,
+    "longitude": 121.4688,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1012,
+    "name": "武康大楼",
+    "category": "历史文化",
+    "tags": [
+      "历史建筑",
+      "街拍",
+      "梧桐区"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验历史建筑、街拍、梧桐区。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2029,
+    "longitude": 121.4388,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1013,
+    "name": "中共一大纪念馆",
+    "category": "历史文化",
+    "tags": [
+      "红色文化",
+      "近代史",
+      "纪念馆"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验红色文化、近代史、纪念馆。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2223,
+    "longitude": 121.4704,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1014,
+    "name": "孙中山故居纪念馆",
+    "category": "历史文化",
+    "tags": [
+      "名人故居",
+      "近代史",
+      "建筑"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验名人故居、近代史、建筑。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2105,
+    "longitude": 121.4633,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1015,
+    "name": "宋庆龄故居纪念馆",
+    "category": "历史文化",
+    "tags": [
+      "名人故居",
+      "近代史",
+      "花园"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验名人故居、近代史、花园。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1998,
+    "longitude": 121.4381,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1016,
+    "name": "鲁迅故居",
+    "category": "历史文化",
+    "tags": [
+      "文学",
+      "名人故居",
+      "弄堂"
+    ],
+    "description": "上海虹口区真实旅游点位，适合体验文学、名人故居、弄堂。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2736,
+    "longitude": 121.483,
+    "district": "虹口",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1017,
+    "name": "龙华寺",
+    "category": "历史文化",
+    "tags": [
+      "古寺",
+      "佛教",
+      "古塔"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验古寺、佛教、古塔。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.177,
+    "longitude": 121.4524,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1018,
+    "name": "静安寺",
+    "category": "历史文化",
+    "tags": [
+      "古寺",
+      "佛教",
+      "城市建筑"
+    ],
+    "description": "上海静安区真实旅游点位，适合体验古寺、佛教、城市建筑。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2235,
+    "longitude": 121.4452,
+    "district": "静安",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1019,
+    "name": "玉佛禅寺",
+    "category": "历史文化",
+    "tags": [
+      "佛教",
+      "寺庙",
+      "玉佛"
+    ],
+    "description": "上海普陀区真实旅游点位，适合体验佛教、寺庙、玉佛。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2428,
+    "longitude": 121.44,
+    "district": "普陀",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1020,
+    "name": "朱家角古镇",
+    "category": "历史文化",
+    "tags": [
+      "水乡",
+      "古桥",
+      "亲子"
+    ],
+    "description": "上海青浦区真实旅游点位，适合体验水乡、古桥、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1076,
+    "longitude": 121.0564,
+    "district": "青浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1021,
+    "name": "七宝老街",
+    "category": "历史文化",
+    "tags": [
+      "古镇",
+      "小吃",
+      "水乡"
+    ],
+    "description": "上海闵行区真实旅游点位，适合体验古镇、小吃、水乡。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1573,
+    "longitude": 121.3534,
+    "district": "闵行",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1022,
+    "name": "新场古镇",
+    "category": "历史文化",
+    "tags": [
+      "古镇",
+      "水乡",
+      "小众"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验古镇、水乡、小众。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.0315,
+    "longitude": 121.649,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1023,
+    "name": "枫泾古镇",
+    "category": "历史文化",
+    "tags": [
+      "古镇",
+      "水乡",
+      "非遗"
+    ],
+    "description": "上海金山区真实旅游点位，适合体验古镇、水乡、非遗。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 30.8902,
+    "longitude": 121.0116,
+    "district": "金山",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1024,
+    "name": "嘉定州桥老街",
+    "category": "历史文化",
+    "tags": [
+      "老街",
+      "古塔",
+      "小众"
+    ],
+    "description": "上海嘉定区真实旅游点位，适合体验老街、古塔、小众。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.389,
+    "longitude": 121.2474,
+    "district": "嘉定",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1025,
+    "name": "上海博物馆人民广场馆",
+    "category": "博物馆",
+    "tags": [
+      "青铜器",
+      "书画",
+      "历史"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验青铜器、书画、历史。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2303,
+    "longitude": 121.4705,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1026,
+    "name": "上海博物馆东馆",
+    "category": "博物馆",
+    "tags": [
+      "中国古代艺术",
+      "亲子",
+      "新馆"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验中国古代艺术、亲子、新馆。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2286,
+    "longitude": 121.5504,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1027,
+    "name": "上海自然博物馆",
+    "category": "博物馆",
+    "tags": [
+      "恐龙",
+      "自然科学",
+      "亲子"
+    ],
+    "description": "上海静安区真实旅游点位，适合体验恐龙、自然科学、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2368,
+    "longitude": 121.4532,
+    "district": "静安",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1028,
+    "name": "上海科技馆",
+    "category": "博物馆",
+    "tags": [
+      "科技",
+      "互动展览",
+      "亲子"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验科技、互动展览、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2222,
+    "longitude": 121.544,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1029,
+    "name": "中华艺术宫",
+    "category": "博物馆",
+    "tags": [
+      "现代艺术",
+      "世博建筑",
+      "雨天"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验现代艺术、世博建筑、雨天。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1863,
+    "longitude": 121.4902,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1030,
+    "name": "上海当代艺术博物馆",
+    "category": "博物馆",
+    "tags": [
+      "当代艺术",
+      "工业建筑",
+      "展览"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验当代艺术、工业建筑、展览。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2019,
+    "longitude": 121.4973,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1031,
+    "name": "上海历史博物馆",
+    "category": "博物馆",
+    "tags": [
+      "城市历史",
+      "近代上海",
+      "亲子"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验城市历史、近代上海、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2345,
+    "longitude": 121.4748,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1032,
+    "name": "上海天文馆",
+    "category": "博物馆",
+    "tags": [
+      "天文"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验天文、科技、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 30.9149,
+    "longitude": 121.9253,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1033,
+    "name": "中国航海博物馆",
+    "category": "博物馆",
+    "tags": [
+      "航海",
+      "船舶"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验航海、船舶、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 30.8773,
+    "longitude": 121.9065,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1034,
+    "name": "上海汽车博物馆",
+    "category": "博物馆",
+    "tags": [
+      "汽车",
+      "工业设计",
+      "亲子"
+    ],
+    "description": "上海嘉定区真实旅游点位，适合体验汽车、工业设计、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2843,
+    "longitude": 121.1685,
+    "district": "嘉定",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1035,
+    "name": "上海电影博物馆",
+    "category": "博物馆",
+    "tags": [
+      "电影",
+      "互动",
+      "老上海"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验电影、互动、老上海。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1831,
+    "longitude": 121.4434,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1036,
+    "name": "上海邮政博物馆",
+    "category": "博物馆",
+    "tags": [
+      "邮政史",
+      "历史建筑",
+      "集邮"
+    ],
+    "description": "上海虹口区真实旅游点位，适合体验邮政史、历史建筑、集邮。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2487,
+    "longitude": 121.4868,
+    "district": "虹口",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1037,
+    "name": "上海铁路博物馆",
+    "category": "博物馆",
+    "tags": [
+      "火车",
+      "工业史",
+      "亲子"
+    ],
+    "description": "上海静安区真实旅游点位，适合体验火车、工业史、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2535,
+    "longitude": 121.471,
+    "district": "静安",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1038,
+    "name": "上海玻璃博物馆",
+    "category": "博物馆",
+    "tags": [
+      "玻璃艺术",
+      "互动",
+      "亲子"
+    ],
+    "description": "上海宝山区真实旅游点位，适合体验玻璃艺术、互动、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.322,
+    "longitude": 121.4716,
+    "district": "宝山",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1039,
+    "name": "上海琉璃艺术博物馆",
+    "category": "博物馆",
+    "tags": [
+      "琉璃",
+      "艺术",
+      "设计"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验琉璃、艺术、设计。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.207,
+    "longitude": 121.4692,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1040,
+    "name": "上海犹太难民纪念馆",
+    "category": "博物馆",
+    "tags": [
+      "二战历史",
+      "纪念馆",
+      "建筑"
+    ],
+    "description": "上海虹口区真实旅游点位，适合体验二战历史、纪念馆、建筑。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.253,
+    "longitude": 121.5072,
+    "district": "虹口",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1041,
+    "name": "四行仓库抗战纪念馆",
+    "category": "博物馆",
+    "tags": [
+      "抗战历史",
+      "纪念馆",
+      "苏州河"
+    ],
+    "description": "上海静安区真实旅游点位，适合体验抗战历史、纪念馆、苏州河。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2424,
+    "longitude": 121.4694,
+    "district": "静安",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1042,
+    "name": "上海世博会博物馆",
+    "category": "博物馆",
+    "tags": [
+      "世博历史",
+      "城市发展",
+      "亲子"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验世博历史、城市发展、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1971,
+    "longitude": 121.481,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1043,
+    "name": "龙美术馆西岸馆",
+    "category": "博物馆",
+    "tags": [
+      "当代艺术",
+      "工业遗产",
+      "滨江"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验当代艺术、工业遗产、滨江。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1841,
+    "longitude": 121.4607,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1044,
+    "name": "西岸美术馆",
+    "category": "博物馆",
+    "tags": [
+      "现代艺术",
+      "国际展览",
+      "滨江"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验现代艺术、国际展览、滨江。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1802,
+    "longitude": 121.4644,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1045,
+    "name": "浦东美术馆",
+    "category": "博物馆",
+    "tags": [
+      "艺术",
+      "外滩景观",
+      "夜景"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验艺术、外滩景观、夜景。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.24,
+    "longitude": 121.5034,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": null,
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": true,
+    "family_friendly_score": 4,
+    "night_view_score": 5,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1046,
+    "name": "上海迪士尼乐园",
+    "category": "亲子景点",
+    "tags": [
+      "主题乐园",
+      "童话",
+      "烟花"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验主题乐园、童话、烟花。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1434,
+    "longitude": 121.6579,
+    "district": "浦东",
+    "visit_duration_min": 240,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": true,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1047,
+    "name": "上海海昌海洋公园",
+    "category": "亲子景点",
+    "tags": [
+      "海洋动物",
+      "主题乐园",
+      "表演"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验海洋动物、主题乐园、表演。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 30.9122,
+    "longitude": 121.9069,
+    "district": "浦东",
+    "visit_duration_min": 240,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1048,
+    "name": "上海海洋水族馆",
+    "category": "亲子景点",
+    "tags": [
+      "海洋生物",
+      "水族馆",
+      "雨天"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验海洋生物、水族馆、雨天。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2409,
+    "longitude": 121.501,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1049,
+    "name": "上海野生动物园",
+    "category": "亲子景点",
+    "tags": [
+      "动物",
+      "户外"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验动物、亲子、户外。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.0554,
+    "longitude": 121.7217,
+    "district": "浦东",
+    "visit_duration_min": 240,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1050,
+    "name": "上海动物园",
+    "category": "亲子景点",
+    "tags": [
+      "动物",
+      "公园",
+      "亲子"
+    ],
+    "description": "上海长宁区真实旅游点位，适合体验动物、公园、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1924,
+    "longitude": 121.3598,
+    "district": "长宁",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1051,
+    "name": "锦江乐园",
+    "category": "亲子景点",
+    "tags": [
+      "游乐园",
+      "摩天轮",
+      "夜游"
+    ],
+    "description": "上海闵行区真实旅游点位，适合体验游乐园、摩天轮、夜游。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1403,
+    "longitude": 121.4091,
+    "district": "闵行",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1052,
+    "name": "乐高探索中心",
+    "category": "亲子景点",
+    "tags": [
+      "积木",
+      "室内",
+      "低龄儿童"
+    ],
+    "description": "上海普陀区真实旅游点位，适合体验积木、室内、低龄儿童。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2304,
+    "longitude": 121.3993,
+    "district": "普陀",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1053,
+    "name": "上海儿童博物馆",
+    "category": "亲子景点",
+    "tags": [
+      "互动体验",
+      "航天",
+      "儿童"
+    ],
+    "description": "上海长宁区真实旅游点位，适合体验互动体验、航天、儿童。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2107,
+    "longitude": 121.4233,
+    "district": "长宁",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1054,
+    "name": "上海影视乐园",
+    "category": "亲子景点",
+    "tags": [
+      "影视基地",
+      "老上海",
+      "拍照"
+    ],
+    "description": "上海松江区真实旅游点位，适合体验影视基地、老上海、拍照。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.0102,
+    "longitude": 121.3116,
+    "district": "松江",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1055,
+    "name": "广富林文化遗址",
+    "category": "亲子景点",
+    "tags": [
+      "考古",
+      "水下博物馆",
+      "历史"
+    ],
+    "description": "上海松江区真实旅游点位，适合体验考古、水下博物馆、历史。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.0587,
+    "longitude": 121.196,
+    "district": "松江",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 5,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1056,
+    "name": "上海植物园",
+    "category": "自然公园",
+    "tags": [
+      "植物",
+      "花卉",
+      "亲子"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验植物、花卉、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1512,
+    "longitude": 121.4493,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1057,
+    "name": "辰山植物园",
+    "category": "自然公园",
+    "tags": [
+      "植物",
+      "矿坑花园",
+      "温室"
+    ],
+    "description": "上海松江区真实旅游点位，适合体验植物、矿坑花园、温室。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.0754,
+    "longitude": 121.1817,
+    "district": "松江",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1058,
+    "name": "共青森林公园",
+    "category": "自然公园",
+    "tags": [
+      "森林",
+      "露营",
+      "赏花"
+    ],
+    "description": "上海杨浦区真实旅游点位，适合体验森林、露营、赏花。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.3208,
+    "longitude": 121.552,
+    "district": "杨浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1059,
+    "name": "世纪公园",
+    "category": "自然公园",
+    "tags": [
+      "湖泊",
+      "骑行",
+      "亲子"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验湖泊、骑行、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2154,
+    "longitude": 121.5503,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1060,
+    "name": "顾村公园",
+    "category": "自然公园",
+    "tags": [
+      "樱花",
+      "大公园",
+      "亲子"
+    ],
+    "description": "上海宝山区真实旅游点位，适合体验樱花、大公园、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.3504,
+    "longitude": 121.3738,
+    "district": "宝山",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1061,
+    "name": "滨江森林公园",
+    "category": "自然公园",
+    "tags": [
+      "湿地",
+      "森林",
+      "观鸟"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验湿地、森林、观鸟。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.379,
+    "longitude": 121.526,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1062,
+    "name": "东滩湿地公园",
+    "category": "自然公园",
+    "tags": [
+      "湿地",
+      "观鸟",
+      "日出"
+    ],
+    "description": "上海崇明区真实旅游点位，适合体验湿地、观鸟、日出。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.5149,
+    "longitude": 121.9583,
+    "district": "崇明",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1063,
+    "name": "东平国家森林公园",
+    "category": "自然公园",
+    "tags": [
+      "森林",
+      "骑行",
+      "露营"
+    ],
+    "description": "上海崇明区真实旅游点位，适合体验森林、骑行、露营。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.6812,
+    "longitude": 121.4781,
+    "district": "崇明",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1064,
+    "name": "佘山国家森林公园",
+    "category": "自然公园",
+    "tags": [
+      "登山",
+      "森林",
+      "天文台"
+    ],
+    "description": "上海松江区真实旅游点位，适合体验登山、森林、天文台。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.095,
+    "longitude": 121.191,
+    "district": "松江",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1065,
+    "name": "上海湾国家森林公园",
+    "category": "自然公园",
+    "tags": [
+      "森林",
+      "湖泊",
+      "露营"
+    ],
+    "description": "上海奉贤区真实旅游点位，适合体验森林、湖泊、露营。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 30.8489,
+    "longitude": 121.689,
+    "district": "奉贤",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": true,
+    "ticket_price": 80,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1066,
+    "name": "滴水湖",
+    "category": "自然公园",
+    "tags": [
+      "湖景",
+      "骑行",
+      "日落"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验湖景、骑行、日落。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 30.895,
+    "longitude": 121.929,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1067,
+    "name": "长风公园",
+    "category": "自然公园",
+    "tags": [
+      "湖泊",
+      "公园",
+      "亲子"
+    ],
+    "description": "上海普陀区真实旅游点位，适合体验湖泊、公园、亲子。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2223,
+    "longitude": 121.3955,
+    "district": "普陀",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 4,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1068,
+    "name": "南京路步行街",
+    "category": "夜景商业",
+    "tags": [
+      "购物",
+      "霓虹灯",
+      "老字号"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验购物、霓虹灯、老字号。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2348,
+    "longitude": 121.4752,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1069,
+    "name": "新天地",
+    "category": "夜景商业",
+    "tags": [
+      "石库门",
+      "餐饮",
+      "夜生活"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验石库门、餐饮、夜生活。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2192,
+    "longitude": 121.475,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1070,
+    "name": "思南公馆",
+    "category": "夜景商业",
+    "tags": [
+      "历史建筑",
+      "街区",
+      "咖啡"
+    ],
+    "description": "上海黄浦区真实旅游点位，适合体验历史建筑、街区、咖啡。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2132,
+    "longitude": 121.4655,
+    "district": "黄浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": true,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1071,
+    "name": "愚园路历史风貌区",
+    "category": "夜景商业",
+    "tags": [
+      "梧桐区",
+      "咖啡",
+      "街拍"
+    ],
+    "description": "上海长宁区真实旅游点位，适合体验梧桐区、咖啡、街拍。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2216,
+    "longitude": 121.4247,
+    "district": "长宁",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1072,
+    "name": "衡山路复兴路历史文化风貌区",
+    "category": "夜景商业",
+    "tags": [
+      "梧桐区",
+      "洋房",
+      "漫步"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验梧桐区、洋房、漫步。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.205,
+    "longitude": 121.449,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1073,
+    "name": "前滩太古里",
+    "category": "夜景商业",
+    "tags": [
+      "购物",
+      "建筑",
+      "夜景"
+    ],
+    "description": "上海浦东区真实旅游点位，适合体验购物、建筑、夜景。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1535,
+    "longitude": 121.4782,
+    "district": "浦东",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1074,
+    "name": "徐家汇源景区",
+    "category": "夜景商业",
+    "tags": [
+      "历史建筑",
+      "商业",
+      "教堂"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验历史建筑、商业、教堂。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.1934,
+    "longitude": 121.4365,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "10:00",
+        "22:00"
+      ],
+      "tue": [
+        "10:00",
+        "22:00"
+      ],
+      "wed": [
+        "10:00",
+        "22:00"
+      ],
+      "thu": [
+        "10:00",
+        "22:00"
+      ],
+      "fri": [
+        "10:00",
+        "22:00"
+      ],
+      "sat": [
+        "10:00",
+        "22:00"
+      ],
+      "sun": [
+        "10:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 5,
+    "indoor": false,
+    "crowd_level": "high"
+  },
+  {
+    "poi_id": 1075,
+    "name": "苏州河华政段",
+    "category": "小众特色",
+    "tags": [
+      "苏州河",
+      "历史建筑",
+      "漫步"
+    ],
+    "description": "上海长宁区真实旅游点位，适合体验苏州河、历史建筑、漫步。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2291,
+    "longitude": 121.4203,
+    "district": "长宁",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1076,
+    "name": "M50创意园",
+    "category": "小众特色",
+    "tags": [
+      "当代艺术",
+      "涂鸦",
+      "工业遗产"
+    ],
+    "description": "上海普陀区真实旅游点位，适合体验当代艺术、涂鸦、工业遗产。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.247,
+    "longitude": 121.449,
+    "district": "普陀",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1077,
+    "name": "1933老场坊",
+    "category": "小众特色",
+    "tags": [
+      "工业建筑",
+      "摄影",
+      "设计"
+    ],
+    "description": "上海虹口区真实旅游点位，适合体验工业建筑、摄影、设计。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2603,
+    "longitude": 121.4914,
+    "district": "虹口",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1078,
+    "name": "杨浦滨江",
+    "category": "小众特色",
+    "tags": [
+      "工业遗产",
+      "滨江",
+      "漫步"
+    ],
+    "description": "上海杨浦区真实旅游点位，适合体验工业遗产、滨江、漫步。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.27,
+    "longitude": 121.535,
+    "district": "杨浦",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1079,
+    "name": "徐汇滨江",
+    "category": "小众特色",
+    "tags": [
+      "滨江",
+      "滑板",
+      "艺术"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验滨江、滑板、艺术。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.18,
+    "longitude": 121.465,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1080,
+    "name": "上海工艺美术博物馆",
+    "category": "小众特色",
+    "tags": [
+      "工艺美术",
+      "花园洋房",
+      "非遗"
+    ],
+    "description": "上海徐汇区真实旅游点位，适合体验工艺美术、花园洋房、非遗。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.211,
+    "longitude": 121.4551,
+    "district": "徐汇",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "09:00",
+        "22:00"
+      ],
+      "tue": [
+        "09:00",
+        "22:00"
+      ],
+      "wed": [
+        "09:00",
+        "22:00"
+      ],
+      "thu": [
+        "09:00",
+        "22:00"
+      ],
+      "fri": [
+        "09:00",
+        "22:00"
+      ],
+      "sat": [
+        "09:00",
+        "22:00"
+      ],
+      "sun": [
+        "09:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": "21:00",
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": true,
+    "crowd_level": "medium"
+  },
+  {
+    "poi_id": 1081,
+    "name": "马勒别墅",
+    "category": "小众特色",
+    "tags": [
+      "历史建筑",
+      "童话建筑",
+      "摄影"
+    ],
+    "description": "上海静安区真实旅游点位，适合体验历史建筑、童话建筑、摄影。开放与票务信息为离线规划演示基准，出行前应以场馆公告为准。",
+    "latitude": 31.2221,
+    "longitude": 121.4567,
+    "district": "静安",
+    "visit_duration_min": 60,
+    "opening_hours": {
+      "mon": [
+        "00:00",
+        "22:00"
+      ],
+      "tue": [
+        "00:00",
+        "22:00"
+      ],
+      "wed": [
+        "00:00",
+        "22:00"
+      ],
+      "thu": [
+        "00:00",
+        "22:00"
+      ],
+      "fri": [
+        "00:00",
+        "22:00"
+      ],
+      "sat": [
+        "00:00",
+        "22:00"
+      ],
+      "sun": [
+        "00:00",
+        "22:00"
+      ]
+    },
+    "special_dates": {},
+    "latest_entry_time": null,
+    "ticket_required": false,
+    "ticket_price": 0,
+    "reservation_required": false,
+    "family_friendly_score": 3,
+    "night_view_score": 2,
+    "indoor": false,
+    "crowd_level": "medium"
+  }
+]

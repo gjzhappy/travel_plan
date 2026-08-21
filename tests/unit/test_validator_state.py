@@ -40,8 +40,8 @@ def test_database_rebuilds_from_seeds_and_is_repeatable(tmp_path):
     seeds = Path(__file__).resolve().parents[2] / "data/seed"
     initialize_database(database, seeds)
     first = SQLiteRepository(database)
-    assert len(first.all_pois("上海")) == 30
+    assert len(first.all_pois("上海")) == 81
     assert len(first.restaurants("上海")) == 16
     assert len(first.hotels("上海")) == 4
     initialize_database(database, seeds)
-    assert len(SQLiteRepository(database).all_pois("上海")) == 30
+    assert len(SQLiteRepository(database).all_pois("上海")) == 81
