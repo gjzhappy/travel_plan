@@ -1,30 +1,32 @@
 from dataclasses import dataclass
-from math import asin, cos, radians, sin, sqrt
 from typing import Protocol
+
+from travel_plan.retrieval.transport_provider import (
+    HierarchicalMockTransportProvider,
+    TransportResult,
+)
 
 @dataclass(frozen=True)
 class Location:
     name: str; lat: float; lon: float
 
-@dataclass(frozen=True)
-class RouteResult:
-    duration_min: int; distance_km: float; mode: str; source: str; retrieved_at: str
+RouteResult = TransportResult
 
 class MapClient(Protocol):
     def route(self, origin: Location, destination: Location, mode: str) -> RouteResult: ...
     def search_nearby(self, location: Location, keyword: str, radius_km: float) -> list[Location]: ...
 
 class MockMapClient:
-    def __init__(self, overrides: dict[tuple[str,str], int] | None = None, retrieved_at: str = "2026-01-01T00:00:00Z"):
-        self.overrides=overrides or {}; self.calls=0; self.retrieved_at=retrieved_at
+    """Compatibility facade for map consumers that also need nearby search."""
+    def __init__(self, overrides: dict[tuple[str,str], int] | None = None, retrieved_at: str = "2026-01-01T00:00:00Z", transport=None):
+        self.overrides=overrides or {}; self.calls=0
+        self.transport=transport or HierarchicalMockTransportProvider(retrieved_at=retrieved_at)
     def route(self, origin: Location, destination: Location, mode: str="public_transit") -> RouteResult:
         self.calls += 1
         key=(origin.name,destination.name)
-        lat1,lon1,lat2,lon2=map(radians,(origin.lat,origin.lon,destination.lat,destination.lon))
-        a=sin((lat2-lat1)/2)**2+cos(lat1)*cos(lat2)*sin((lon2-lon1)/2)**2
-        distance=6371*2*asin(sqrt(a)); speed={"walking":4.5,"public_transit":22,"driving":30}.get(mode,22)
-        duration=self.overrides.get(key, max(5, round(distance/speed*60+6)))
-        return RouteResult(duration,round(distance,2),mode,"mock_map",self.retrieved_at)
+        result=self.transport.route(origin,destination,mode)
+        if key not in self.overrides:return result
+        return TransportResult(result.mode,self.overrides[key],result.distance_km,result.walking_minutes,result.transfer_count,result.source,result.retrieved_at)
     def search_nearby(self, location: Location, keyword: str, radius_km: float) -> list[Location]: return []
 
 class RealMapClient:
