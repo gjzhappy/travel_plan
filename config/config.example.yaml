@@ -8,5 +8,6 @@ hotel_change_min_gain: 60
 review_max_retries: 2
 transport_mode: public_transit
 mock_mode: true
+mock_reference_date: "2026-01-01"
+mock_retrieved_at: "2026-01-01T00:00:00Z"
 state_dir: data/state
-

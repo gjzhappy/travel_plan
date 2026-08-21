@@ -32,6 +32,9 @@ def preserve_user_intent(original: Requirement, proposed: Requirement) -> Requir
 
 class RequirementAgent:
     """Offline deterministic adapter; OpenCode may replace interpretation with its agent JSON."""
+    def __init__(self, reference_date: date | None = None):
+        self.reference_date = reference_date
+
     def parse(self,text:str,existing:Requirement|None=None)->tuple[Requirement,dict]:
         base=existing.to_dict() if existing else {}; base.pop("party",None)
         city="上海" if "上海" in text else (existing.city if existing else "上海")
@@ -67,7 +70,8 @@ class RequirementAgent:
         nm=re.search(r"(?:把)?第[一二三四五六七八九十\d]+天(?:下午)?(?:的)?([\u4e00-\u9fa5]{2,15})(?:换掉|替换)",text)
         if nm: target_name=nm.group(1)
         meal="dinner" if "晚" in text else "lunch"
-        req=Requirement(city,days,existing.start_date if existing else date.today().isoformat(),party,interests,pace,"public_transit" if "公共交通" in text or not existing else existing.transport,"low" if "少走路" in text else (existing.walking if existing else "medium"),must,rejected,rejected_categories,foods,True,lodging,changes,budget," ".join(interests+must+(["亲子"] if party.child else [])),True,scope,day_no,None,target_name,meal if scope=="MEAL" else None,foods if scope=="MEAL" else [])
+        start_date=existing.start_date if existing else (self.reference_date or date.today()).isoformat()
+        req=Requirement(city,days,start_date,party,interests,pace,"public_transit" if "公共交通" in text or not existing else existing.transport,"low" if "少走路" in text else (existing.walking if existing else "medium"),must,rejected,rejected_categories,foods,True,lodging,changes,budget," ".join(interests+must+(["亲子"] if party.child else [])),True,scope,day_no,None,target_name,meal if scope=="MEAL" else None,foods if scope=="MEAL" else [])
         return req,{"scope":scope,"day":day_no,"meal":"dinner" if "晚" in text else "lunch","lock_day":lock}
 
     def refine(self,requirement,review,current_plan=None):
@@ -93,7 +97,8 @@ class OpenCodeRequirementAgent:
     def parse(self,text,existing=None,current_plan=None):
         raw=self.client.invoke("requirement-agent",{"user_text":text,"trip_state_requirement":existing.to_dict() if existing else None,"current_plan":current_plan},self.schema)
         req=Requirement.from_dict(raw)
-        return req,{"scope":req.scope,"day":req.target_day,"meal":req.target_meal,"lock_day":None,"target_node_id":req.target_node_id,"target_poi_name":req.target_poi_name}
+        lock=req.target_day if req.target_day and any(x in text for x in ("满意","不要再改","锁定")) else None
+        return req,{"scope":req.scope,"day":req.target_day,"meal":req.target_meal,"lock_day":lock,"target_node_id":req.target_node_id,"target_poi_name":req.target_poi_name}
 
     def refine(self,requirement,review,current_plan=None):
         raw=self.client.invoke("requirement-agent",{

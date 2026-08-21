@@ -53,6 +53,36 @@ class OpenCodeAgentClient:
             raise AgentOutputValidationError(f"{agent_name} invocation failed: {exc}") from exc
         return validate_agent_output(value,schema,agent_name)
 
+class DeterministicAgentClient:
+    """Offline implementation of the same named-agent invocation boundary."""
+    def __init__(self, reference_date):
+        self.reference_date=reference_date; self.calls=[]
+    def invoke(self,agent_name,payload,schema):
+        self.calls.append((agent_name,payload))
+        if agent_name=="requirement-agent":
+            from datetime import date
+            from travel_plan.agents.requirement_agent import RequirementAgent
+            from travel_plan.models.requirement import Requirement
+            agent=RequirementAgent(date.fromisoformat(self.reference_date))
+            existing=Requirement.from_dict(payload["trip_state_requirement"]) if payload.get("trip_state_requirement") else None
+            if payload.get("task")=="refine_intent_from_review":
+                from travel_plan.models.review import ReviewIssue, ReviewResult
+                raw=payload["review_feedback"]
+                review=ReviewResult(raw["passed"],[ReviewIssue(**x) for x in raw["issues"]],raw["repair_instructions"])
+                value=agent.refine(existing,review,payload.get("current_plan")).to_dict()
+            else:
+                value=agent.parse(payload["user_text"],existing)[0].to_dict()
+        elif agent_name=="review-agent":
+            from travel_plan.agents.review_agent import ReviewAgent
+            from travel_plan.models.requirement import Requirement
+            from travel_plan.workflow import _plan_from_dict
+            value=ReviewAgent().review(Requirement.from_dict(payload["requirement"]),_plan_from_dict(payload["trip_plan"]),payload.get("evidence")).to_dict()
+        else: raise AgentOutputValidationError(f"unknown agent: {agent_name}")
+        return validate_agent_output(value,schema,agent_name)
+
+# Provider-facing name retained alongside the implementation-oriented name.
+MockAgentClient = DeterministicAgentClient
+
 class FakeOpenCodeAgentClient:
     def __init__(self,responses): self.responses=list(responses);self.calls=[]
     def invoke(self,agent_name,payload,schema):
