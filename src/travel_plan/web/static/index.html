@@ -34,7 +34,9 @@
       <section class="explain-layer" id="explain-layer" aria-hidden="true">
         <div class="explain-head"><div><span class="section-kicker">EXPLAINABILITY</span><h3>规划依据</h3><p>以下内容用于理解和审阅规划过程，不影响上方的用户行程。</p></div><span class="judge-badge">高级解释层</span></div>
         <div class="plan-identity"><span>计划 ID <b id="plan-id"></b></span><span>当前快照 <b id="plan-version"></b></span></div><div class="version-list" id="versions"></div>
-        <details class="why" open><summary><span><b>路线安排依据</b><small>开放时间、路程与停留节奏</small></span><i>＋</i></summary><div id="explanation"></div></details>
+        <div class="explain-notice" id="explain-notice"></div><div class="source-strip" id="explain-sources"></div>
+        <details class="why" open><summary><span><b>每日事实与证据</b><small>只呈现 WebPlanDTO 与 Evidence 中已有字段</small></span><i>＋</i></summary><div id="explanation"></div></details>
+        <details class="why"><summary><span><b>硬约束校验</b><small>展示 Validator 最终门禁的记录结果</small></span><i>＋</i></summary><div class="validator-result" id="validator"></div></details>
         <details class="why"><summary><span><b>确定性工作流</b><small>按顺序查看已记录的 Event Trace</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
         <details class="why"><summary><span><b>体验审核</b><small>查看 Review Agent 的非决定性体验建议</small></span><i>＋</i></summary><div class="review-result" id="review"></div></details>
       </section>

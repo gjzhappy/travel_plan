@@ -20,6 +20,7 @@ class PlanRecord:
     display_result: dict[str, Any]
     events: list[dict[str, Any]]
     review: dict[str, Any]
+    explainability: dict[str, Any]
 
     def to_dict(self) -> dict[str, Any]:
         return deepcopy(asdict(self))
@@ -41,6 +42,7 @@ class PlanRepository:
         display_result: dict[str, Any],
         events: list[dict[str, Any]],
         review: dict[str, Any],
+        explainability: dict[str, Any],
     ) -> PlanRecord:
         now = datetime.now(timezone.utc).isoformat()
         with self._lock:
@@ -51,6 +53,7 @@ class PlanRepository:
             record = PlanRecord(
                 plan_id, version, created_at, now, deepcopy(request), deepcopy(state),
                 deepcopy(display_result), deepcopy(events), deepcopy(review),
+                deepcopy(explainability),
             )
             versions.append(record)
             return deepcopy(record)

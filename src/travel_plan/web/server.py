@@ -11,6 +11,7 @@ from urllib.parse import unquote, urlparse
 from travel_plan.main import build_workflow
 from travel_plan.observability.trace_reader import TraceReader
 from travel_plan.web.presenter import present_plan
+from travel_plan.web.explainability import build_explainability
 from travel_plan.web.repository import PlanRepository
 
 STATIC_DIR = Path(__file__).with_name("static")
@@ -104,6 +105,8 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.OK, record.events)
         elif resource == "review":
             self._json(HTTPStatus.OK, record.review)
+        elif resource == "explainability":
+            self._json(HTTPStatus.OK, record.explainability)
         else:
             self._json(HTTPStatus.NOT_FOUND, {"error": "接口不存在"})
 
@@ -114,8 +117,9 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         raw_events = [asdict(event) for event in TraceReader(workflow.events.root).read(plan_id)]
         events = _present_events(raw_events, state.version)
         review = _review_result(raw_events, state.version)
+        explainability = build_explainability(plan, raw_events, state.version)
         return self.repository.save(
-            plan_id, state.version, request, asdict(state), display, events, review
+            plan_id, state.version, request, asdict(state), display, events, review, explainability
         )
 
     def _payload(self):
@@ -140,6 +144,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             "plan": record.display_result,
             "events": record.events,
             "review": record.review,
+            "explainability": record.explainability,
         }
 
     def _json(self, status: HTTPStatus, payload):
