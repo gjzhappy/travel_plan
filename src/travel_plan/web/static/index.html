@@ -24,13 +24,16 @@
     <section class="error hidden" id="error"><b>没有成功生成行程</b><span></span><button type="button">返回修改</button></section>
 
     <section class="result hidden" id="result">
-      <div class="result-head"><div><div class="eyebrow">YOUR SHANGHAI JOURNEY</div><h2>属于你的上海时光</h2><p id="trip-meta"></p></div><button class="secondary" id="restart">重新规划</button></div>
+      <div class="result-head"><div><div class="eyebrow">YOUR SHANGHAI JOURNEY</div><h2>属于你的上海时光</h2><p id="trip-meta"></p><div class="plan-identity"><span>计划 ID <b id="plan-id"></b></span><span>当前版本 <b id="plan-version"></b></span></div><div class="version-list" id="versions"></div></div><button class="secondary" id="restart">新建计划</button></div>
       <div class="layout">
         <aside class="map-card"><div class="map-title"><span>路线地图</span><small id="map-caption"></small></div><div class="map" id="map"><svg id="route-map" viewBox="0 0 520 570" role="img" aria-label="上海每日路线示意地图"></svg><div class="map-key" id="map-key"></div></div></aside>
         <div class="itinerary"><div class="day-tabs" id="day-tabs"></div><div id="day-panel"></div></div>
       </div>
       <section class="stay-budget"><div><span class="section-kicker">STAY</span><h3>住宿安排</h3><div id="hotels"></div></div><div><span class="section-kicker">ESTIMATE</span><h3>费用概览</h3><div class="budget" id="budget"></div></div></section>
       <details class="why"><summary><span><b>为什么这样安排？</b><small>查看路线背后的考虑</small></span><i>＋</i></summary><div id="explanation"></div></details>
+      <details class="why"><summary><span><b>规划过程</b><small>查看 Workflow 已记录的 Event Trace</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
+      <details class="why"><summary><span><b>方案检查结果</b><small>查看 Review Agent 审核结论</small></span><i>＋</i></summary><div class="review-result" id="review"></div></details>
+      <section class="modify-card"><div><span class="section-kicker">ITERATE</span><h3>继续修改这份计划</h3><p>选择已有修改范围，规划引擎将生成一个新版本。</p></div><form id="modify-form"><select id="modify-scope" aria-label="修改范围"><option>GLOBAL</option><option>DAY</option><option>NODE</option><option>MEAL</option></select><input id="modify-target" placeholder="目标，如 day2（可选）"><input id="modify-instruction" required placeholder="例如：第二天不要迪士尼，换博物馆"><button class="submit" type="submit">生成新版本 <b>→</b></button></form></section>
     </section>
   </main>
   <footer>TRAVEL PLAN <span>·</span> 让每一次出发，都从容有序</footer>
