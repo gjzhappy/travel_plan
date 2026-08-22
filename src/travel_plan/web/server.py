@@ -17,6 +17,7 @@ from travel_plan.observability.trace_reader import TraceReader
 from travel_plan.web.presenter import present_plan
 from travel_plan.web.explainability import build_explainability
 from travel_plan.web.repository import PlanRepository
+from travel_plan.web.workflow_visualization import workflow_graph
 
 STATIC_DIR = Path(__file__).with_name("static")
 DEMO_DIR = Path("data/demo")
@@ -188,8 +189,11 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         def publish(event):
             presented = _stream_event(asdict(event))
             send({"type": "trace", "event": presented})
+            streamed_events.append(presented)
+            send({"type": "workflow_graph", "graph": workflow_graph(streamed_events)})
             runtime.observe(presented)
 
+        streamed_events = []
         workflow.events.subscribe(publish)
         try:
             record = self._execute_and_save(workflow, plan_id, text, request)
@@ -440,7 +444,7 @@ def _stream_event(event):
         label = EVENT_PRESENTATION.get((event["event_type"], event["actor"]))
         message = label[1] if label else message
     return {
-        "event_id": event["sequence"], "stage": stage or "WORKFLOW", "status": status,
+        "event_id": event["sequence"], "event_type": event["event_type"], "stage": stage or "WORKFLOW", "status": status,
         "actor": event["actor"], "message": message or "工作流正在执行",
         "timestamp": event.get("timestamp", ""), "duration_ms": details.get("duration_ms"),
     }
