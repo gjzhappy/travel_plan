@@ -55,11 +55,20 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[:2] == ["api", "demo"] and parts[3] == "run":
             self._run_demo(parts[2])
             return
+        if len(parts) == 4 and parts[:2] == ["api", "demo"] and parts[3] == "stream":
+            self._stream_demo(parts[2])
+            return
         if path == "/api/plans":
             self._create_plan()
             return
+        if path == "/api/plans/stream":
+            self._stream_create_plan()
+            return
         if len(parts) == 4 and parts[:2] == ["api", "plans"] and parts[3] == "modify":
             self._modify_plan(parts[2])
+            return
+        if len(parts) == 5 and parts[:2] == ["api", "plans"] and parts[3:] == ["modify", "stream"]:
+            self._stream_modify_plan(parts[2])
             return
         self._json(HTTPStatus.NOT_FOUND, {"error": "接口不存在"})
 
@@ -93,6 +102,23 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             self.log_error("demo planning failed: %s", exc)
             self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": f"暂时无法生成演示方案：{exc}"})
 
+    def _stream_demo(self, scenario_id: str):
+        try:
+            path = self.root / DEMO_DIR / f"{scenario_id}.json"
+            if not path.is_file():
+                self._json(HTTPStatus.NOT_FOUND, {"error": "演示场景不存在"})
+                return
+            scenario = json.loads(path.read_text(encoding="utf-8"))
+            request = str(scenario.get("request", "")).strip()
+            if scenario.get("id") != scenario_id or not request:
+                raise ValueError("演示场景数据无效")
+            self._stream_workflow(
+                f"demo_{scenario_id}_{uuid.uuid4().hex}", request,
+                {"request": request, "demo_id": scenario_id},
+            )
+        except (ValueError, json.JSONDecodeError) as exc:
+            self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": str(exc)})
+
     def _create_plan(self):
         try:
             payload = self._payload()
@@ -107,6 +133,58 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         except Exception as exc:
             self.log_error("planning failed: %s", exc)
             self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": f"暂时无法生成可行方案：{exc}"})
+
+    def _stream_create_plan(self):
+        """Run planning on this request and flush each recorded trace event.
+
+        This is newline-delimited JSON rather than simulated progress.  The
+        final line contains the same plan response as ``POST /api/plans``.
+        """
+        try:
+            payload = self._payload()
+            request = str(payload.get("request", "")).strip()
+            if not request:
+                raise ValueError("请先描述你的旅行需求")
+        except (ValueError, json.JSONDecodeError) as exc:
+            self._json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+            return
+
+        self._stream_workflow(f"plan_{uuid.uuid4().hex}", request, {"request": request})
+
+    def _stream_modify_plan(self, plan_id: str):
+        if not self.repository.current(plan_id):
+            self._json(HTTPStatus.NOT_FOUND, {"error": "计划不存在"})
+            return
+        try:
+            payload = self._payload()
+            scope = str(payload.get("scope", "")).upper()
+            instruction = str(payload.get("instruction", "")).strip()
+            if scope not in {"GLOBAL", "DAY", "NODE", "MEAL"} or not instruction:
+                raise ValueError("请提供有效的修改范围与指令")
+            request = {"scope": scope, "target": payload.get("target"), "instruction": instruction}
+        except (ValueError, json.JSONDecodeError) as exc:
+            self._json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+            return
+        self._stream_workflow(plan_id, instruction, request)
+
+    def _stream_workflow(self, plan_id, text, request):
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache, no-transform")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+        workflow = self.workflow_factory(root=self.root)
+
+        def publish(event):
+            self._stream_line({"type": "trace", "event": _stream_event(asdict(event))})
+
+        workflow.events.subscribe(publish)
+        try:
+            record = self._execute_and_save(workflow, plan_id, text, request)
+            self._stream_line({"type": "result", "result": self._plan_response(record)})
+        except Exception as exc:
+            self.log_error("streaming planning failed: %s", exc)
+            self._stream_line({"type": "error", "error": f"暂时无法生成可行方案：{exc}"})
 
     def _modify_plan(self, plan_id: str):
         if not self.repository.current(plan_id):
@@ -155,6 +233,9 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
 
     def _run_and_save(self, plan_id: str, text: str, request: dict):
         workflow = self.workflow_factory(root=self.root)
+        return self._execute_and_save(workflow, plan_id, text, request)
+
+    def _execute_and_save(self, workflow, plan_id: str, text: str, request: dict):
         plan, state, _ = workflow.execute(text, plan_id)
         display = present_plan(plan, state.version, getattr(state, "requirements", {}))
         raw_events = [asdict(event) for event in TraceReader(workflow.events.root).read(plan_id)]
@@ -166,6 +247,11 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         return self.repository.save(
             plan_id, state.version, request, asdict(state), display, events, review, explainability
         )
+
+    def _stream_line(self, payload):
+        body = (json.dumps(payload, ensure_ascii=False) + "\n").encode()
+        self.wfile.write(body)
+        self.wfile.flush()
 
     def _payload(self):
         length = int(self.headers.get("Content-Length", "0"))
@@ -228,6 +314,35 @@ EVENT_PRESENTATION = {
     ("VALIDATOR_BLOCKED", "validator"): ("VALIDATE", "硬约束检查发现问题"),
     ("REVIEW_COMPLETED", "review-agent"): ("REVIEW", "审核行程体验"),
 }
+
+STAGE_PRESENTATION = {
+    "REQUIREMENT": "正在理解旅行需求",
+    "RETRIEVAL": "正在检索地点与旅行资料",
+    "PLANNER": "正在编排路线、餐饮与住宿",
+    "VALIDATOR": "正在检查硬约束与可行性",
+    "REVIEW": "正在审核旅行体验",
+}
+
+
+def _stream_event(event):
+    """Expose operational facts only; never expose prompts or model reasoning."""
+    details = event.get("details", {})
+    stage = details.get("stage")
+    if not stage:
+        label = EVENT_PRESENTATION.get((event["event_type"], event["actor"]))
+        stage = label[0] if label else None
+    status = "RUNNING" if event["event_type"] in {"WORKFLOW_STARTED", "STAGE_STARTED"} else "COMPLETED"
+    if event["event_type"] == "VALIDATOR_BLOCKED":
+        status = "WARNING"
+    message = STAGE_PRESENTATION.get(stage)
+    if event["event_type"] != "STAGE_STARTED":
+        label = EVENT_PRESENTATION.get((event["event_type"], event["actor"]))
+        message = label[1] if label else message
+    return {
+        "event_id": event["sequence"], "stage": stage or "WORKFLOW", "status": status,
+        "actor": event["actor"], "message": message or "工作流正在执行",
+        "timestamp": event.get("timestamp", ""), "duration_ms": details.get("duration_ms"),
+    }
 
 
 def _present_events(events, version):

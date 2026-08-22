@@ -1,4 +1,5 @@
 import logging, uuid
+from time import monotonic
 from copy import deepcopy
 from dataclasses import asdict
 from travel_plan.agents.requirement_agent import OpenCodeRequirementAgent
@@ -29,19 +30,23 @@ class TravelWorkflow:
         trip_id=trip_id or f"trip_{uuid.uuid4().hex[:8]}";prior=self.state.load(trip_id);existing=Requirement.from_dict(prior.requirements) if prior else None
         version=1 if prior is None else prior.version+1;parent_version=prior.version if prior else None
         self._event(trip_id,version,parent_version,"WORKFLOW_STARTED","workflow",{"has_prior_plan":prior is not None})
+        started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","requirement-agent",{"stage":"REQUIREMENT"})
         parsed=self.requirements.parse(text,existing,prior.current_plan if prior else None)
         req,intent=parsed
-        self._event(trip_id,version,parent_version,"AGENT_COMPLETED","requirement-agent",{"scope":intent.get("scope","GLOBAL")})
+        self._event(trip_id,version,parent_version,"AGENT_COMPLETED","requirement-agent",{"scope":intent.get("scope","GLOBAL"),"duration_ms":self._elapsed(started)})
         locked=list(prior.locked_items) if prior else []
         lock_day=intent.get("lock_day")
         if lock_day:
             item=f"DAY:{lock_day}"
             if item not in locked:locked.append(item)
+        started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","retrieval",{"stage":"RETRIEVAL"})
         hotels=self.facts.hotels(req.city);restaurants=self.facts.restaurants(req.city);shortlist=self.retrieval.shortlist(req)
+        self._event(trip_id,version,parent_version,"STAGE_COMPLETED","retrieval",{"stage":"RETRIEVAL","duration_ms":self._elapsed(started),"candidate_count":len(shortlist)})
+        started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","planner",{"stage":"PLANNER"})
         if prior and lock_day: plan=_plan_from_dict(prior.current_plan)
         elif not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants)
         else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items)
-        self._event(trip_id,version,parent_version,"PLAN_GENERATED","planner",{"scope":intent["scope"]})
+        self._event(trip_id,version,parent_version,"PLAN_GENERATED","planner",{"scope":intent["scope"],"duration_ms":self._elapsed(started)})
         plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,locked,version,parent_version)
         version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(),locked,req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
         self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"LOCK_DAY" if lock_day else "PLAN","lock_day":lock_day})
@@ -68,15 +73,18 @@ class TravelWorkflow:
             self.meals.insert(day,restaurants,req,hotels[0])
         self.recompute_derived(plan,req);return plan
     def _validate_review_replan(self,plan,shortlist,req,hotels,restaurants,locked,version,parent_version):
+        validation_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","validator",{"stage":"VALIDATOR"})
         issues=self.validator.validate(plan,req)
         self._validator_event(plan.trip_id,version,parent_version,"INITIAL",issues)
         if issues:
             plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
             self._validator_event(plan.trip_id,version,parent_version,"AFTER_REPAIR",issues)
+        self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","validator",{"stage":"VALIDATOR","duration_ms":self._elapsed(validation_started),"passed":not bool(issues)})
         review=None
         for retry in range(self.config.review_max_retries+1):
+            review_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","review-agent",{"stage":"REVIEW","review_number":plan.review_count+1})
             review=self.reviewer.review(req,plan,plan.evidence);plan.review_count+=1
-            self._event(plan.trip_id,version,parent_version,"REVIEW_COMPLETED","review-agent",{"review_number":plan.review_count,"passed":review.passed,"issues":[asdict(issue) for issue in review.issues]})
+            self._event(plan.trip_id,version,parent_version,"REVIEW_COMPLETED","review-agent",{"review_number":plan.review_count,"passed":review.passed,"issues":[asdict(issue) for issue in review.issues],"duration_ms":self._elapsed(review_started)})
             if review.passed:break
             if retry==self.config.review_max_retries:break
             # The review message returns to the intent layer before any code acts.
@@ -115,6 +123,9 @@ class TravelWorkflow:
         self.events.record(trip_id,version,parent_version,event_type,actor,details)
     def _validator_event(self,trip_id,version,parent_version,stage,issues):
         self._event(trip_id,version,parent_version,"VALIDATOR_BLOCKED" if issues else "VALIDATOR_PASSED","validator",{"stage":stage,"issues":[asdict(issue) for issue in issues]})
+    @staticmethod
+    def _elapsed(started):
+        return max(0,round((monotonic()-started)*1000))
     def recompute_derived(self,plan,req):
         people=req.party.adult+req.party.child
         plan.budget=Budget(tickets=sum(n.cost*people for d in plan.days for n in d.nodes if n.type=="attraction"),meals=sum(n.cost for d in plan.days for n in d.nodes if n.type in {"lunch","dinner"}),hotels=sum(s.nightly_price*(s.end_day-s.start_day+1) for s in plan.hotels),transport=sum(n.duration_min*.3 for d in plan.days for n in d.nodes if n.transport_mode))

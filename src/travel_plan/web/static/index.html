@@ -26,7 +26,7 @@
       <div class="trust"><span>✓ 基于真实地点信息</span><span>✓ 确定性路线计算</span><span>✓ 默认离线运行</span></div>
     </section>
 
-    <section class="loading hidden" id="loading"><div class="loader"></div><h2>正在编排行程</h2><p id="loading-copy">核对开放时间与地点距离…</p></section>
+    <section class="loading hidden" id="loading"><div class="loader"></div><h2>正在编排行程</h2><p id="loading-copy" aria-live="polite">等待工作流启动…</p><div class="live-trace" id="live-trace" aria-label="工作流实时执行记录"></div><p class="trace-notice">这里只展示执行阶段与耗时，不展示模型思考过程。</p></section>
     <section class="error hidden" id="error"><b>没有成功生成行程</b><span></span><button type="button">返回修改</button></section>
 
     <section class="result hidden" id="result">
