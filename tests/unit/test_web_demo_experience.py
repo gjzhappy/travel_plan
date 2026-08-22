@@ -49,3 +49,11 @@ def test_overview_contains_only_existing_requirement_and_plan_facts():
         "transport": "公共交通优先", "lodging": "少换酒店",
         "budget": 1680, "route_features": ["浦东探索"],
     }
+
+
+def test_home_runtime_copy_uses_user_facing_agent_names():
+    javascript = (STATIC / "app.js").read_text(encoding="utf-8")
+
+    assert "Deterministic Requirement Agent" in javascript
+    assert "OpenCode Agent" in javascript
+    assert "知识库：上海旅游知识库" in javascript

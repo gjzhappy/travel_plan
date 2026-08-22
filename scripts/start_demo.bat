@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableExtensions
-set "AGENT_MODE=auto"
+set "AGENT_MODE=deterministic"
 if /i "%~1"=="--agent-mode" (
   set "AGENT_MODE=%~2"
   if "%~2"=="" goto :usage
@@ -44,7 +44,7 @@ if errorlevel 1 (
   set "AUTO_RUNTIME=OpenCode Agent"
 )
 if /i "%AGENT_MODE%"=="opencode" if "%OPENCODE_STATUS%"=="NOT FOUND" goto :opencode_missing
-if /i "%AGENT_MODE%"=="deterministic" (set "AGENT_RUNTIME=Deterministic Offline Agent") else (set "AGENT_RUNTIME=%AUTO_RUNTIME%")
+if /i "%AGENT_MODE%"=="opencode" (set "AGENT_RUNTIME=OpenCode Agent") else (set "AGENT_RUNTIME=Deterministic Offline Agent")
 
 rem Binding a temporary socket provides a deterministic port availability check.
 python -c "import socket; s=socket.socket(); s.bind(('127.0.0.1',8000)); s.close()" >>"%LOG%" 2>&1 || goto :port_busy

@@ -5,7 +5,7 @@ from typing import Any
 
 @dataclass(frozen=True)
 class Config:
-    agent_runtime_mode: str = "auto"
+    agent_runtime_mode: str = "deterministic"
     data_mode: str = "offline"
     external_provider_mode: str = "mock"
     qdrant_top_k: int = 24

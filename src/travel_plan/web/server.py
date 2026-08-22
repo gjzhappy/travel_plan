@@ -488,7 +488,7 @@ def cli():
     parser = argparse.ArgumentParser(description="Travel Plan Web Demo")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--agent-mode", choices=("auto", "opencode", "deterministic"), default="auto")
+    parser.add_argument("--agent-mode", choices=("auto", "opencode", "deterministic"), default="deterministic")
     args = parser.parse_args()
     config = load_config(agent_runtime_mode=args.agent_mode)
     server = create_server(args.host, args.port, config=config)

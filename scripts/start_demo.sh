@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-AGENT_MODE=auto
+AGENT_MODE=deterministic
 if [[ ${1:-} == "--agent-mode" && -n ${2:-} ]]; then AGENT_MODE=$2; shift 2; fi
 [[ $# -eq 0 && "$AGENT_MODE" =~ ^(auto|opencode|deterministic)$ ]] || { echo "Usage: $0 [--agent-mode auto|opencode|deterministic]" >&2; exit 2; }
 
@@ -11,7 +11,7 @@ command -v python >/dev/null 2>&1 || { echo "Error: Python 3.11+ is required." >
 PYTHON_VERSION=$(python -c 'import sys; assert sys.version_info >= (3,11), "Python 3.11+ is required"; print(".".join(map(str, sys.version_info[:3])))')
 if command -v opencode >/dev/null 2>&1; then OPENCODE_STATUS=FOUND; AUTO_RUNTIME="OpenCode Agent"; else OPENCODE_STATUS="NOT FOUND"; AUTO_RUNTIME="Deterministic Offline Agent"; fi
 if [[ $AGENT_MODE == opencode && $OPENCODE_STATUS == "NOT FOUND" ]]; then echo "Error: --agent-mode opencode requires the opencode command." >&2; exit 1; fi
-[[ $AGENT_MODE == deterministic ]] && RUNTIME="Deterministic Offline Agent" || RUNTIME=$AUTO_RUNTIME
+[[ $AGENT_MODE == opencode ]] && RUNTIME="OpenCode Agent" || RUNTIME="Deterministic Offline Agent"
 
 if [[ ! -f data/travel.db ]]; then echo "SQLite database not found; initializing from checked-in seed data..."; python scripts/init_db.py; fi
 [[ -f data/demo/shanghai_family_trip.json ]] || { echo "Error: Demo scenario is missing." >&2; exit 1; }
