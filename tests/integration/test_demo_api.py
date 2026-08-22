@@ -69,6 +69,8 @@ def test_demo_api_uses_workflow_and_returns_explainable_itinerary(tmp_path):
         assert result["plan_id"].startswith("demo_shanghai_family_trip_")
         assert result["version"] == 1
         assert result["itinerary"] == result["plan"]["days"]
+        assert result["planning"]["days"] == 1
+        assert set(("planning", "agents", "validation")) <= result.keys()
         assert calls and "迪士尼" in calls[0][0]
 
         _, explanation = _request(server, f"/api/plans/{result['plan_id']}/explainability")

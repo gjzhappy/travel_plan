@@ -42,13 +42,12 @@ Python 3.11+、关键 Demo 文件、依赖和 8000 端口，并把启动信息�
 Linux / macOS：
 
 ```bash
-./scripts/start_demo.sh
+bash scripts/start_demo.sh
 ```
 
 Demo 的数据模式始终是 `offline`，地图、交通、天气、预约和人流 Provider 始终是
-本地 Mock；Agent Runtime 是唯一会切换的部分。启动脚本默认使用
-`--agent-mode auto`：检测到 `opencode` 命令时装配 OpenCode Agent，否则自动装配
-Deterministic Offline Agent 并继续启动，Workflow、Planner 和返回结构均不改变。
+本地 Mock；Agent Runtime 是唯一会切换的部分。启动脚本默认使用 **Deterministic Offline Agent**，不会自动切换 OpenCode。
+如需 OpenCode，必须显式传入 `--agent-mode opencode`；Workflow、Planner 和返回结构均不改变。
 
 ```bash
 # 强制离线 Agent（即使已经安装 OpenCode）

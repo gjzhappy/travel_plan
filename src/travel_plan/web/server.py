@@ -98,6 +98,12 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             })
             response = self._plan_response(record)
             response["itinerary"] = record.display_result["days"]
+            response["planning"] = {
+                "days": len(record.display_result.get("days", [])),
+                "stages": [event["stage"] for event in record.events],
+            }
+            response["agents"] = [event for event in record.events if event.get("stage") in {"REQUIREMENT", "REVIEW"}]
+            response["validation"] = record.explainability.get("validator", {})
             self._json(HTTPStatus.CREATED, response)
         except (ValueError, json.JSONDecodeError, KeyError) as exc:
             self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": str(exc)})
@@ -314,7 +320,17 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
 
 def create_server(host="127.0.0.1", port=8000, root=Path("."), workflow_factory=build_workflow, repository=None, config=DEFAULT_CONFIG):
     providers = ProviderFactory.create(config)
-    status = {"agent_runtime": providers.agent_runtime, "data_mode": "offline", "providers": {"transport": "mock", "weather": "mock", "reservation": "mock", "crowd": "mock"}}
+    poi_source = Path(root) / "data" / "seed" / "pois.json"
+    try:
+        poi_count = len(json.loads(poi_source.read_text(encoding="utf-8")))
+    except (OSError, json.JSONDecodeError):
+        poi_count = None
+    status = {
+        "agent_runtime": providers.agent_runtime, "data_mode": "offline",
+        "providers": {"transport": "mock", "weather": "mock", "reservation": "mock", "crowd": "mock"},
+        "knowledge_base": {"name": "上海旅游知识库", "poi_count": poi_count},
+        "embedding": "BGE-small-zh-v1.5",
+    }
     configured_workflow_factory = (
         (lambda root: build_workflow(root=root, config=config))
         if workflow_factory is build_workflow else workflow_factory

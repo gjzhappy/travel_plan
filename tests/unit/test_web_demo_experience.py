@@ -9,8 +9,10 @@ STATIC = Path(__file__).parents[2] / "src" / "travel_plan" / "web" / "static"
 def test_home_has_family_demo_quick_entry():
     html = (STATIC / "index.html").read_text(encoding="utf-8")
 
-    assert "AI 上海旅行规划助手" in html
-    assert "体验上海亲子4日游" in html
+    assert "上海 AI 旅行规划助手" in html
+    assert "上海亲子4日游" in html
+    assert "推荐演示流程" in html
+    assert "方案可信度来源" in html
     assert "data/demo" not in html
 
 

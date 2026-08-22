@@ -31,6 +31,17 @@ def test_posix_launcher_detects_runtime_and_supports_forcing_mode():
     content = (ROOT / "scripts" / "start_demo.sh").read_text(encoding="utf-8").lower()
     assert "command -v opencode" in content
     assert "--agent-mode" in content
-    assert "opencode: $opencode_status" in content
+    assert "[4/6] agent runtime" in content
     assert "deterministic offline agent" in content
     assert "agent_mode=deterministic" in content
+
+
+def test_launchers_print_demo_url_and_keep_browser_failure_non_fatal():
+    for name in ("start_demo.bat", "start_demo.sh"):
+        content = (ROOT / "scripts" / name).read_text(encoding="utf-8").lower()
+        assert "http://localhost:8000" in content
+        assert "browser auto open failed" in content
+    assert "start """ in (ROOT / "scripts/start_demo.bat").read_text(encoding="utf-8").lower()
+    posix = (ROOT / "scripts/start_demo.sh").read_text(encoding="utf-8").lower()
+    assert "xdg-open" in posix and "open http://localhost:8000" in posix
+    assert ") &" in posix

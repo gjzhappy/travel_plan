@@ -10,11 +10,11 @@
   <main>
     <section class="hero" id="hero">
       <div class="eyebrow">SHANGHAI · CURATED FOR YOU</div>
-      <h1>AI 上海旅行规划助手</h1>
-      <p class="hero-promise">告诉我去哪里、几天、几个人和喜欢什么。<br>我帮你生成路线、美食、住宿与预算。</p>
-      <div class="runtime-status" id="runtime-status">运行环境：离线演示模式 · 正在检测 Agent…</div>
+      <h1>上海 AI 旅行规划助手</h1>
+      <p class="hero-promise">让 AI 根据需求、知识库和约束，<br>自动生成可执行旅行方案。</p>
+      <section class="environment-card" aria-labelledby="environment-title"><h2 id="environment-title">当前运行环境</h2><div id="runtime-status"><span>✓ 离线演示模式</span><span>Agent：正在检测…</span><span>知识库：上海旅游知识库</span><span>Embedding：BGE-small-zh-v1.5</span></div></section>
       <section class="demo-entry" aria-labelledby="demo-title">
-        <div><span class="section-kicker">30 秒快速体验</span><h2 id="demo-title">体验上海亲子4日游</h2><p>无需输入，一键观看 AI 如何理解、规划、检查并解释。</p></div>
+        <div><span class="section-kicker">5 分钟完整演示</span><h2 id="demo-title">上海亲子4日游</h2><p>需求理解 → 知识召回 → 事实补全 → 路线规划 → 餐饮住宿优化</p></div>
         <div id="demo-list"><span class="demo-placeholder">正在加载演示场景…</span></div>
       </section>
       <div class="or"><span>或描述你的旅行需求</span></div>
@@ -24,6 +24,7 @@
         <div class="form-foot"><div class="suggestions"><button type="button" data-add="亲子友好">亲子友好</button><button type="button" data-add="喜欢夜景">夜景</button><button type="button" data-add="预算3000元">预算 ¥3000</button></div><button class="submit" type="submit"><span>生成我的行程</span><b>→</b></button></div>
       </form>
       <div class="trust"><span>✓ 基于真实地点信息</span><span>✓ 确定性路线计算</span><span>✓ 默认离线运行</span></div>
+      <section class="demo-support"><div><span class="section-kicker">方案可信度来源</span><h2>每一步都有事实依据</h2><div class="credibility" id="credibility"><article><b>上海旅游知识库</b><span>正在读取地点数量…</span></article><article><b>中文语义检索</b><span>BGE-small-zh-v1.5</span></article><article><b>结构化事实校验</b><span>开放时间 / 交通 / 预算</span></article><article><b>Python 规划算法</b><span>路线与时间优化</span></article><article><b>可行性验证</b><span>时间冲突检查</span></article></div></div><aside><span class="section-kicker">推荐演示流程</span><ol><li>点击开始体验</li><li>查看实时规划过程</li><li>查看生成路线</li><li>展开“为什么这样安排”</li><li>输入“第二天增加科技馆，减少步行”查看重新规划闭环</li></ol></aside></section>
     </section>
 
     <section class="loading hidden" id="loading"><div class="loader"></div><h2>正在编排行程</h2><p id="loading-copy" aria-live="polite">等待工作流启动…</p><details class="workflow-view" open><summary><b>查看规划流程</b><small>实时运行时架构图</small></summary><div class="workflow-graph" id="workflow-graph" aria-label="规划过程运行时流程图"></div></details><div class="live-trace" id="live-trace" aria-label="工作流实时执行记录"></div><p class="trace-notice">流程图展示工作流执行状态，不展示模型思考过程。</p></section>
