@@ -25,6 +25,9 @@ def test_explainability_uses_only_plan_and_recorded_events():
     assert result["review"]["status"] == "PASSED"
     assert [item["event_id"] for item in result["trace"]] == [1, 2]
     assert "不参与" in result["notice"]
+    assert [reason["category"] for reason in result["days"][0]["reasons"]] == [
+        "用户需求匹配", "路线原因", "时间约束", "节奏原因",
+    ]
 
 
 def test_explainability_marks_missing_optional_sources_without_inventing_results():
@@ -39,3 +42,15 @@ def test_explainability_marks_missing_optional_sources_without_inventing_results
         "Review Result": False,
         "Validator Result": False,
     }
+    assert result["days"] == []
+
+
+def test_explainability_reports_missing_evidence_instead_of_inventing_it():
+    plan = {"days": [{"day": 1, "theme": "自由活动", "nodes": []}]}
+
+    result = build_explainability(plan, [], 1, {})
+
+    reasons = result["days"][0]["reasons"]
+    assert reasons[0]["details"] == ["暂无数据"]
+    assert reasons[2]["details"] == ["暂无数据"]
+    assert all(not reason["available"] for reason in (reasons[0], reasons[2], reasons[3]))

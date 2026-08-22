@@ -18,16 +18,48 @@ TYPE_LABELS = {
 def present_plan(plan: dict[str, Any], version: int) -> dict[str, Any]:
     """Add deterministic display copy while preserving the engine response."""
     result = {**plan, "version": version}
-    result["days"] = [
-        {
-            **day,
-            "nodes": [{**node, "display": _node_display(node)} for node in day["nodes"]],
-            "summary": _day_summary(day),
-        }
-        for day in plan["days"]
-    ]
+    result["days"] = [_present_day(day) for day in plan["days"]]
     result["explanation"] = _explanation(plan)
     return result
+
+
+def _present_day(day: dict[str, Any]) -> dict[str, Any]:
+    """Create timeline and route DTOs without mutating or re-planning the day."""
+    timeline = sorted(
+        ({**node, "display": _node_display(node)} for node in day["nodes"]),
+        key=lambda node: (node.get("start_time") or "99:99", node.get("end_time") or "99:99"),
+    )
+    route_nodes = []
+    for node in timeline:
+        metadata = node.get("metadata", {})
+        if node.get("type") != "attraction" or not _has_coordinates(metadata):
+            continue
+        route_nodes.append({
+            "order": len(route_nodes) + 1,
+            "name": node.get("name", ""),
+            "lat": metadata["lat"],
+            "lng": metadata["lon"],
+            "node_sequence": len(route_nodes) + 1,
+        })
+    return {
+        **day,
+        # ``nodes`` remains available for API compatibility; timeline is the
+        # explicit presentation contract consumed by new renderers.
+        "nodes": timeline,
+        "timeline": timeline,
+        "route_visualization": {
+            "nodes": route_nodes,
+            "edges": [
+                {"from": previous["order"], "to": current["order"]}
+                for previous, current in zip(route_nodes, route_nodes[1:])
+            ],
+        },
+        "summary": _day_summary(day),
+    }
+
+
+def _has_coordinates(metadata: dict[str, Any]) -> bool:
+    return all(isinstance(metadata.get(key), (int, float)) for key in ("lat", "lon"))
 
 
 def _node_display(node: dict[str, Any]) -> dict[str, str]:

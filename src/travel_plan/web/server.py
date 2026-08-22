@@ -154,7 +154,9 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         raw_events = [asdict(event) for event in TraceReader(workflow.events.root).read(plan_id)]
         events = _present_events(raw_events, state.version)
         review = _review_result(raw_events, state.version)
-        explainability = build_explainability(plan, raw_events, state.version)
+        explainability = build_explainability(
+            plan, raw_events, state.version, getattr(state, "requirements", {})
+        )
         return self.repository.save(
             plan_id, state.version, request, asdict(state), display, events, review, explainability
         )
