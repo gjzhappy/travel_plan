@@ -34,6 +34,11 @@ Windows 双击或在终端运行：
 scripts\start_demo.bat
 ```
 
+Windows 脚本会从自身位置定位项目目录，因此可以在任意工作目录运行。它会检查
+Python 3.11+、关键 Demo 文件、依赖和 8000 端口，并把启动信息及 Python traceback
+写入 `logs/start_demo.log`。如果检查或服务启动失败，窗口会保留错误提示；按任意键后
+才会退出。缺少依赖时请手动运行 `pip install -r requirements.txt`，脚本不会自动安装。
+
 Linux / macOS：
 
 ```bash
