@@ -58,19 +58,29 @@ if not exist "%ROOT%\data\travel.db" (
 echo.
 echo ====================================
 echo Shanghai AI Travel Planner Demo
-echo Environment Check
-echo Python: OK %PYTHON_VERSION%
-echo Knowledge Base: SQLite offline, Qdrant offline, BGE embedding
-echo External Providers: Transport Mock, Weather Mock, Reservation Mock, Crowd Mock
-echo Checking OpenCode...
-echo OpenCode: %OPENCODE_STATUS%
-echo Agent Runtime: %AGENT_RUNTIME%
-if "%OPENCODE_STATUS%"=="NOT FOUND" echo Note: Demo continues without OpenCode. Workflow and Planner remain unchanged.
-echo Starting Web Demo...
-echo URL: http://localhost:8000
-echo Demo: Shanghai Family Trip
+echo [1/6] 检查 Python 环境
+echo √ %PYTHON_VERSION%
+echo.
+echo [2/6] 检查上海旅游知识库
+echo √ SQLite POI Database
+echo √ Qdrant Semantic Collection ^(offline^)
+echo.
+echo [3/6] 检查 Embedding Model
+echo √ BAAI/bge-small-zh-v1.5
+echo.
+echo [4/6] Agent Runtime
+echo   %AGENT_RUNTIME%
+echo.
+echo [5/6] 启动 Web 服务
+echo.
+echo [6/6] 打开浏览器
+echo.
+echo Demo:
+echo http://localhost:8000
 echo ====================================
 echo.
+rem Open in a separate process; browser failure must never stop the server.
+start "" /b cmd /c "timeout /t 1 /nobreak ^>nul ^& start "" "http://localhost:8000" ^|^| (echo Browser auto open failed. ^& echo Please visit: ^& echo http://localhost:8000)"
 echo [INFO] Starting Web Server>>"%LOG%"
 echo [INFO] Command: python -m travel_plan.web.server --host 127.0.0.1 --port 8000>>"%LOG%"
 python -m travel_plan.web.server --host 127.0.0.1 --port 8000 --agent-mode "%AGENT_MODE%" >>"%LOG%" 2>&1
