@@ -1,3 +1,9 @@
+import json
+
+import pytest
+import travel_plan.workflow as workflow_module
+from travel_plan.observability.event_trace import EventTrace
+from travel_plan.web.server import _stream_event
 from travel_plan.web.workflow_visualization import workflow_graph, workflow_node_id
 
 
@@ -57,6 +63,35 @@ def test_duration_is_copied_only_from_trace_event():
     nodes = {node["id"]: node for node in graph["nodes"]}
     assert nodes["validator"]["duration_ms"] == 15320
     assert "duration_ms" not in nodes["review"]
+
+
+def test_workflow_elapsed_preserves_sub_millisecond_precision(monkeypatch):
+    monkeypatch.setattr(workflow_module, "monotonic", lambda: 10.00037)
+
+    duration_ms = workflow_module.TravelWorkflow._elapsed(10.0)
+
+    assert duration_ms == pytest.approx(0.37)
+    assert isinstance(duration_ms, float)
+
+
+def test_float_duration_survives_trace_stream_and_graph_contract(tmp_path):
+    trace = EventTrace(tmp_path)
+    trace.record(
+        "precision-trip", 1, None, "STAGE_COMPLETED", "validator",
+        {"stage": "VALIDATOR", "duration_ms": 0.37},
+    )
+    recorded = json.loads(
+        (tmp_path / "precision-trip" / "events.jsonl").read_text(encoding="utf-8")
+    )
+
+    streamed = _stream_event(recorded)
+    graph = workflow_graph([streamed])
+    validator = next(node for node in graph["nodes"] if node["id"] == "validator")
+
+    assert recorded["details"]["duration_ms"] == 0.37
+    assert streamed["duration_ms"] == 0.37
+    assert validator["duration_ms"] == 0.37
+    assert graph["summary"]["recorded_duration_ms"] == 0.37
 
 
 def test_graph_exposes_deterministic_architecture_layout_and_trace_summary():
