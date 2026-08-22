@@ -150,7 +150,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
     def _run_and_save(self, plan_id: str, text: str, request: dict):
         workflow = self.workflow_factory(root=self.root)
         plan, state, _ = workflow.execute(text, plan_id)
-        display = present_plan(plan, state.version)
+        display = present_plan(plan, state.version, getattr(state, "requirements", {}))
         raw_events = [asdict(event) for event in TraceReader(workflow.events.root).read(plan_id)]
         events = _present_events(raw_events, state.version)
         review = _review_result(raw_events, state.version)
@@ -184,6 +184,11 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             "events": record.events,
             "review": record.review,
             "explainability": record.explainability,
+            "change": {
+                "scope": record.request.get("scope"),
+                "target": record.request.get("target"),
+                "instruction": record.request.get("instruction"),
+            } if record.version > 1 else None,
         }
 
     def _json(self, status: HTTPStatus, payload):

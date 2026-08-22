@@ -15,12 +15,43 @@ TYPE_LABELS = {
 }
 
 
-def present_plan(plan: dict[str, Any], version: int) -> dict[str, Any]:
+def present_plan(
+    plan: dict[str, Any], version: int, requirement: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Add deterministic display copy while preserving the engine response."""
     result = {**plan, "version": version}
     result["days"] = [_present_day(day) for day in plan["days"]]
     result["explanation"] = _explanation(plan)
+    result["overview"] = _overview(plan, requirement or {})
     return result
+
+
+def _overview(plan: dict[str, Any], requirement: dict[str, Any]) -> dict[str, Any]:
+    """Translate existing requirement and plan facts into a first-screen summary."""
+    party = requirement.get("party", {}) if isinstance(requirement.get("party"), dict) else {}
+    adult, child = party.get("adult"), party.get("child")
+    party_label = None
+    if isinstance(adult, int) and isinstance(child, int):
+        party_label = f"{adult} 成人" + (f" + {child} 儿童" if child else "")
+    transport = {
+        "public_transit": "公共交通优先", "walking": "步行优先", "driving": "驾车优先",
+    }.get(requirement.get("transport"))
+    lodging = {
+        "fixed": "少换酒店", "flexible": "灵活安排住宿",
+    }.get(requirement.get("lodging_strategy"))
+    themes = [str(day.get("theme", "")).strip() for day in plan.get("days", [])]
+    themes = list(dict.fromkeys(theme for theme in themes if theme))
+    city = str(requirement.get("city") or "").strip()
+    days = len(plan.get("days", []))
+    title = f"{city}{days}日游" if city and days else "我的旅行方案"
+    return {
+        "title": title,
+        "party": party_label,
+        "transport": transport,
+        "lodging": lodging,
+        "budget": plan.get("budget", {}).get("total"),
+        "route_features": themes,
+    }
 
 
 def _present_day(day: dict[str, Any]) -> dict[str, Any]:
