@@ -1,4 +1,4 @@
-from travel_plan.web.workflow_visualization import workflow_graph
+from travel_plan.web.workflow_visualization import workflow_graph, workflow_node_id
 
 
 def _states(graph):
@@ -73,3 +73,23 @@ def test_graph_exposes_deterministic_architecture_layout_and_trace_summary():
     assert [phase["label"] for phase in graph["phases"]] == [
         "需求理解", "信息准备", "行程编排", "质量校验", "方案交付"
     ]
+
+
+def test_event_mapping_is_explicit_and_unknown_events_are_not_guessed():
+    assert workflow_node_id({"event_type": "PLAN_GENERATED", "stage": "ROUTE_PLAN"}) == "route"
+    assert workflow_node_id({"event_type": "STAGE_STARTED", "stage": "REVIEW"}) == "review"
+    assert workflow_node_id({"event_type": "UNRECOGNIZED", "stage": "REVIEW"}) is None
+
+
+def test_empty_graph_is_waiting_and_has_no_fake_execution_state():
+    graph = workflow_graph([])
+    assert graph["summary"]["startup_status"] == "WAITING_START"
+    assert graph["summary"]["counts"]["running"] == 0
+    assert graph["summary"]["counts"]["completed"] == 0
+    assert all("duration_ms" not in node for node in graph["nodes"])
+
+
+def test_workflow_started_replaces_waiting_state_from_real_event():
+    graph = workflow_graph([{"event_type": "WORKFLOW_STARTED", "status": "RUNNING"}])
+    assert graph["summary"]["startup_status"] == "STARTED"
+    assert _states(graph)["input"] == "completed"
