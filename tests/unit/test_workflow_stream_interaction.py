@@ -1,3 +1,5 @@
+import json
+import subprocess
 from pathlib import Path
 
 from travel_plan.web.server import _stream_event
@@ -23,3 +25,15 @@ def test_renderer_supports_bidirectional_click_location_and_waiting_state():
     assert "startup_status==='WAITING_START'" in javascript
     relevant = javascript[javascript.index("function renderWorkflowGraph"):javascript.index("function renderAgentRuntime")]
     assert "setTimeout" not in relevant
+
+
+def test_duration_formatter_distinguishes_short_real_execution_times():
+    javascript = (STATIC / "app.js").read_text(encoding="utf-8")
+    formatter = javascript[javascript.index("function formatDuration"):javascript.index("function selectWorkflowNode")]
+    script = f"{formatter}; console.log(JSON.stringify([0,35,350,1250].map(formatDuration)))"
+
+    result = subprocess.run(
+        ["node", "-e", script], check=True, capture_output=True, text=True,
+    )
+
+    assert json.loads(result.stdout) == ["执行时间极短", "<0.1秒", "350毫秒", "1.3秒"]

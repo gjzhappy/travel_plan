@@ -125,7 +125,7 @@ class TravelWorkflow:
         self._event(trip_id,version,parent_version,"VALIDATOR_BLOCKED" if issues else "VALIDATOR_PASSED","validator",{"stage":stage,"issues":[asdict(issue) for issue in issues]})
     @staticmethod
     def _elapsed(started):
-        return max(0,round((monotonic()-started)*1000))
+        return max(0.0,(monotonic()-started)*1000.0)
     def recompute_derived(self,plan,req):
         people=req.party.adult+req.party.child
         plan.budget=Budget(tickets=sum(n.cost*people for d in plan.days for n in d.nodes if n.type=="attraction"),meals=sum(n.cost for d in plan.days for n in d.nodes if n.type in {"lunch","dinner"}),hotels=sum(s.nightly_price*(s.end_day-s.start_day+1) for s in plan.hotels),transport=sum(n.duration_min*.3 for d in plan.days for n in d.nodes if n.transport_mode))
