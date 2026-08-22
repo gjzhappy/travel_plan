@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -10,6 +11,8 @@ def test_windows_demo_launcher_exists_and_has_reliability_checks():
     content = SCRIPT.read_text(encoding="utf-8").lower()
 
     assert "%~dp0" in content
+    assert 'set "script_dir=%~dp0"' in content
+    assert 'set "project_root=%%~fi"' in content
     assert "cd /d" in content
     assert "python --version" in content
     assert "sys.version_info >= (3, 11)" in content
@@ -25,6 +28,25 @@ def test_windows_demo_launcher_exists_and_has_reliability_checks():
     assert "--agent-mode" in content
     assert "deterministic offline agent" in content
     assert 'set "agent_mode=deterministic"' in content
+
+
+def test_windows_demo_launcher_uses_cmd_safe_status_output():
+    content = SCRIPT.read_text(encoding="utf-8")
+    lower = content.lower()
+
+    assert "echo   %AGENT_RUNTIME%" in content
+    assert "echo √ BAAI/bge-small-zh-v1.5" in content
+    assert "echo   Shanghai knowledge base" in content
+    assert '/b cmd /c "' not in lower
+
+    # Pipes and angle brackets in user-facing echo text must be escaped. Log
+    # redirections at the beginning or immediately after the text are allowed.
+    unsafe_echo = re.compile(r"^\s*echo\s+.*(?:[^\^][|<>])(?:\s+.*)?$", re.MULTILINE)
+    for line in content.splitlines():
+        if re.match(r'^\s*(?:>>?"[^\"]+"\s+)?echo\b', line, re.IGNORECASE):
+            text = re.sub(r'^\s*(?:>>?"[^\"]+"\s+)?echo\s*', '', line, flags=re.IGNORECASE)
+            text = re.sub(r'>>?"[^\"]+"\s*$', '', text)
+            assert not unsafe_echo.match(f"echo {text}"), line
 
 
 def test_posix_launcher_detects_runtime_and_supports_forcing_mode():

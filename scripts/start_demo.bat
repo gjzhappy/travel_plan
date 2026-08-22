@@ -10,13 +10,19 @@ if /i "%~1"=="--agent-mode" (
 if not "%~1"=="" goto :usage
 
 rem Resolve the repository from this script, not from the caller's directory.
-for %%I in ("%~dp0..") do set "ROOT=%%~fI"
-cd /d "%ROOT%" || goto :root_error
+set "SCRIPT_DIR=%~dp0"
+for %%I in ("%SCRIPT_DIR%..") do set "PROJECT_ROOT=%%~fI"
+echo Script directory:
+echo %SCRIPT_DIR%
+echo Project root:
+echo %PROJECT_ROOT%
+if not exist "%PROJECT_ROOT%" goto :root_error
+cd /d "%PROJECT_ROOT%" || goto :root_error
 
 if not exist "logs" mkdir "logs" >nul 2>&1
-set "LOG=%ROOT%\logs\start_demo.log"
+set "LOG=%PROJECT_ROOT%\logs\start_demo.log"
 >"%LOG%" echo [INFO] Travel Planner Demo Start - %date% %time%
->>"%LOG%" echo [INFO] Root: %ROOT%
+>>"%LOG%" echo [INFO] Root: %PROJECT_ROOT%
 >>"%LOG%" echo [INFO] Working directory: %CD%
 
 where python >nul 2>&1 || goto :python_missing
@@ -25,11 +31,11 @@ python -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)
 for /f "tokens=*" %%V in ('python --version 2^>^&1') do set "PYTHON_VERSION=%%V"
 echo [INFO] Python: %PYTHON_VERSION%>>"%LOG%"
 
-set "PYTHONPATH=%ROOT%\src;%PYTHONPATH%"
+set "PYTHONPATH=%PROJECT_ROOT%\src;%PYTHONPATH%"
 echo [INFO] PYTHONPATH: %PYTHONPATH%>>"%LOG%"
 
-if not exist "%ROOT%\src\travel_plan\web\server.py" goto :server_missing
-if not exist "%ROOT%\data\demo\shanghai_family_trip.json" goto :scenario_missing
+if not exist "%PROJECT_ROOT%\src\travel_plan\web\server.py" goto :server_missing
+if not exist "%PROJECT_ROOT%\data\demo\shanghai_family_trip.json" goto :scenario_missing
 
 rem Validate the packaged demo dependencies without changing the environment.
 python -c "import fastapi, uvicorn" >>"%LOG%" 2>&1 || goto :dependencies_missing
@@ -49,38 +55,41 @@ if /i "%AGENT_MODE%"=="opencode" (set "AGENT_RUNTIME=OpenCode Agent") else (set 
 rem Binding a temporary socket provides a deterministic port availability check.
 python -c "import socket; s=socket.socket(); s.bind(('127.0.0.1',8000)); s.close()" >>"%LOG%" 2>&1 || goto :port_busy
 
-if not exist "%ROOT%\data\travel.db" (
+if not exist "%PROJECT_ROOT%\data\travel.db" (
   echo [INFO] SQLite database not found; initializing from seed data...
   echo [INFO] Initializing SQLite database>>"%LOG%"
-  python "%ROOT%\scripts\init_db.py" >>"%LOG%" 2>&1 || goto :database_error
+  python "%PROJECT_ROOT%\scripts\init_db.py" >>"%LOG%" 2>&1 || goto :database_error
 )
 
 echo.
 echo ====================================
 echo Shanghai AI Travel Planner Demo
-echo [1/6] 检查 Python 环境
+echo ====================================
+echo [1/6] Python
 echo √ %PYTHON_VERSION%
 echo.
-echo [2/6] 检查上海旅游知识库
+echo [2/6] Knowledge Base
+echo   Shanghai knowledge base
 echo √ SQLite POI Database
 echo √ Qdrant Semantic Collection ^(offline^)
 echo.
-echo [3/6] 检查 Embedding Model
+echo [3/6] Embedding
 echo √ BAAI/bge-small-zh-v1.5
 echo.
 echo [4/6] Agent Runtime
 echo   %AGENT_RUNTIME%
 echo.
-echo [5/6] 启动 Web 服务
+echo [5/6] Web Server
 echo.
-echo [6/6] 打开浏览器
+echo [6/6] Browser
 echo.
-echo Demo:
+echo Demo URL:
 echo http://localhost:8000
 echo ====================================
 echo.
-rem Open in a separate process; browser failure must never stop the server.
-start "" /b cmd /c "timeout /t 1 /nobreak ^>nul ^& start "" "http://localhost:8000" ^|^| (echo Browser auto open failed. ^& echo Please visit: ^& echo http://localhost:8000)"
+rem Open directly without nested cmd /c quoting; browser failure is non-fatal.
+start "" "http://localhost:8000"
+if errorlevel 1 echo Browser auto open failed. Please visit: http://localhost:8000
 echo [INFO] Starting Web Server>>"%LOG%"
 echo [INFO] Command: python -m travel_plan.web.server --host 127.0.0.1 --port 8000>>"%LOG%"
 python -m travel_plan.web.server --host 127.0.0.1 --port 8000 --agent-mode "%AGENT_MODE%" >>"%LOG%" 2>&1
@@ -90,7 +99,8 @@ goto :success
 :root_error
 echo.
 echo [ERROR]
-echo Project root could not be opened: %~dp0..
+echo Project root not found or could not be opened:
+echo %PROJECT_ROOT%
 goto :failed_without_log
 
 :python_missing
