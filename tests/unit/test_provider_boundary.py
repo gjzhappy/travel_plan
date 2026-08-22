@@ -5,8 +5,8 @@ from pathlib import Path
 from travel_plan.agents.client import DeterministicAgentClient, OpenCodeAgentClient
 from travel_plan.config import DEFAULT_CONFIG
 from travel_plan.main import build_workflow
-from travel_plan.retrieval.map_client import MockMapClient, RealMapClient
-from travel_plan.retrieval.weather_client import MockWeatherClient, RealWeatherClient
+from travel_plan.retrieval.map_client import MockMapClient
+from travel_plan.retrieval.weather_client import MockWeatherClient
 
 
 def test_lock_day_continues_through_review_and_final_validator(tmp_path):
@@ -46,10 +46,9 @@ def test_mock_workflow_is_deterministic_across_runs(tmp_path):
     assert result_one[2] == result_two[2]
 
 
-def test_production_mode_selects_production_providers(tmp_path):
+def test_legacy_mock_flag_cannot_enable_external_providers(tmp_path):
     workflow = build_workflow(
         Path.cwd(), tmp_path, replace(DEFAULT_CONFIG, mock_mode=False)
     )
-    assert isinstance(workflow.requirements.client, OpenCodeAgentClient)
-    assert isinstance(workflow.map, RealMapClient)
-    assert isinstance(workflow.retrieval.weather, RealWeatherClient)
+    assert isinstance(workflow.map, MockMapClient)
+    assert isinstance(workflow.retrieval.weather, MockWeatherClient)

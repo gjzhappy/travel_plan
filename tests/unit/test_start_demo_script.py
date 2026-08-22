@@ -21,3 +21,14 @@ def test_windows_demo_launcher_exists_and_has_reliability_checks():
     assert "logs\\start_demo.log" in content
     assert "python -m travel_plan.web.server" in content
     assert "pause" in content
+    assert "where opencode" in content
+    assert "--agent-mode" in content
+    assert "deterministic offline agent" in content
+
+
+def test_posix_launcher_detects_runtime_and_supports_forcing_mode():
+    content = (ROOT / "scripts" / "start_demo.sh").read_text(encoding="utf-8").lower()
+    assert "command -v opencode" in content
+    assert "--agent-mode" in content
+    assert "opencode: $opencode_status" in content
+    assert "deterministic offline agent" in content

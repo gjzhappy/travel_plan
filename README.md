@@ -45,6 +45,24 @@ Linux / macOS：
 ./scripts/start_demo.sh
 ```
 
+Demo 的数据模式始终是 `offline`，地图、交通、天气、预约和人流 Provider 始终是
+本地 Mock；Agent Runtime 是唯一会切换的部分。启动脚本默认使用
+`--agent-mode auto`：检测到 `opencode` 命令时装配 OpenCode Agent，否则自动装配
+Deterministic Offline Agent 并继续启动，Workflow、Planner 和返回结构均不改变。
+
+```bash
+# 强制离线 Agent（即使已经安装 OpenCode）
+./scripts/start_demo.sh --agent-mode deterministic
+
+# 强制 OpenCode；命令不存在时会明确报错退出
+./scripts/start_demo.sh --agent-mode opencode
+```
+
+Windows 脚本接受相同参数。首页会以用户可读名称显示当前 Agent、离线数据和演示环境；
+`GET /api/system/status` 提供相同的只读状态，不暴露类名或 OpenCode 内部命令。配置仅有
+`agent_runtime_mode: auto`、只读的 `data_mode: offline` 和固定的
+`external_provider_mode: mock`；后两项不会被 Workflow 读取。
+
 打开 `http://localhost:8000` 后，演示顺序为：选择固定场景（或输入旅行需求）→ 生成
 方案 → 浏览地图、每日路线、餐饮、酒店与预算 → 修改需求并查看版本变化 → 逐层展开
 “为什么这样安排？”、每日依据和完整规划过程。`GET /api/demo` 返回场景列表，
