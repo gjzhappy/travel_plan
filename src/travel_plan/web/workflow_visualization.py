@@ -16,20 +16,28 @@ NODES = (
     ("validator", "检查方案可行性", "Hard Validator", "validation", "检查时间、开放时间、交通和约束条件"),
     ("repair", "调整不可行安排", "Code Repair / Scoped Replan", "replan", "仅对未通过检查的行程部分进行调整"),
     ("review", "体验审核", "Review Agent", "review", "从游客体验角度检查方案质量"),
+    ("requirement_refinement", "重新理解调整需求", "Requirement Refinement", "feedback", "根据审核反馈提取新的调整约束，保持用户原始意图不被覆盖"),
+    ("scoped_replanner", "调整部分行程", "Scoped Replanner", "feedback", "根据调整范围重新规划指定部分，避免全量重算"),
     ("output", "生成旅行方案", "Final Plan", "output", "整理最终行程、地图和解释信息"),
 )
 
 EVENT_NODE_IDS = {
     "WORKFLOW_STARTED": "input", "AGENT_COMPLETED": "requirement",
     "PLAN_GENERATED": "route", "VALIDATOR_PASSED": "validator",
-    "VALIDATOR_BLOCKED": "validator", "REPLAN_COMPLETED": "repair",
-    "REVIEW_COMPLETED": "review", "PLAN_VERSION_SAVED": "output",
+    "VALIDATOR_BLOCKED": "validator", "REPLAN_COMPLETED": "scoped_replanner",
+    "REVIEW_COMPLETED": "review", "REVIEW_FAILED": "review",
+    "REQUIREMENT_REFINEMENT_STARTED": "requirement_refinement",
+    "REQUIREMENT_REFINEMENT_COMPLETED": "requirement_refinement",
+    "SCOPED_REPLAN_STARTED": "scoped_replanner",
+    "SCOPED_REPLAN_COMPLETED": "scoped_replanner",
+    "PLAN_VERSION_SAVED": "output",
     "WORKFLOW_COMPLETED": "output",
 }
 STAGE_NODE_IDS = {
     "REQUIREMENT": "requirement", "RETRIEVAL": "retrieval", "PLANNER": "planner",
     "ROUTE_PLAN": "route", "VALIDATOR": "validator", "VALIDATE": "validator",
-    "REVIEW": "review",
+    "REVIEW": "review", "REQUIREMENT_REFINEMENT": "requirement_refinement",
+    "SCOPED_REPLANNER": "scoped_replanner",
 }
 
 
@@ -49,7 +57,8 @@ LAYOUT = {
     "input": (1, 2), "requirement": (2, 2),
     "retrieval": (3, 1), "facts": (4, 1), "constraints": (4, 3),
     "planner": (5, 2), "route": (6, 1), "meal": (6, 2), "hotel": (6, 3),
-    "validator": (7, 2), "repair": (7, 4), "review": (8, 2), "output": (9, 2),
+    "validator": (7, 2), "repair": (7, 4), "review": (8, 2),
+    "requirement_refinement": (8, 3), "scoped_replanner": (8, 4), "output": (9, 2),
 }
 
 PHASES = (
@@ -61,16 +70,23 @@ PHASES = (
 )
 
 EDGES = (
-    ("input", "requirement", ""), ("requirement", "retrieval", ""),
-    ("requirement", "constraints", "分支"), ("retrieval", "facts", ""),
-    ("facts", "planner", ""), ("constraints", "planner", ""),
-    ("planner", "route", ""), ("planner", "meal", ""),
-    ("planner", "hotel", ""), ("route", "validator", ""),
-    ("meal", "validator", ""), ("hotel", "validator", ""),
-    ("validator", "review", "通过"), ("validator", "repair", "失败"),
-    ("repair", "validator", "复检"), ("review", "output", "通过"),
-    ("review", "repair", "需调整"),
+    ("input", "requirement", "", "normal"), ("requirement", "retrieval", "", "normal"),
+    ("requirement", "constraints", "分支", "normal"), ("retrieval", "facts", "", "normal"),
+    ("facts", "planner", "", "normal"), ("constraints", "planner", "", "normal"),
+    ("planner", "route", "", "normal"), ("planner", "meal", "", "normal"),
+    ("planner", "hotel", "", "normal"), ("route", "validator", "", "normal"),
+    ("meal", "validator", "", "normal"), ("hotel", "validator", "", "normal"),
+    ("validator", "review", "通过", "normal"), ("validator", "repair", "失败", "repair"),
+    ("repair", "validator", "复检", "repair"), ("review", "output", "通过", "normal"),
+    ("review", "requirement_refinement", "审核反馈", "feedback"),
+    ("requirement_refinement", "scoped_replanner", "调整约束", "feedback"),
+    ("scoped_replanner", "validator", "再次验证", "feedback"),
 )
+
+
+def _event_payload(event: dict[str, Any]) -> dict[str, Any]:
+    """Return presentation-safe event facts from either raw or streamed traces."""
+    return event.get("details") or event
 
 
 def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
@@ -83,11 +99,19 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         "PLANNER": ("planner", "route", "meal", "hotel"),
         "ROUTE_PLAN": ("planner", "route", "meal", "hotel"),
         "VALIDATOR": ("validator",), "VALIDATE": ("validator",), "REVIEW": ("review",),
+        "REQUIREMENT_REFINEMENT": ("requirement_refinement",),
+        "SCOPED_REPLANNER": ("scoped_replanner",),
     }
+    observed_types: set[str] = set()
+    review_failed = False
+    refinement_completed = False
+    scoped_replan_completed = False
     for event in events:
         stage = str(event.get("stage") or event.get("details", {}).get("stage") or "").upper()
         status = str(event.get("status") or "").upper()
         event_type = str(event.get("event_type") or "").upper()
+        payload = _event_payload(event)
+        observed_types.add(event_type)
         linked_node = workflow_node_id(event)
         if linked_node:
             metadata.setdefault(linked_node, {})["event_type"] = event_type
@@ -97,7 +121,7 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         if event_type == "VALIDATOR_BLOCKED":
             state["validator"] = "failed"; state["repair"] = "running"
         elif event_type == "REPLAN_COMPLETED":
-            state["repair"] = "completed"
+            state["scoped_replanner"] = "completed"
         else:
             for node in nodes: state[node] = mapped
         if event.get("duration_ms") is not None:
@@ -109,19 +133,59 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         if event_type == "WORKFLOW_STARTED": state["input"] = "completed"
         if event_type == "PLAN_VERSION_SAVED": state["output"] = "completed"
         if event_type == "WORKFLOW_COMPLETED": state["output"] = "completed"
+        failed_review_event = event_type == "REVIEW_FAILED" or (
+            event_type == "REVIEW_COMPLETED" and payload.get("passed") is False
+        )
+        if failed_review_event:
+            review_failed = True
+            state["review"] = "failed"
+            state["requirement_refinement"] = "running"
+        if event_type == "AGENT_COMPLETED" and payload.get("task") == "refine_intent_from_review":
+            refinement_completed = True
+            state["requirement_refinement"] = "completed"
+            state["scoped_replanner"] = "running"
+            metadata.setdefault("requirement_refinement", {})["event_type"] = event_type
+        if event_type in {"REPLAN_COMPLETED", "SCOPED_REPLAN_COMPLETED"}:
+            scoped_replan_completed = True
+            state["scoped_replanner"] = "completed"
+            metadata.setdefault("scoped_replanner", {})["event_type"] = event_type
     counts = {status: sum(value == status for value in state.values())
               for status in ("completed", "running", "pending", "failed")}
     active = next((key for key, value in state.items() if value == "running"), None)
+
+    def edge_execution_status(source: str, target: str, edge_type: str) -> str:
+        if edge_type == "normal":
+            if state[target] == "running":
+                return "active"
+            return "executed" if state[target] in {"completed", "failed"} else "available"
+        if edge_type == "repair":
+            if source == "validator" and state["repair"] == "running":
+                return "active"
+            observed = ("VALIDATOR_BLOCKED" in observed_types if source == "validator"
+                        else {"VALIDATOR_BLOCKED", "VALIDATOR_PASSED"} <= observed_types)
+            return "executed" if observed else "available"
+        if source == "review":
+            if "REQUIREMENT_REFINEMENT_STARTED" in observed_types:
+                return "active"
+            return "executed" if review_failed else "available"
+        if source == "requirement_refinement":
+            if "SCOPED_REPLAN_STARTED" in observed_types:
+                return "active"
+            return "executed" if refinement_completed else "available"
+        return "executed" if scoped_replan_completed else "available"
+
     return {
-        "nodes": [{"id": key, "label": display_name, "display_name": display_name,
+        "nodes": [{"id": key, "node_id": key, "label": display_name, "display_name": display_name,
                    "technical_label": technical, "description": description,
-                   "kind": kind, "status": state[key],
+                   "kind": kind, "phase": kind, "status": state[key],
                    "layout": {"column": LAYOUT[key][0], "row": LAYOUT[key][1]},
                    **metadata.get(key, {})}
                   for key, display_name, technical, kind, description in NODES],
-        "edges": [{"from": source, "to": target, "label": label}
-                  for source, target, label in EDGES],
-        "notice": "流程图展示工作流执行状态，不展示模型思考过程。",
+        "edges": [{"from": source, "to": target, "label": label,
+                   "edge_type": edge_type,
+                   "execution_status": edge_execution_status(source, target, edge_type)}
+                  for source, target, label, edge_type in EDGES],
+        "notice": "流程图同时展示架构能力与 Event Trace 记录的真实执行路径；不改变工作流，也不展示模型思考过程。",
         "phases": [{"id": key, "label": label, "column_start": start, "column_end": end}
                    for key, label, start, end in PHASES],
         "summary": {"active_node_id": active, "counts": counts,

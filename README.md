@@ -82,6 +82,13 @@ the Event Trace readable at a glance. Technical module names remain available by
 expanding a node. Every status and duration still comes from real workflow events; the
 browser does not simulate progress or represent LLM reasoning or chain-of-thought.
 
+The Workflow Graph now separates two complementary views. **Architecture capability**
+shows the planning abilities supported by the system, including the Review Agent →
+Requirement Refinement → Scoped Replanner → Validator feedback loop, as gray dashed
+edges. **Execution path** promotes only edges evidenced by the existing Event Trace to
+green (`executed`) or highlighted (`active`). The visualization does not modify workflow
+execution and does not simulate agent reasoning.
+
 ## 架构与职责
 
 ```text

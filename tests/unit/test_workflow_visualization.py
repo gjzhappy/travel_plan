@@ -11,6 +11,11 @@ def _states(graph):
     return {node["id"]: node["status"] for node in graph["nodes"]}
 
 
+def _edge(graph, source, target):
+    return next(edge for edge in graph["edges"]
+                if edge["from"] == source and edge["to"] == target)
+
+
 def test_events_map_to_runtime_graph_nodes():
     graph = workflow_graph([
         {"event_type": "STAGE_STARTED", "stage": "REQUIREMENT", "status": "RUNNING"},
@@ -128,3 +133,67 @@ def test_workflow_started_replaces_waiting_state_from_real_event():
     graph = workflow_graph([{"event_type": "WORKFLOW_STARTED", "status": "RUNNING"}])
     assert graph["summary"]["startup_status"] == "STARTED"
     assert _states(graph)["input"] == "completed"
+
+
+def test_graph_contains_complete_feedback_loop_architecture():
+    graph = workflow_graph([])
+    nodes = {node["id"]: node for node in graph["nodes"]}
+
+    assert nodes["review"]["technical_label"] == "Review Agent"
+    assert nodes["requirement_refinement"]["technical_label"] == "Requirement Refinement"
+    assert nodes["scoped_replanner"]["technical_label"] == "Scoped Replanner"
+    assert nodes["validator"]["technical_label"] == "Hard Validator"
+    assert all(nodes[node_id]["description"] for node_id in (
+        "review", "requirement_refinement", "scoped_replanner", "validator"
+    ))
+    assert {
+        ("review", "requirement_refinement"),
+        ("requirement_refinement", "scoped_replanner"),
+        ("scoped_replanner", "validator"),
+    } <= {(edge["from"], edge["to"]) for edge in graph["edges"]
+          if edge["edge_type"] == "feedback"}
+
+
+def test_review_pass_keeps_feedback_capability_available():
+    graph = workflow_graph([
+        {"event_type": "REVIEW_COMPLETED", "stage": "REVIEW", "passed": True},
+    ])
+
+    assert all(edge["execution_status"] == "available"
+               for edge in graph["edges"] if edge["edge_type"] == "feedback")
+
+
+def test_review_failure_executes_only_event_evidenced_feedback_path():
+    graph = workflow_graph([
+        {"event_type": "REVIEW_COMPLETED", "stage": "REVIEW", "passed": False},
+    ])
+
+    assert _edge(graph, "review", "requirement_refinement")["execution_status"] == "executed"
+    assert _edge(graph, "requirement_refinement", "scoped_replanner")["execution_status"] == "available"
+    assert _edge(graph, "scoped_replanner", "validator")["execution_status"] == "available"
+
+
+def test_explicit_started_event_marks_current_feedback_edge_active():
+    graph = workflow_graph([
+        {"event_type": "REVIEW_FAILED", "stage": "REVIEW"},
+        {"event_type": "REQUIREMENT_REFINEMENT_STARTED", "status": "RUNNING"},
+    ])
+
+    assert _edge(graph, "review", "requirement_refinement")["execution_status"] == "active"
+
+
+def test_feedback_execution_advances_only_with_explicit_trace_events():
+    graph = workflow_graph([
+        {"event_type": "REVIEW_FAILED", "stage": "REVIEW"},
+        {"event_type": "AGENT_COMPLETED", "task": "refine_intent_from_review"},
+        {"event_type": "REPLAN_COMPLETED", "scope": "DAY"},
+    ])
+
+    assert all(edge["execution_status"] == "executed"
+               for edge in graph["edges"] if edge["edge_type"] == "feedback")
+
+
+def test_no_events_never_create_a_fake_executed_edge():
+    graph = workflow_graph([])
+
+    assert all(edge["execution_status"] == "available" for edge in graph["edges"])
