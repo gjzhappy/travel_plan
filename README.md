@@ -75,6 +75,11 @@ timeout is shown with troubleshooting suggestions, without retrying or automatic
 switching modes. It does not expose prompts, inputs, model reasoning, or LLM
 chain-of-thought.
 
+The workflow graph includes user-friendly execution stages, real execution status, and
+stage durations recorded by the Event Trace. Technical module names remain available by
+expanding a node. The workflow graph visualizes execution status from real workflow
+events. It does not represent LLM reasoning or chain-of-thought.
+
 ## 架构与职责
 
 ```text
