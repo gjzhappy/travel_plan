@@ -208,3 +208,8 @@ Agent、Planner 或 Validator，也不修改行程状态。
 观测、算法计算和 Review 判断。当前演示只内置上海数据；真实 provider adapter 刻意要求
 部署方配置 endpoint。中文规则解析器用于完全离线演示，OpenCode 运行时可用同一严格
 Schema 的 Requirement Agent 提升自由表达覆盖率，但不能越过确定性工作流。
+
+The workflow visualization and timeline are synchronized through real execution
+ events. The UI does not simulate progress or display LLM reasoning; startup,
+ node status, association, and measured duration come only from Event Trace or
+ the live streaming response.

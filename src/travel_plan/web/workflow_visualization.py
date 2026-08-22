@@ -19,6 +19,30 @@ NODES = (
     ("output", "生成旅行方案", "Final Plan", "output", "整理最终行程、地图和解释信息"),
 )
 
+EVENT_NODE_IDS = {
+    "WORKFLOW_STARTED": "input", "AGENT_COMPLETED": "requirement",
+    "PLAN_GENERATED": "route", "VALIDATOR_PASSED": "validator",
+    "VALIDATOR_BLOCKED": "validator", "REPLAN_COMPLETED": "repair",
+    "REVIEW_COMPLETED": "review", "PLAN_VERSION_SAVED": "output",
+    "WORKFLOW_COMPLETED": "output",
+}
+STAGE_NODE_IDS = {
+    "REQUIREMENT": "requirement", "RETRIEVAL": "retrieval", "PLANNER": "planner",
+    "ROUTE_PLAN": "route", "VALIDATOR": "validator", "VALIDATE": "validator",
+    "REVIEW": "review",
+}
+
+
+def workflow_node_id(event: dict[str, Any]) -> str | None:
+    """Return an explicit event/node association without guessing from time."""
+    event_type = str(event.get("event_type") or "").upper()
+    if event_type in EVENT_NODE_IDS:
+        return EVENT_NODE_IDS[event_type]
+    if event_type in {"STAGE_STARTED", "STAGE_COMPLETED"}:
+        stage = str(event.get("stage") or event.get("details", {}).get("stage") or "").upper()
+        return STAGE_NODE_IDS.get(stage)
+    return None
+
 # Presentation coordinates describe the architecture without changing its execution.
 # Columns form the main trunk; rows expose fan-out and the validation/replan loop.
 LAYOUT = {
@@ -52,7 +76,6 @@ EDGES = (
 def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
     """Map only observable execution facts to node states; never infer progress."""
     state = {node[0]: "pending" for node in NODES}
-    state["input"] = "completed"
     metadata: dict[str, dict[str, Any]] = {}
     recorded_durations: dict[str, int | float] = {}
     stage_nodes = {
@@ -65,6 +88,9 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         stage = str(event.get("stage") or event.get("details", {}).get("stage") or "").upper()
         status = str(event.get("status") or "").upper()
         event_type = str(event.get("event_type") or "").upper()
+        linked_node = workflow_node_id(event)
+        if linked_node:
+            metadata.setdefault(linked_node, {})["event_type"] = event_type
         nodes = stage_nodes.get(stage, ())
         mapped = "running" if status == "RUNNING" or event_type == "STAGE_STARTED" else "completed"
         if status in {"FAILED", "ERROR"}: mapped = "failed"
@@ -75,10 +101,12 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         else:
             for node in nodes: state[node] = mapped
         if event.get("duration_ms") is not None:
-            for node in nodes: metadata[node] = {"duration_ms": event["duration_ms"]}
+            for node in nodes:
+                metadata.setdefault(node, {})["duration_ms"] = event["duration_ms"]
             # One trace duration is one measured stage, even when that stage is
             # represented by several presentation nodes.
             recorded_durations[stage or event_type] = event["duration_ms"]
+        if event_type == "WORKFLOW_STARTED": state["input"] = "completed"
         if event_type == "PLAN_VERSION_SAVED": state["output"] = "completed"
         if event_type == "WORKFLOW_COMPLETED": state["output"] = "completed"
     counts = {status: sum(value == status for value in state.values())
@@ -97,5 +125,8 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         "phases": [{"id": key, "label": label, "column_start": start, "column_end": end}
                    for key, label, start, end in PHASES],
         "summary": {"active_node_id": active, "counts": counts,
-                    "recorded_duration_ms": sum(recorded_durations.values())},
+                    "recorded_duration_ms": sum(recorded_durations.values()),
+                    "startup_status": "STARTED" if any(
+                        str(event.get("event_type", "")).upper() == "WORKFLOW_STARTED"
+                        for event in events) else "WAITING_START"},
     }
