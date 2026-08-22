@@ -449,6 +449,11 @@ def _stream_event(event):
         "actor": event["actor"], "message": message or "工作流正在执行",
         "timestamp": event.get("timestamp", ""), "duration_ms": details.get("duration_ms"),
     }
+    # These are deterministic routing facts used by the visualization.  Prompts,
+    # review text, and model reasoning stay behind the presentation boundary.
+    for key in ("passed", "task", "scope", "review_number", "trigger_review_number"):
+        if key in details:
+            presented[key] = details[key]
     presented["workflow_node_id"] = workflow_node_id(presented)
     return presented
 
