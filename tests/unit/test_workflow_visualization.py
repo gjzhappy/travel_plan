@@ -57,3 +57,19 @@ def test_duration_is_copied_only_from_trace_event():
     nodes = {node["id"]: node for node in graph["nodes"]}
     assert nodes["validator"]["duration_ms"] == 15320
     assert "duration_ms" not in nodes["review"]
+
+
+def test_graph_exposes_deterministic_architecture_layout_and_trace_summary():
+    graph = workflow_graph([
+        {"event_type": "STAGE_COMPLETED", "stage": "RETRIEVAL", "status": "COMPLETED", "duration_ms": 1200},
+        {"event_type": "STAGE_STARTED", "stage": "VALIDATOR", "status": "RUNNING"},
+    ])
+    nodes = {node["id"]: node for node in graph["nodes"]}
+    assert nodes["retrieval"]["layout"] == {"column": 3, "row": 1}
+    assert nodes["repair"]["layout"]["row"] == 4
+    assert graph["summary"]["active_node_id"] == "validator"
+    assert graph["summary"]["recorded_duration_ms"] == 1200
+    assert graph["summary"]["counts"]["running"] == 1
+    assert [phase["label"] for phase in graph["phases"]] == [
+        "需求理解", "信息准备", "行程编排", "质量校验", "方案交付"
+    ]
