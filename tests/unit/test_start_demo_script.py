@@ -24,6 +24,7 @@ def test_windows_demo_launcher_exists_and_has_reliability_checks():
     assert "where opencode" in content
     assert "--agent-mode" in content
     assert "deterministic offline agent" in content
+    assert 'set "agent_mode=deterministic"' in content
 
 
 def test_posix_launcher_detects_runtime_and_supports_forcing_mode():
@@ -32,3 +33,4 @@ def test_posix_launcher_detects_runtime_and_supports_forcing_mode():
     assert "--agent-mode" in content
     assert "opencode: $opencode_status" in content
     assert "deterministic offline agent" in content
+    assert "agent_mode=deterministic" in content

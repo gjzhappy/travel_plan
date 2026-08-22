@@ -9,8 +9,15 @@ from travel_plan.retrieval.map_client import MockMapClient
 from travel_plan.retrieval.weather_client import MockWeatherClient
 
 
-def test_auto_selects_opencode_when_command_exists():
+def test_default_stays_deterministic_when_opencode_command_exists():
     providers = ProviderFactory.create(DEFAULT_CONFIG, lambda _: "/bin/opencode")
+    assert isinstance(providers.agent, DeterministicAgentClient)
+    assert providers.agent_runtime == "deterministic"
+
+
+def test_explicit_auto_can_select_opencode_when_command_exists():
+    config = replace(DEFAULT_CONFIG, agent_runtime_mode="auto")
+    providers = ProviderFactory.create(config, lambda _: "/bin/opencode")
     assert isinstance(providers.agent, OpenCodeAgentClient)
     assert providers.agent_runtime == "opencode"
 

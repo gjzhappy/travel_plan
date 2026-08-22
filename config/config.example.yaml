@@ -1,5 +1,5 @@
 qdrant_top_k: 24
-agent_runtime_mode: auto
+agent_runtime_mode: deterministic
 data_mode: offline
 external_provider_mode: mock
 daily_start_time: "08:30"

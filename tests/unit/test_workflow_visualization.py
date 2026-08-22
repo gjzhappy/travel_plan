@@ -105,13 +105,14 @@ def test_graph_exposes_deterministic_architecture_layout_and_trace_summary():
         {"event_type": "STAGE_STARTED", "stage": "VALIDATOR", "status": "RUNNING"},
     ])
     nodes = {node["id"]: node for node in graph["nodes"]}
-    assert nodes["retrieval"]["layout"] == {"column": 3, "row": 1}
-    assert nodes["repair"]["layout"]["row"] == 4
+    assert nodes["retrieval"]["layout"] == {"column": 2, "row": 3}
+    assert nodes["repair"]["layout"]["column"] == 4
+    assert nodes["requirement_refinement"]["layout"]["column"] == 7
     assert graph["summary"]["active_node_id"] == "validator"
     assert graph["summary"]["recorded_duration_ms"] == 1200
     assert graph["summary"]["counts"]["running"] == 1
     assert [phase["label"] for phase in graph["phases"]] == [
-        "需求理解", "信息准备", "行程编排", "质量校验", "方案交付"
+        "主流程", "反馈优化闭环"
     ]
 
 
@@ -142,14 +143,16 @@ def test_graph_contains_complete_feedback_loop_architecture():
     assert nodes["review"]["technical_label"] == "Review Agent"
     assert nodes["requirement_refinement"]["technical_label"] == "Requirement Refinement"
     assert nodes["scoped_replanner"]["technical_label"] == "Scoped Replanner"
-    assert nodes["validator"]["technical_label"] == "Hard Validator"
+    assert nodes["feedback_validator"]["technical_label"] == "Hard Validator"
+    assert nodes["feedback_validator"]["display_name"] == "再次验证"
     assert all(nodes[node_id]["description"] for node_id in (
-        "review", "requirement_refinement", "scoped_replanner", "validator"
+        "review", "requirement_refinement", "scoped_replanner", "feedback_validator"
     ))
     assert {
         ("review", "requirement_refinement"),
         ("requirement_refinement", "scoped_replanner"),
-        ("scoped_replanner", "validator"),
+        ("scoped_replanner", "feedback_validator"),
+        ("feedback_validator", "output"),
     } <= {(edge["from"], edge["to"]) for edge in graph["edges"]
           if edge["edge_type"] == "feedback"}
 
@@ -170,7 +173,7 @@ def test_review_failure_executes_only_event_evidenced_feedback_path():
 
     assert _edge(graph, "review", "requirement_refinement")["execution_status"] == "executed"
     assert _edge(graph, "requirement_refinement", "scoped_replanner")["execution_status"] == "available"
-    assert _edge(graph, "scoped_replanner", "validator")["execution_status"] == "available"
+    assert _edge(graph, "scoped_replanner", "feedback_validator")["execution_status"] == "available"
 
 
 def test_explicit_started_event_marks_current_feedback_edge_active():
@@ -189,11 +192,37 @@ def test_feedback_execution_advances_only_with_explicit_trace_events():
         {"event_type": "REPLAN_COMPLETED", "scope": "DAY"},
     ])
 
-    assert all(edge["execution_status"] == "executed"
-               for edge in graph["edges"] if edge["edge_type"] == "feedback")
+    feedback = [edge for edge in graph["edges"] if edge["edge_type"] == "feedback"]
+    assert all(edge["execution_status"] == "executed" for edge in feedback[:3])
+    assert feedback[-1]["execution_status"] == "available"
 
 
 def test_no_events_never_create_a_fake_executed_edge():
     graph = workflow_graph([])
 
     assert all(edge["execution_status"] == "available" for edge in graph["edges"])
+
+
+def test_feedback_edges_use_short_hidden_labels_with_tooltips_and_position_dto():
+    graph = workflow_graph([])
+    feedback = [edge for edge in graph["edges"] if edge["edge_type"] == "feedback"]
+
+    assert [edge["label"] for edge in feedback] == ["反馈", "修正", "验证", "通过"]
+    assert all(edge["show_label"] is False for edge in feedback)
+    assert all(edge["tooltip"] for edge in feedback)
+    assert all(edge["edge_label_position"] == {"position": "middle", "offset": 10}
+               for edge in feedback)
+    assert "审核反馈优化闭环" not in [edge["label"] for edge in feedback]
+
+
+def test_feedback_validator_state_follows_only_post_replan_validation_events():
+    graph = workflow_graph([
+        {"event_type": "REPLAN_COMPLETED", "scope": "DAY"},
+        {"event_type": "VALIDATOR_PASSED", "stage": "VALIDATOR",
+         "status": "COMPLETED", "duration_ms": 42},
+    ])
+    node = next(node for node in graph["nodes"] if node["id"] == "feedback_validator")
+
+    assert node["status"] == "completed"
+    assert node["event_type"] == "VALIDATOR_PASSED"
+    assert node["duration_ms"] == 42

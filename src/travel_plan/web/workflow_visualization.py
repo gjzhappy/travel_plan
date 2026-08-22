@@ -17,7 +17,8 @@ NODES = (
     ("repair", "调整不可行安排", "Code Repair / Scoped Replan", "replan", "仅对未通过检查的行程部分进行调整"),
     ("review", "体验审核", "Review Agent", "review", "从游客体验角度检查方案质量"),
     ("requirement_refinement", "重新理解调整需求", "Requirement Refinement", "feedback", "根据审核反馈提取新的调整约束，保持用户原始意图不被覆盖"),
-    ("scoped_replanner", "调整部分行程", "Scoped Replanner", "feedback", "根据调整范围重新规划指定部分，避免全量重算"),
+    ("scoped_replanner", "调整不可行安排", "Scoped Replanner", "feedback", "根据调整范围重新规划不可行部分，避免全量重算"),
+    ("feedback_validator", "再次验证", "Hard Validator", "feedback", "再次检查调整后的安排是否满足时间、交通和开放条件"),
     ("output", "生成旅行方案", "Final Plan", "output", "整理最终行程、地图和解释信息"),
 )
 
@@ -54,19 +55,17 @@ def workflow_node_id(event: dict[str, Any]) -> str | None:
 # Presentation coordinates describe the architecture without changing its execution.
 # Columns form the main trunk; rows expose fan-out and the validation/replan loop.
 LAYOUT = {
-    "input": (1, 2), "requirement": (2, 2),
-    "retrieval": (3, 1), "facts": (4, 1), "constraints": (4, 3),
-    "planner": (5, 2), "route": (6, 1), "meal": (6, 2), "hotel": (6, 3),
-    "validator": (7, 2), "repair": (7, 4), "review": (8, 2),
-    "requirement_refinement": (8, 3), "scoped_replanner": (8, 4), "output": (9, 2),
+    "input": (2, 1), "requirement": (2, 2),
+    "retrieval": (2, 3), "facts": (2, 4), "constraints": (4, 3),
+    "planner": (2, 5), "route": (2, 6), "meal": (4, 5), "hotel": (4, 6),
+    "validator": (2, 7), "repair": (4, 7), "review": (2, 8),
+    "requirement_refinement": (7, 8), "scoped_replanner": (7, 9),
+    "feedback_validator": (7, 10), "output": (2, 11),
 }
 
 PHASES = (
-    ("understand", "需求理解", 1, 2),
-    ("prepare", "信息准备", 3, 4),
-    ("plan", "行程编排", 5, 6),
-    ("assure", "质量校验", 7, 8),
-    ("deliver", "方案交付", 9, 9),
+    ("main", "主流程", 1, 5),
+    ("feedback", "反馈优化闭环", 6, 9),
 )
 
 EDGES = (
@@ -78,10 +77,18 @@ EDGES = (
     ("meal", "validator", "", "normal"), ("hotel", "validator", "", "normal"),
     ("validator", "review", "通过", "normal"), ("validator", "repair", "失败", "repair"),
     ("repair", "validator", "复检", "repair"), ("review", "output", "通过", "normal"),
-    ("review", "requirement_refinement", "审核反馈", "feedback"),
-    ("requirement_refinement", "scoped_replanner", "调整约束", "feedback"),
-    ("scoped_replanner", "validator", "再次验证", "feedback"),
+    ("review", "requirement_refinement", "反馈", "feedback"),
+    ("requirement_refinement", "scoped_replanner", "修正", "feedback"),
+    ("scoped_replanner", "feedback_validator", "验证", "feedback"),
+    ("feedback_validator", "output", "通过", "feedback"),
 )
+
+EDGE_TOOLTIPS = {
+    ("review", "requirement_refinement"): "审核反馈优化闭环",
+    ("requirement_refinement", "scoped_replanner"): "按重新理解的需求修正安排",
+    ("scoped_replanner", "feedback_validator"): "再次验证调整后的方案",
+    ("feedback_validator", "output"): "输出优化后的方案",
+}
 
 
 def _event_payload(event: dict[str, Any]) -> dict[str, Any]:
@@ -148,7 +155,13 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         if event_type in {"REPLAN_COMPLETED", "SCOPED_REPLAN_COMPLETED"}:
             scoped_replan_completed = True
             state["scoped_replanner"] = "completed"
+            state["feedback_validator"] = "running"
             metadata.setdefault("scoped_replanner", {})["event_type"] = event_type
+        elif scoped_replan_completed and stage in {"VALIDATOR", "VALIDATE"}:
+            state["feedback_validator"] = mapped
+            metadata.setdefault("feedback_validator", {})["event_type"] = event_type
+            if event.get("duration_ms") is not None:
+                metadata["feedback_validator"]["duration_ms"] = event["duration_ms"]
     counts = {status: sum(value == status for value in state.values())
               for status in ("completed", "running", "pending", "failed")}
     active = next((key for key, value in state.items() if value == "running"), None)
@@ -172,7 +185,9 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
             if "SCOPED_REPLAN_STARTED" in observed_types:
                 return "active"
             return "executed" if refinement_completed else "available"
-        return "executed" if scoped_replan_completed else "available"
+        if source == "scoped_replanner":
+            return "executed" if scoped_replan_completed else "available"
+        return "executed" if state["output"] == "completed" else "available"
 
     return {
         "nodes": [{"id": key, "node_id": key, "label": display_name, "display_name": display_name,
@@ -182,6 +197,9 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
                    **metadata.get(key, {})}
                   for key, display_name, technical, kind, description in NODES],
         "edges": [{"from": source, "to": target, "label": label,
+                   "show_label": False,
+                   "tooltip": EDGE_TOOLTIPS.get((source, target), label),
+                   "edge_label_position": {"position": "middle", "offset": 10},
                    "edge_type": edge_type,
                    "execution_status": edge_execution_status(source, target, edge_type)}
                   for source, target, label, edge_type in EDGES],
