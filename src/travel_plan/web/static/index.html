@@ -12,6 +12,11 @@
       <div class="eyebrow">SHANGHAI · CURATED FOR YOU</div>
       <h1>把期待说给我们，<br><em>路线交给时间。</em></h1>
       <p>从一段自然语言开始，生成兼顾开放时间、交通距离与旅行节奏的上海行程。</p>
+      <section class="demo-entry" aria-labelledby="demo-title">
+        <div><span class="section-kicker">QUICK DEMO</span><h2 id="demo-title">开始体验</h2><p>选择固定场景，一键观看完整规划。</p></div>
+        <div id="demo-list"><span class="demo-placeholder">正在加载演示场景…</span></div>
+      </section>
+      <div class="or"><span>或描述你的旅行需求</span></div>
       <form id="planner-form">
         <label for="request">这次旅行，你想怎样度过？</label>
         <textarea id="request" rows="3" required>上海3天，2个成人，喜欢建筑、艺术和本帮菜，不要太赶，公共交通优先，少走路，必须去外滩。</textarea>
@@ -37,11 +42,11 @@
           <div class="explain-content">
             <p class="explain-intro">这些说明来自当前行程及规划过程中已记录的信息，帮助你按需了解每一天的取舍。</p>
             <details class="why" open><summary><span><b>每日安排依据</b><small>景点组合、路上时间与路线评分</small></span><i>＋</i></summary><div id="explanation"></div></details>
-            <details class="why"><summary><span><b>更多规划细节</b><small>版本、信息来源、约束校验与过程记录</small></span><i>＋</i></summary><div class="technical-details">
+            <details class="why"><summary><span><b>完整规划过程</b><small>更多规划细节：从理解需求到体验审核</small></span><i>＋</i></summary><div class="technical-details">
               <div class="plan-identity"><span>计划 ID <b id="plan-id"></b></span><span>当前快照 <b id="plan-version"></b></span></div><div class="version-list" id="versions"></div>
               <div class="explain-notice" id="explain-notice"></div><div class="source-strip" id="explain-sources"></div>
               <details class="detail-group"><summary><span><b>约束校验</b><small>最终门禁的记录结果</small></span><i>＋</i></summary><div class="validator-result" id="validator"></div></details>
-              <details class="detail-group"><summary><span><b>规划过程</b><small>按顺序查看已记录的事件</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
+              <details class="detail-group" open><summary><span><b>规划过程</b><small>理解需求 → 语义检索 → 事实补全 → 路线规划 → 约束检查 → 体验审核</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
               <details class="detail-group"><summary><span><b>体验审核</b><small>查看行程体验建议</small></span><i>＋</i></summary><div class="review-result" id="review"></div></details>
             </div></details>
           </div>
