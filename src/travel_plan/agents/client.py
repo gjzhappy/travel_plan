@@ -1,11 +1,12 @@
 """Explicit, schema-checked boundary to the two OpenCode agents."""
 from __future__ import annotations
-import json, subprocess
+import json, logging, subprocess
 from pathlib import Path
 from typing import Any, Protocol
 from travel_plan.errors import AgentOutputValidationError
 
 ROOT=Path(__file__).resolve().parents[3]
+log=logging.getLogger("travel_plan.opencode")
 
 class AgentClient(Protocol):
     def invoke(self,agent_name:str,payload:dict[str,Any],schema:dict[str,Any])->dict[str,Any]: ...
@@ -44,14 +45,32 @@ class OpenCodeAgentClient:
     def __init__(self,executable:str="opencode",timeout:int=120): self.executable=executable;self.timeout=timeout
     def invoke(self,agent_name,payload,schema):
         prompt=json.dumps({"payload":payload,"output_schema":schema},ensure_ascii=False)
+        log.info("%s started", agent_name)
         try:
-            proc=subprocess.run([self.executable,"run","--agent",agent_name,prompt],text=True,capture_output=True,timeout=self.timeout,check=True)
-            text=proc.stdout.strip(); start=text.find("{"); end=text.rfind("}")
+            log.info("waiting agent output: stage=%s", agent_name)
+            proc=subprocess.run(
+                [self.executable,"run","--agent",agent_name,prompt],
+                text=True,capture_output=True,encoding="utf-8",errors="replace",
+                timeout=self.timeout,check=True,
+            )
+            stdout=(proc.stdout or "").strip()
+            stderr=(proc.stderr or "").strip()
+            if not stdout:
+                raise ValueError(
+                    "Agent output empty\n"
+                    f"stage={agent_name}\n"
+                    "reason=subprocess output unavailable"
+                    + (f"\nstderr={stderr}" if stderr else "")
+                )
+            log.info("agent output received: stage=%s", agent_name)
+            text=stdout; start=text.find("{"); end=text.rfind("}")
             if start<0 or end<start: raise ValueError("no JSON object in agent output")
             value=json.loads(text[start:end+1])
         except (OSError,subprocess.SubprocessError,ValueError,json.JSONDecodeError) as exc:
             raise AgentOutputValidationError(f"{agent_name} invocation failed: {exc}") from exc
-        return validate_agent_output(value,schema,agent_name)
+        value=validate_agent_output(value,schema,agent_name)
+        log.info("schema validation passed: stage=%s", agent_name)
+        return value
 
 class DeterministicAgentClient:
     """Offline implementation of the same named-agent invocation boundary."""
