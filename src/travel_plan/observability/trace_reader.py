@@ -28,6 +28,7 @@ class TraceEvent:
     actor: str
     payload: dict[str, Any]
     trigger_review_number: int | None
+    timestamp: str = ""
 
 
 @dataclass(frozen=True)
@@ -120,6 +121,7 @@ class TraceReader:
             actor=raw["actor"],
             payload=payload,
             trigger_review_number=trigger,
+            timestamp=str(raw.get("timestamp", "")),
         )
 
     @staticmethod

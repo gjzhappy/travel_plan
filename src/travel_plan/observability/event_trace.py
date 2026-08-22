@@ -1,5 +1,7 @@
 import json
 import logging
+import threading
+from datetime import datetime, timezone
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -18,6 +20,7 @@ class WorkflowEvent:
     event_type: str
     actor: str
     details: dict[str, Any] = field(default_factory=dict)
+    timestamp: str = ""
 
 
 class EventTrace:
@@ -25,6 +28,16 @@ class EventTrace:
 
     def __init__(self, root: str | Path):
         self.root = Path(root)
+        self._listeners = []
+        self._lock = threading.Lock()
+
+    def subscribe(self, listener):
+        """Observe persisted workflow facts as they happen.
+
+        Listeners are an optional presentation boundary.  Their failures, like
+        trace-write failures, must never affect planning.
+        """
+        self._listeners.append(listener)
 
     def record(
         self,
@@ -38,12 +51,19 @@ class EventTrace:
         try:
             path = self.root / trip_id / "events.jsonl"
             path.parent.mkdir(parents=True, exist_ok=True)
-            sequence = self._next_sequence(path)
-            event = WorkflowEvent(
-                sequence, trip_id, plan_version, parent_version, event_type, actor, details or {}
-            )
-            with path.open("a", encoding="utf-8") as stream:
-                stream.write(json.dumps(asdict(event), ensure_ascii=False, sort_keys=True) + "\n")
+            with self._lock:
+                sequence = self._next_sequence(path)
+                event = WorkflowEvent(
+                    sequence, trip_id, plan_version, parent_version, event_type, actor,
+                    details or {}, datetime.now(timezone.utc).isoformat(),
+                )
+                with path.open("a", encoding="utf-8") as stream:
+                    stream.write(json.dumps(asdict(event), ensure_ascii=False, sort_keys=True) + "\n")
+            for listener in tuple(self._listeners):
+                try:
+                    listener(event)
+                except Exception as exc:
+                    log.warning("workflow event listener failed: %s", exc)
         except Exception as exc:  # Event tracing is deliberately outside the business gate.
             log.warning("workflow event could not be written: %s", exc)
 

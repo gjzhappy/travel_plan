@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from pathlib import Path
 
 from travel_plan.main import build_workflow
@@ -38,3 +39,17 @@ def test_event_write_failure_does_not_change_workflow(tmp_path, monkeypatch):
     plan, state, _ = workflow.execute("上海一日游", "trace_failure")
     assert plan["trip_id"] == "trace_failure"
     assert state.version == 1
+
+
+def test_trace_notifies_subscriber_with_timestamp(tmp_path):
+    workflow = build_workflow(Path.cwd(), tmp_path)
+    observed = []
+    workflow.events.subscribe(observed.append)
+
+    workflow.execute("上海一日游", "live_trace")
+
+    assert [event.sequence for event in observed] == list(range(1, len(observed) + 1))
+    assert observed[0].event_type == "WORKFLOW_STARTED"
+    assert datetime.fromisoformat(observed[0].timestamp).tzinfo is not None
+    stages = {event.details.get("stage") for event in observed}
+    assert {"REQUIREMENT", "RETRIEVAL", "PLANNER", "VALIDATOR", "REVIEW"} <= stages
