@@ -4,19 +4,19 @@ from typing import Any
 
 
 NODES = (
-    ("input", "输入", "User Requirement", "input"),
-    ("requirement", "需求理解", "Requirement Agent", "agent"),
-    ("retrieval", "知识召回", "Semantic Retrieval", "retrieval"),
-    ("facts", "事实补全", "SQLite Facts", "retrieval"),
-    ("constraints", "约束解析", "Constraint Parsing", "retrieval"),
-    ("planner", "行程规划", "Planning Engine", "planning"),
-    ("route", "路线优化", "Route Planner", "planning"),
-    ("meal", "餐饮安排", "Meal Planner", "planning"),
-    ("hotel", "住宿优化", "Hotel Optimizer", "planning"),
-    ("validator", "可行性检查", "Hard Validator", "validation"),
-    ("repair", "局部重规划", "Code Repair / Scoped Replan", "replan"),
-    ("review", "体验审核", "Review Agent", "review"),
-    ("output", "生成结果", "Final Plan", "output"),
+    ("input", "提交旅行需求", "User Requirement", "input", "接收你的旅行目标、偏好和限制条件"),
+    ("requirement", "理解旅行需求", "Requirement Agent", "agent", "AI正在分析你的旅行目标、偏好和限制条件"),
+    ("retrieval", "寻找合适景点", "Retrieval Service", "retrieval", "根据兴趣和旅行条件召回候选地点"),
+    ("facts", "补充景点信息", "Fact Enrichment", "retrieval", "补充开放时间、位置、游玩时长等信息"),
+    ("constraints", "整理旅行限制", "Constraint Parsing", "retrieval", "整理预算、时间和出行偏好等限制条件"),
+    ("planner", "编排行程框架", "Planning Engine", "planning", "将候选地点组织为可执行的每日行程"),
+    ("route", "优化每日路线", "Route Planner", "planning", "根据距离、时间和交通方式安排访问顺序"),
+    ("meal", "安排餐饮", "Meal Planner", "planning", "结合行程位置和偏好安排午餐、晚餐"),
+    ("hotel", "安排住宿", "Hotel Optimizer", "planning", "综合位置、预算和换酒店成本选择住宿方案"),
+    ("validator", "检查方案可行性", "Hard Validator", "validation", "检查时间、开放时间、交通和约束条件"),
+    ("repair", "调整不可行安排", "Code Repair / Scoped Replan", "replan", "仅对未通过检查的行程部分进行调整"),
+    ("review", "体验审核", "Review Agent", "review", "从游客体验角度检查方案质量"),
+    ("output", "生成旅行方案", "Final Plan", "output", "整理最终行程、地图和解释信息"),
 )
 
 EDGES = (
@@ -61,9 +61,10 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         if event_type == "PLAN_VERSION_SAVED": state["output"] = "completed"
         if event_type == "WORKFLOW_COMPLETED": state["output"] = "completed"
     return {
-        "nodes": [{"id": key, "label": label, "technical_label": technical,
+        "nodes": [{"id": key, "label": display_name, "display_name": display_name,
+                   "technical_label": technical, "description": description,
                    "kind": kind, "status": state[key], **metadata.get(key, {})}
-                  for key, label, technical, kind in NODES],
+                  for key, display_name, technical, kind, description in NODES],
         "edges": [{"from": source, "to": target, "label": label}
                   for source, target, label in EDGES],
         "notice": "流程图展示工作流执行状态，不展示模型思考过程。",

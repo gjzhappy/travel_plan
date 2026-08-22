@@ -38,3 +38,22 @@ def test_validator_failure_exposes_replan_loop_without_reasoning():
     }
     assert "思考过程" in graph["notice"]
     assert "prompt" not in str(graph).lower()
+
+
+def test_nodes_have_user_labels_descriptions_and_preserve_technical_names():
+    nodes = {node["id"]: node for node in workflow_graph([])["nodes"]}
+    assert nodes["requirement"]["display_name"] == "理解旅行需求"
+    assert nodes["route"]["display_name"] == "优化每日路线"
+    assert nodes["route"]["technical_label"] == "Route Planner"
+    assert "距离" in nodes["route"]["description"]
+    assert nodes["output"]["display_name"] == "生成旅行方案"
+
+
+def test_duration_is_copied_only_from_trace_event():
+    graph = workflow_graph([
+        {"event_type": "STAGE_STARTED", "stage": "VALIDATOR", "status": "RUNNING"},
+        {"event_type": "STAGE_COMPLETED", "stage": "VALIDATOR", "status": "COMPLETED", "duration_ms": 15320},
+    ])
+    nodes = {node["id"]: node for node in graph["nodes"]}
+    assert nodes["validator"]["duration_ms"] == 15320
+    assert "duration_ms" not in nodes["review"]
