@@ -10,10 +10,10 @@
   <main>
     <section class="hero" id="hero">
       <div class="eyebrow">SHANGHAI · CURATED FOR YOU</div>
-      <h1>把期待说给我们，<br><em>路线交给时间。</em></h1>
-      <p>从一段自然语言开始，生成兼顾开放时间、交通距离与旅行节奏的上海行程。</p>
+      <h1>AI 上海旅行规划助手</h1>
+      <p class="hero-promise">告诉我去哪里、几天、几个人和喜欢什么。<br>我帮你生成路线、美食、住宿与预算。</p>
       <section class="demo-entry" aria-labelledby="demo-title">
-        <div><span class="section-kicker">QUICK DEMO</span><h2 id="demo-title">开始体验</h2><p>选择固定场景，一键观看完整规划。</p></div>
+        <div><span class="section-kicker">30 秒快速体验</span><h2 id="demo-title">体验上海亲子4日游</h2><p>无需输入，一键观看 AI 如何理解、规划、检查并解释。</p></div>
         <div id="demo-list"><span class="demo-placeholder">正在加载演示场景…</span></div>
       </section>
       <div class="or"><span>或描述你的旅行需求</span></div>
@@ -30,7 +30,9 @@
 
     <section class="result hidden" id="result">
       <div class="view-banner"><span>行程总览</span><p>先享受旅程，需要时再查看每一步为什么这样安排。</p></div>
-      <div class="result-head"><div><div class="eyebrow">YOUR SHANGHAI JOURNEY</div><h2>属于你的上海时光</h2><p id="trip-meta"></p></div><button class="secondary" id="restart">新建计划</button></div>
+      <div class="result-head"><div><div class="eyebrow">我的旅行方案</div><h2 id="overview-title">属于你的上海时光</h2><p id="trip-meta"></p></div><button class="secondary" id="restart">新建计划</button></div>
+      <section class="overview-card" aria-label="行程总览"><div class="overview-facts" id="overview-facts"></div><div class="route-feature"><span>路线特点</span><b id="route-feature"></b></div></section>
+      <section class="planning-progress" aria-label="规划过程"><h3>你的方案已准备好</h3><div id="process-steps"></div></section>
       <div class="layout">
         <aside class="map-card"><div class="map-title"><span>路线地图</span><small id="map-caption"></small></div><div class="map" id="map"><svg id="route-map" viewBox="0 0 520 570" role="img" aria-label="上海每日路线示意地图"></svg><div class="map-key" id="map-key"></div></div></aside>
         <div class="itinerary"><div class="day-tabs" id="day-tabs"></div><div id="day-panel"></div></div>
@@ -42,8 +44,8 @@
           <div class="explain-content">
             <p class="explain-intro">这些说明来自当前行程及规划过程中已记录的信息，帮助你按需了解每一天的取舍。</p>
             <details class="why" open><summary><span><b>每日安排依据</b><small>景点组合、路上时间与路线评分</small></span><i>＋</i></summary><div id="explanation"></div></details>
-            <details class="why"><summary><span><b>完整规划过程</b><small>更多规划细节：从理解需求到体验审核</small></span><i>＋</i></summary><div class="technical-details">
-              <div class="plan-identity"><span>计划 ID <b id="plan-id"></b></span><span>当前快照 <b id="plan-version"></b></span></div><div class="version-list" id="versions"></div>
+            <details class="why"><summary><span><b>更多规划细节</b><small>可行性检查、体验审核、规划过程与版本变化</small></span><i>＋</i></summary><div class="technical-details">
+              <div class="version-list" id="versions"></div><div class="change-story hidden" id="change-story"></div>
               <div class="explain-notice" id="explain-notice"></div><div class="source-strip" id="explain-sources"></div>
               <details class="detail-group"><summary><span><b>约束校验</b><small>最终门禁的记录结果</small></span><i>＋</i></summary><div class="validator-result" id="validator"></div></details>
               <details class="detail-group" open><summary><span><b>规划过程</b><small>理解需求 → 语义检索 → 事实补全 → 路线规划 → 约束检查 → 体验审核</small></span><i>＋</i></summary><div class="event-trace" id="events"></div></details>
@@ -52,7 +54,7 @@
           </div>
         </details>
       </section>
-      <section class="modify-card"><div><span class="section-kicker">ITERATE</span><h3>还想调整？</h3><p>告诉我们哪里需要变化，其余满意的安排会尽量保留。</p></div><form id="modify-form"><select id="modify-scope" aria-label="修改范围"><option value="GLOBAL">整份行程</option><option value="DAY">某一天</option><option value="NODE">某个景点</option><option value="MEAL">餐饮安排</option></select><input id="modify-target" placeholder="哪一天或地点（可选）"><input id="modify-instruction" required placeholder="例如：第二天换成博物馆，节奏轻松一点"><button class="submit" type="submit">更新行程 <b>→</b></button></form></section>
+      <section class="modify-card"><div><span class="section-kicker">继续优化</span><h3>修改今天安排</h3><p>例如“第二天少走一点路”。将沿用已有重新规划能力。</p></div><form id="modify-form"><select id="modify-scope" aria-label="修改范围"><option value="GLOBAL">整份行程</option><option value="DAY">某一天</option><option value="NODE">某个景点</option><option value="MEAL">餐饮安排</option></select><input id="modify-target" placeholder="哪一天或地点（可选）"><input id="modify-instruction" required placeholder="第二天少走一点路"><button class="submit" type="submit">重新规划 <b>→</b></button></form></section>
     </section>
   </main>
   <footer>TRAVEL PLAN <span>·</span> 让每一次出发，都从容有序</footer>
