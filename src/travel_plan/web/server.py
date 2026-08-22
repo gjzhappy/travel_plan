@@ -15,6 +15,7 @@ from travel_plan.web.explainability import build_explainability
 from travel_plan.web.repository import PlanRepository
 
 STATIC_DIR = Path(__file__).with_name("static")
+DEMO_DIR = Path("data/demo")
 
 
 class TravelRequestHandler(BaseHTTPRequestHandler):
@@ -24,6 +25,9 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = unquote(urlparse(self.path).path)
+        if path == "/api/demo":
+            self._json(HTTPStatus.OK, self._demo_scenarios())
+            return
         if path.startswith("/api/plans/"):
             self._get_plan_resource(path)
             return
@@ -41,14 +45,47 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = unquote(urlparse(self.path).path)
+        parts = path.strip("/").split("/")
+        if len(parts) == 4 and parts[:2] == ["api", "demo"] and parts[3] == "run":
+            self._run_demo(parts[2])
+            return
         if path == "/api/plans":
             self._create_plan()
             return
-        parts = path.strip("/").split("/")
         if len(parts) == 4 and parts[:2] == ["api", "plans"] and parts[3] == "modify":
             self._modify_plan(parts[2])
             return
         self._json(HTTPStatus.NOT_FOUND, {"error": "接口不存在"})
+
+    def _demo_scenarios(self):
+        """Load checked-in presentation data without making planning decisions."""
+        scenarios = []
+        for path in sorted((self.root / DEMO_DIR).glob("*.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            scenarios.append({key: data[key] for key in ("id", "name", "description")})
+        return scenarios
+
+    def _run_demo(self, scenario_id: str):
+        try:
+            path = self.root / DEMO_DIR / f"{scenario_id}.json"
+            if not path.is_file():
+                self._json(HTTPStatus.NOT_FOUND, {"error": "演示场景不存在"})
+                return
+            scenario = json.loads(path.read_text(encoding="utf-8"))
+            if scenario.get("id") != scenario_id or not str(scenario.get("request", "")).strip():
+                raise ValueError("演示场景数据无效")
+            plan_id = f"demo_{scenario_id}_{uuid.uuid4().hex}"
+            record = self._run_and_save(plan_id, scenario["request"], {
+                "request": scenario["request"], "demo_id": scenario_id,
+            })
+            response = self._plan_response(record)
+            response["itinerary"] = record.display_result["days"]
+            self._json(HTTPStatus.CREATED, response)
+        except (ValueError, json.JSONDecodeError, KeyError) as exc:
+            self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": str(exc)})
+        except Exception as exc:
+            self.log_error("demo planning failed: %s", exc)
+            self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"error": f"暂时无法生成演示方案：{exc}"})
 
     def _create_plan(self):
         try:

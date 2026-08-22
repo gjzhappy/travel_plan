@@ -4,6 +4,47 @@
 两个 Agent 内，把候选选择、时间、地图、餐饮、酒店、行李、预算与校验全部放在
 可测试的 Python 代码中。
 
+## Quick Demo
+
+一个基于 Agent + RAG + Deterministic Planning 的智能旅行规划系统。
+
+```text
+User
+  ↓
+Travel Intent Agent
+  ↓
+Qdrant + SQLite
+  ↓
+Python Planning Engine
+  ↓
+Hard Validator
+  ↓
+Review Agent
+  ↓
+Web Experience
+```
+
+仓库自带“上海亲子四日游”固定场景（2 位成人 + 1 位儿童，科技、自然、夜景，
+公共交通、少步行、轻松节奏，固定包含迪士尼）。启动脚本只会在 SQLite 不存在时
+从已提交的 seed 初始化它；不会覆盖已有数据库，也不会重新构建 Qdrant。
+
+Windows 双击或在终端运行：
+
+```bat
+scripts\start_demo.bat
+```
+
+Linux / macOS：
+
+```bash
+./scripts/start_demo.sh
+```
+
+打开 `http://localhost:8000` 后，演示顺序为：选择固定场景（或输入旅行需求）→ 生成
+方案 → 浏览地图、每日路线、餐饮、酒店与预算 → 修改需求并查看版本变化 → 逐层展开
+“为什么这样安排？”、每日依据和完整规划过程。`GET /api/demo` 返回场景列表，
+`POST /api/demo/{id}/run` 仍通过唯一的 `TravelWorkflow` 执行规划。
+
 ## 架构与职责
 
 ```text
