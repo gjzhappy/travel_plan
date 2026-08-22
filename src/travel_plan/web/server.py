@@ -1,5 +1,7 @@
 import json
 import mimetypes
+import threading
+import time
 import uuid
 from dataclasses import asdict
 from http import HTTPStatus
@@ -175,16 +177,29 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         workflow = self.workflow_factory(root=self.root)
 
+        write_lock = threading.Lock()
+
+        def send(payload):
+            with write_lock:
+                self._stream_line(payload)
+
+        runtime = AgentRuntimeStatus(send)
+
         def publish(event):
-            self._stream_line({"type": "trace", "event": _stream_event(asdict(event))})
+            presented = _stream_event(asdict(event))
+            send({"type": "trace", "event": presented})
+            runtime.observe(presented)
 
         workflow.events.subscribe(publish)
         try:
             record = self._execute_and_save(workflow, plan_id, text, request)
-            self._stream_line({"type": "result", "result": self._plan_response(record)})
+            runtime.close()
+            send({"type": "result", "result": self._plan_response(record)})
         except Exception as exc:
+            runtime.fail(exc)
+            runtime.close()
             self.log_error("streaming planning failed: %s", exc)
-            self._stream_line({"type": "error", "error": f"暂时无法生成可行方案：{exc}"})
+            send({"type": "error", "error": f"暂时无法生成可行方案：{exc}"})
 
     def _modify_plan(self, plan_id: str):
         if not self.repository.current(plan_id):
@@ -322,6 +337,92 @@ STAGE_PRESENTATION = {
     "VALIDATOR": "正在检查硬约束与可行性",
     "REVIEW": "正在审核旅行体验",
 }
+
+AGENT_STAGES = {"REQUIREMENT": "Requirement Agent", "REVIEW": "Review Agent"}
+
+
+class AgentRuntimeStatus:
+    """Add read-only runtime telemetry to an existing workflow stream.
+
+    This observer never controls, retries, or cancels agent execution.  It only
+    reports the time since the workflow's existing stage-start event.
+    """
+
+    def __init__(self, send, clock=time.monotonic, heartbeat_seconds=1):
+        self.send = send
+        self.clock = clock
+        self.heartbeat_seconds = heartbeat_seconds
+        self.active = None
+        self._stop = threading.Event()
+        self._thread = None
+
+    def observe(self, event):
+        if event["stage"] not in AGENT_STAGES:
+            return
+        if event["status"] == "RUNNING":
+            self.active = {"stage": event["stage"], "actor": event["actor"], "started": self.clock()}
+            self._emit("AGENT_STARTED", "running", 0)
+            if self._thread is None:
+                self._thread = threading.Thread(target=self._heartbeat, daemon=True)
+                self._thread.start()
+        elif self.active and event["actor"] == self.active["actor"]:
+            elapsed = int(self.clock() - self.active["started"])
+            self._emit("AGENT_COMPLETED", "completed", elapsed)
+            self.active = None
+
+    def snapshot(self):
+        """Emit one heartbeat; public to keep elapsed/warning policy testable."""
+        if not self.active:
+            return None
+        elapsed = max(0, int(self.clock() - self.active["started"]))
+        return self._emit("AGENT_HEARTBEAT", "running", elapsed)
+
+    def fail(self, error):
+        if not self.active:
+            return
+        elapsed = max(0, int(self.clock() - self.active["started"]))
+        is_timeout = "timeout" in str(error).lower() or "timed out" in str(error).lower()
+        self._emit("AGENT_FAILED", "failed", elapsed, timeout=is_timeout)
+        self.active = None
+
+    def close(self):
+        self._stop.set()
+        if self._thread and self._thread is not threading.current_thread():
+            self._thread.join(timeout=self.heartbeat_seconds + .1)
+
+    def _heartbeat(self):
+        while not self._stop.wait(self.heartbeat_seconds):
+            self.snapshot()
+
+    def _emit(self, event_type, status, elapsed, timeout=False):
+        active = self.active
+        if not active:
+            return None
+        payload = {
+            "event_type": event_type, "stage": active["stage"], "actor": active["actor"],
+            "agent_label": AGENT_STAGES[active["stage"]], "status": status,
+            "elapsed_seconds": elapsed, "timestamp": datetime_now(),
+        }
+        if status == "running":
+            payload["message"] = "正在等待 AI Agent 返回结果"
+            if elapsed >= 60:
+                payload["warning"] = "Agent响应较慢，请稍候"
+        elif status == "completed":
+            payload.update(message="已完成", duration_seconds=elapsed)
+        else:
+            payload.update(
+                message="Agent执行超时" if timeout else "Agent执行失败",
+                error="timeout" if timeout else "execution_failed",
+                suggestion="检查 OpenCode Runtime，或使用 Deterministic Offline Agent 演示",
+            )
+        self.send({"type": "agent_runtime", "event": payload})
+        return payload
+
+
+def datetime_now():
+    """UTC streaming timestamp kept separate from workflow decision data."""
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _stream_event(event):

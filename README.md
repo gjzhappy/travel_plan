@@ -68,6 +68,13 @@ Windows 脚本接受相同参数。首页会以用户可读名称显示当前 Ag
 “为什么这样安排？”、每日依据和完整规划过程。`GET /api/demo` 返回场景列表，
 `POST /api/demo/{id}/run` 仍通过唯一的 `TravelWorkflow` 执行规划。
 
+Demo exposes workflow execution status. Long-running Requirement and Review agents are
+shown with their actor, current stage, elapsed time, and completion or failure status.
+After 60 seconds the UI explains that the agent response is slow; an actual runtime
+timeout is shown with troubleshooting suggestions, without retrying or automatically
+switching modes. It does not expose prompts, inputs, model reasoning, or LLM
+chain-of-thought.
+
 ## 架构与职责
 
 ```text
