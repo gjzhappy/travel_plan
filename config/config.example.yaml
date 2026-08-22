@@ -1,4 +1,7 @@
 qdrant_top_k: 24
+agent_runtime_mode: auto
+data_mode: offline
+external_provider_mode: mock
 daily_start_time: "08:30"
 daily_latest_end_time: "21:30"
 lunch_window: ["11:30", "13:30"]

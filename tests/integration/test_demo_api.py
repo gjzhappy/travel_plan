@@ -58,6 +58,12 @@ def test_demo_api_uses_workflow_and_returns_explainable_itinerary(tmp_path):
         assert status == 200
         assert scenarios == [{"id": "shanghai_family_trip", "name": "上海亲子四日游", "description": "科技 + 自然 + 夜景，公共交通少步行"}]
 
+        status, runtime = _request(server, "/api/system/status")
+        assert status == 200
+        assert runtime["data_mode"] == "offline"
+        assert set(runtime["providers"].values()) == {"mock"}
+        assert runtime["agent_runtime"] in {"opencode", "deterministic"}
+
         status, result = _request(server, "/api/demo/shanghai_family_trip/run", "POST")
         assert status == 201
         assert result["plan_id"].startswith("demo_shanghai_family_trip_")

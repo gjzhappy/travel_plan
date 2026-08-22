@@ -9,6 +9,8 @@ from typing import Callable
 from urllib.parse import unquote, urlparse
 
 from travel_plan.main import build_workflow
+from travel_plan.config import DEFAULT_CONFIG, load_config
+from travel_plan.providers import ProviderFactory
 from travel_plan.observability.trace_reader import TraceReader
 from travel_plan.web.presenter import present_plan
 from travel_plan.web.explainability import build_explainability
@@ -22,11 +24,15 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
     workflow_factory: Callable = staticmethod(build_workflow)
     root = Path(".")
     repository = PlanRepository()
+    system_status = {}
 
     def do_GET(self):
         path = unquote(urlparse(self.path).path)
         if path == "/api/demo":
             self._json(HTTPStatus.OK, self._demo_scenarios())
+            return
+        if path == "/api/system/status":
+            self._json(HTTPStatus.OK, self.system_status)
             return
         if path.startswith("/api/plans/"):
             self._get_plan_resource(path)
@@ -200,10 +206,17 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
 
-def create_server(host="127.0.0.1", port=8000, root=Path("."), workflow_factory=build_workflow, repository=None):
+def create_server(host="127.0.0.1", port=8000, root=Path("."), workflow_factory=build_workflow, repository=None, config=DEFAULT_CONFIG):
+    providers = ProviderFactory.create(config)
+    status = {"agent_runtime": providers.agent_runtime, "data_mode": "offline", "providers": {"transport": "mock", "weather": "mock", "reservation": "mock", "crowd": "mock"}}
+    configured_workflow_factory = (
+        (lambda root: build_workflow(root=root, config=config))
+        if workflow_factory is build_workflow else workflow_factory
+    )
     handler = type("ConfiguredTravelHandler", (TravelRequestHandler,), {
-        "root": Path(root), "workflow_factory": staticmethod(workflow_factory),
+        "root": Path(root), "workflow_factory": staticmethod(configured_workflow_factory),
         "repository": repository or PlanRepository(),
+        "system_status": status,
     })
     return ThreadingHTTPServer((host, port), handler)
 
@@ -247,8 +260,10 @@ def cli():
     parser = argparse.ArgumentParser(description="Travel Plan Web Demo")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--agent-mode", choices=("auto", "opencode", "deterministic"), default="auto")
     args = parser.parse_args()
-    server = create_server(args.host, args.port)
+    config = load_config(agent_runtime_mode=args.agent_mode)
+    server = create_server(args.host, args.port, config=config)
     print(f"Travel Plan Web: http://{args.host}:{server.server_port}")
     try:
         server.serve_forever()
