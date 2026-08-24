@@ -24,7 +24,7 @@ NODES = (
 
 EVENT_NODE_IDS = {
     "WORKFLOW_STARTED": "input", "AGENT_COMPLETED": "requirement",
-    "PLAN_GENERATED": "route", "VALIDATOR_PASSED": "validator",
+    "PLAN_GENERATED": "planner", "VALIDATOR_PASSED": "validator",
     "VALIDATOR_BLOCKED": "validator", "REPLAN_COMPLETED": "scoped_replanner",
     "REVIEW_COMPLETED": "review", "REVIEW_FAILED": "review",
     "REQUIREMENT_REFINEMENT_STARTED": "requirement_refinement",
@@ -36,9 +36,11 @@ EVENT_NODE_IDS = {
 }
 STAGE_NODE_IDS = {
     "REQUIREMENT": "requirement", "RETRIEVAL": "retrieval", "PLANNER": "planner",
-    "ROUTE_PLAN": "route", "VALIDATOR": "validator", "VALIDATE": "validator",
+    "ROUTE_PLAN": "route", "ROUTE_PLANNING": "route", "MEAL_PLANNING": "meal",
+    "HOTEL_PLANNING": "hotel", "VALIDATOR": "validator", "VALIDATE": "validator",
+    "HARD_VALIDATION": "feedback_validator", "FINAL_VALIDATION": "feedback_validator",
     "REVIEW": "review", "REQUIREMENT_REFINEMENT": "requirement_refinement",
-    "SCOPED_REPLANNER": "scoped_replanner",
+    "SCOPED_REPLANNER": "scoped_replanner", "SCOPED_REPLAN": "scoped_replanner",
 }
 
 
@@ -47,7 +49,7 @@ def workflow_node_id(event: dict[str, Any]) -> str | None:
     event_type = str(event.get("event_type") or "").upper()
     if event_type in EVENT_NODE_IDS:
         return EVENT_NODE_IDS[event_type]
-    if event_type in {"STAGE_STARTED", "STAGE_COMPLETED"}:
+    if event_type in {"STAGE_STARTED", "STAGE_COMPLETED", "STAGE_FAILED"}:
         stage = str(event.get("stage") or event.get("details", {}).get("stage") or "").upper()
         return STAGE_NODE_IDS.get(stage)
     return None
@@ -101,14 +103,7 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
     state = {node[0]: "pending" for node in NODES}
     metadata: dict[str, dict[str, Any]] = {}
     recorded_durations: dict[str, int | float] = {}
-    stage_nodes = {
-        "REQUIREMENT": ("requirement",), "RETRIEVAL": ("retrieval", "facts", "constraints"),
-        "PLANNER": ("planner", "route", "meal", "hotel"),
-        "ROUTE_PLAN": ("planner", "route", "meal", "hotel"),
-        "VALIDATOR": ("validator",), "VALIDATE": ("validator",), "REVIEW": ("review",),
-        "REQUIREMENT_REFINEMENT": ("requirement_refinement",),
-        "SCOPED_REPLANNER": ("scoped_replanner",),
-    }
+    stage_nodes = {stage: (node,) for stage, node in STAGE_NODE_IDS.items()}
     observed_types: set[str] = set()
     review_failed = False
     refinement_completed = False
@@ -124,9 +119,9 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
             metadata.setdefault(linked_node, {})["event_type"] = event_type
         nodes = stage_nodes.get(stage, ())
         mapped = "running" if status == "RUNNING" or event_type == "STAGE_STARTED" else "completed"
-        if status in {"FAILED", "ERROR"}: mapped = "failed"
+        if status in {"FAILED", "ERROR"} or event_type == "STAGE_FAILED": mapped = "failed"
         if event_type == "VALIDATOR_BLOCKED":
-            state["validator"] = "failed"; state["repair"] = "running"
+            state["validator"] = "failed"
         elif event_type == "REPLAN_COMPLETED":
             state["scoped_replanner"] = "completed"
         else:
@@ -147,17 +142,16 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
             review_failed = True
             state["review"] = "failed"
             state["requirement_refinement"] = "running"
-        if event_type == "AGENT_COMPLETED" and payload.get("task") == "refine_intent_from_review":
+        if stage == "REQUIREMENT_REFINEMENT" and mapped == "completed":
             refinement_completed = True
-            state["requirement_refinement"] = "completed"
-            state["scoped_replanner"] = "running"
-            metadata.setdefault("requirement_refinement", {})["event_type"] = event_type
-        if event_type in {"REPLAN_COMPLETED", "SCOPED_REPLAN_COMPLETED"}:
+        if event_type in {"REPLAN_COMPLETED", "SCOPED_REPLAN_COMPLETED"} or (
+            stage == "SCOPED_REPLAN" and mapped == "completed"
+        ):
             scoped_replan_completed = True
             state["scoped_replanner"] = "completed"
             state["feedback_validator"] = "running"
             metadata.setdefault("scoped_replanner", {})["event_type"] = event_type
-        elif scoped_replan_completed and stage in {"VALIDATOR", "VALIDATE"}:
+        elif scoped_replan_completed and stage in {"HARD_VALIDATION", "FINAL_VALIDATION"}:
             state["feedback_validator"] = mapped
             metadata.setdefault("feedback_validator", {})["event_type"] = event_type
             if event.get("duration_ms") is not None:

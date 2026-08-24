@@ -48,7 +48,7 @@ class TraceReader:
     def __init__(self, root: str | Path):
         self.root = Path(root)
 
-    def read(self, trip_id: str) -> list[TraceEvent]:
+    def read(self, trip_id: str, plan_version: int | None = None) -> list[TraceEvent]:
         """Return events in append order.
 
         A missing trace represents a trip with no observed events.  Corrupt
@@ -69,9 +69,10 @@ class TraceReader:
                     events.append(self._parse_event(raw, trip_id))
                 except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
                     raise TraceReadError(f"invalid event at {path}:{line_number}: {exc}") from exc
-        return events
+        return [event for event in events
+                if plan_version is None or event.plan_version == plan_version]
 
-    def timeline(self, trip_id: str) -> list[TimelineEntry]:
+    def timeline(self, trip_id: str, plan_version: int | None = None) -> list[TimelineEntry]:
         """Build an explainable timeline from the trip's recorded facts."""
 
         return [
@@ -82,8 +83,23 @@ class TraceReader:
                 actor=event.actor,
                 description=self._describe(event),
             )
-            for event in self.read(trip_id)
+            for event in self.read(trip_id, plan_version)
         ]
+
+    def workflow_projection(self, trip_id: str, plan_version: int) -> dict[str, Any]:
+        """Rebuild a version's graph solely from persisted trace facts."""
+        from dataclasses import asdict
+        from travel_plan.web.server import _stream_event
+        from travel_plan.web.workflow_visualization import workflow_graph
+
+        events = []
+        for event in self.read(trip_id, plan_version):
+            raw = asdict(event)
+            raw["sequence"] = raw.pop("event_id")
+            raw["details"] = raw.pop("payload")
+            raw.pop("trigger_review_number", None)
+            events.append(_stream_event(raw))
+        return workflow_graph(events)
 
     def render(self, trip_id: str) -> str:
         """Render the timeline as stable, human-readable text."""

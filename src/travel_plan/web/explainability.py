@@ -103,8 +103,9 @@ def _route_reason(
     details = []
     if attractions:
         pairs = [f"{a.get('name')} → {b.get('name')}" for a, b in zip(attractions, attractions[1:])]
-        if pairs:
-            details.append(f"按 {'、'.join(pairs)} 连续游览，避免打乱已验证的交通衔接")
+        transport = evidence.get("transport_metrics")
+        if pairs and isinstance(transport, dict) and transport:
+            details.append(f"行程记录的游览顺序为 {'、'.join(pairs)}，对应当日已记录的交通测算")
     return _reason("为什么按这个顺序", details, "Route Plan / Transport Result", {
         "route_order": [node.get("name") for node in attractions],
         "recorded_travel_minutes": travel_minutes,
