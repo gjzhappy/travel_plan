@@ -71,6 +71,25 @@ def test_fixed_hotel_assignment_frames_timeline_without_inventing_time_or_coordi
     assert [node["name"] for node in day["route_visualization"]["nodes"]] == ["外滩"]
 
 
+def test_fixed_hotel_with_recorded_coordinates_closes_map_route_without_numbering_hotel():
+    plan = {
+        "days": [{"day": 1, "date": "2026-09-01", "theme": "城市", "nodes": [
+            {"type": "attraction", "name": "外滩", "start_time": "09:00", "end_time": "10:00",
+             "metadata": {"lat": 31.2, "lon": 121.4}},
+        ]}],
+        "hotels": [{"hotel_id": 3001, "name": "人民广场酒店", "start_day": 1, "end_day": 1}],
+        "budget": {}, "hotel_decision": {},
+    }
+
+    day = present_plan(plan, 1, hotel_locations={3001: {"lat": 31.23, "lon": 121.47}})["days"][0]
+
+    route = day["route_visualization"]
+    assert [(node["marker_label"], node["marker_type"]) for node in route["nodes"]] == [
+        ("H", "hotel"), ("1", "activity")]
+    assert route["edges"] == [{"from": 1, "to": 2}, {"from": 2, "to": 1}]
+    assert route["nodes"][0]["lat"] == 31.23
+
+
 def test_canonical_hotel_change_order_and_coordinate_contract_are_preserved():
     nodes = [
         {"type": "hotel_checkin", "name": "新酒店", "start_time": "20:00", "end_time": "20:30", "metadata": {"lat": 31.3, "lon": 121.5}},
@@ -86,4 +105,4 @@ def test_canonical_hotel_change_order_and_coordinate_contract_are_preserved():
     assert [node["type"] for node in day["timeline"]] == ["hotel_checkout", "luggage_drop", "attraction", "hotel_checkin"]
     assert all(not node.get("presentation_derived") for node in day["timeline"])
     assert [(node["lat"], node["lng"]) for node in day["route_visualization"]["nodes"]] == [(31.1, 121.3), (31.2, 121.4), (31.3, 121.5)]
-    assert [node["marker_label"] for node in day["route_visualization"]["nodes"]] == ["H", "1", "H"]
+    assert [node["marker_label"] for node in day["route_visualization"]["nodes"]] == ["H1", "1", "H2"]

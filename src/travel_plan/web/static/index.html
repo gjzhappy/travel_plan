@@ -56,6 +56,14 @@
           </div>
         </details>
       </section>
+      <section class="final-workflow" id="final-workflow">
+        <details>
+          <summary><span><span class="section-kicker">PLANNING EVIDENCE</span><b>查看 AI 是如何规划这条路线的</b><small>真实执行路径、耗时与可用反馈闭环</small></span><i>＋</i></summary>
+          <div class="workflow-graph" id="result-workflow-graph" aria-label="本次规划最终流程图"></div>
+          <div class="live-trace" id="result-live-trace" aria-label="本次规划最终执行记录"></div>
+          <p class="trace-notice">完成后保留本次真实执行快照；新计划开始时才会清理。流程图不展示模型思考过程。</p>
+        </details>
+      </section>
       <section class="modify-card"><div><span class="section-kicker">继续优化</span><h3>修改今天安排</h3><p>例如“第二天少走一点路”。将沿用已有重新规划能力。</p></div><form id="modify-form"><select id="modify-scope" aria-label="修改范围"><option value="GLOBAL">整份行程</option><option value="DAY">某一天</option><option value="NODE">某个景点</option><option value="MEAL">餐饮安排</option></select><input id="modify-target" placeholder="哪一天或地点（可选）"><input id="modify-instruction" required placeholder="第二天少走一点路"><button class="submit" type="submit">重新规划 <b>→</b></button></form></section>
     </section>
   </main>

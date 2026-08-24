@@ -26,7 +26,8 @@ def test_explainability_uses_only_plan_and_recorded_events():
     assert [item["event_id"] for item in result["trace"]] == [1, 2]
     assert "不参与" in result["notice"]
     assert [reason["category"] for reason in result["days"][0]["reasons"]] == [
-        "用户需求匹配", "路线原因", "时间约束", "节奏原因",
+        "为什么选择这些地点", "为什么按这个顺序", "为什么在这个时间去",
+        "为什么这样安排餐饮", "为什么这样安排住宿", "旅行节奏",
     ]
 
 
@@ -51,6 +52,40 @@ def test_explainability_reports_missing_evidence_instead_of_inventing_it():
     result = build_explainability(plan, [], 1, {})
 
     reasons = result["days"][0]["reasons"]
-    assert reasons[0]["details"] == ["暂无数据"]
-    assert reasons[2]["details"] == ["暂无数据"]
+    assert reasons[0]["details"] == []
+    assert reasons[2]["details"] == []
     assert all(not reason["available"] for reason in (reasons[0], reasons[2], reasons[3]))
+
+
+def test_decision_evidence_connects_real_constraints_meal_and_hotel_facts():
+    attraction = {"type": "attraction", "name": "西岸美术馆", "start_time": "14:20",
+                  "end_time": "15:50", "duration_min": 8,
+                  "metadata": {"category": "美术馆", "latest_entry_time": "16:30",
+                               "closing_time": "17:00"}}
+    meal = {"type": "dinner", "name": "本帮菜馆", "duration_min": 10,
+            "metadata": {"detour_min": 11, "previous_node": "西岸美术馆",
+                         "next_node": "人民广场酒店"}}
+    plan = {"days": [{"day": 1, "theme": "艺术", "nodes": [attraction, meal]}],
+            "hotels": [{"hotel_id": 3001, "name": "人民广场酒店", "start_day": 1, "end_day": 1}]}
+    requirement = {"interests": ["美术馆"], "must_visit": ["西岸美术馆"]}
+
+    reasons = build_explainability(plan, [], 1, requirement)["days"][0]["reasons"]
+    text = " ".join(detail for reason in reasons for detail in reason["details"])
+
+    assert "明确指定的必去地点" in text
+    assert "满足 16:30 最晚入场要求" in text
+    assert "仅增加约 11 分钟绕行" in text
+    assert "避免额外换酒店和搬运行李" in text
+    assert "已记录" not in text
+    meal_reason = next(reason for reason in reasons if reason["category"] == "为什么这样安排餐饮")
+    assert meal_reason["evidence"]["meals"][0]["detour_min"] == 11
+
+
+def test_missing_detour_and_non_constraining_time_do_not_invent_explanations():
+    plan = {"days": [{"day": 1, "theme": "自由", "nodes": [
+        {"type": "attraction", "name": "公园", "start_time": "09:00", "end_time": "10:00", "metadata": {}},
+        {"type": "lunch", "name": "餐厅", "metadata": {}},
+    ]}]}
+    reasons = build_explainability(plan, [], 1)["days"][0]["reasons"]
+    assert not next(r for r in reasons if r["category"] == "为什么在这个时间去")["available"]
+    assert not next(r for r in reasons if r["category"] == "为什么这样安排餐饮")["available"]
