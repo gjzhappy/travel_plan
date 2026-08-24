@@ -21,6 +21,9 @@ def _scope_text(scope: str | None, day: Any = None) -> str:
         return f"仅调整第 {day} 天的规划约束。"
     return {"NODE": "仅调整相关行程节点。", "MEAL": "仅调整餐饮安排。", "GLOBAL": "重新调整整体行程约束。"}.get(str(scope or "").upper(), "")
 
+def _day_list(days: list[Any]) -> str:
+    return "、".join(str(day) for day in days)
+
 def planning_story(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Aggregate lifecycle events; heartbeats and generic events add no row."""
     story, positions, occurrences, active = [], {}, {}, {}
@@ -57,8 +60,14 @@ def planning_story(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
         failed = status in {"FAILED", "ERROR"} or event_type == "STAGE_FAILED"
         state = "failed" if failed else ("running" if event_type == "STAGE_STARTED" or status == "RUNNING" else "completed")
         detail = running if state == "running" else ("执行失败。" if failed else complete)
-        scope = _scope_text(event.get("scope"), event.get("target_day"))
+        affected_days = event.get("affected_days") or []
+        scope = (_scope_text(event.get("scope"), event.get("target_day"))
+                 if len(affected_days) <= 1 else
+                 f"根据体验审核结果，对第 {_day_list(affected_days)} 天进行了局部调整。")
         if scope and stage in {"REQUIREMENT_REFINEMENT", "SCOPED_REPLAN"}: detail = scope if state != "running" else f"{detail} {scope}"
-        if stage == "SCOPED_REPLAN" and event.get("target_day"): title = f"调整第 {event['target_day']} 天行程" if state == "running" else f"第 {event['target_day']} 天已重新规划"
+        if stage == "SCOPED_REPLAN" and len(affected_days) > 1:
+            title = f"正在调整第 {_day_list(affected_days)} 天行程" if state == "running" else f"第 {_day_list(affected_days)} 天已重新规划"
+        elif stage == "SCOPED_REPLAN" and event.get("target_day"):
+            title = f"调整第 {event['target_day']} 天行程" if state == "running" else f"第 {event['target_day']} 天已重新规划"
         put((stage, number), {"id": f"{stage.lower()}-{number}", "stage": stage, "node_id": event.get("workflow_node_id"), "title": title, "status": state, "detail": detail, "issues": []})
     return story

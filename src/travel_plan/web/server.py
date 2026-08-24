@@ -489,7 +489,8 @@ def _stream_event(event):
     }
     # These are deterministic routing facts used by the visualization.  Prompts,
     # review text, and model reasoning stay behind the presentation boundary.
-    for key in ("passed", "issues", "task", "scope", "target_day", "iteration", "review_number", "trigger_review_number"):
+    for key in ("passed", "issues", "task", "scope", "target_day", "affected_days",
+                "iteration", "review_number", "trigger_review_number"):
         if key in details:
             presented[key] = details[key]
     presented["workflow_node_id"] = workflow_node_id(presented)

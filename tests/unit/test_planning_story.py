@@ -36,6 +36,17 @@ def test_review_advisory_uses_only_real_issue_and_drives_scoped_loop_story():
     assert story[2]["title"] == "第 2 天已重新规划"
 
 
+def test_multi_day_review_replan_story_reports_every_affected_day():
+    story = planning_story([
+        event("STAGE_STARTED", "SCOPED_REPLAN", "RUNNING", scope="DAY",
+              target_day=None, affected_days=[2, 3, 4]),
+        event("STAGE_COMPLETED", "SCOPED_REPLAN", scope="DAY",
+              target_day=None, affected_days=[2, 3, 4]),
+    ])
+    assert story[0]["title"] == "第 2、3、4 天已重新规划"
+    assert "第 2、3、4 天" in story[0]["detail"]
+
+
 def test_review_pass_has_no_fake_issue_and_missing_issue_stays_generic():
     passed = planning_story([event("STAGE_STARTED", "REVIEW", "RUNNING"), event("REVIEW_COMPLETED", "REVIEW", passed=True, issues=[])])
     assert passed[0]["status"] == "completed" and passed[0]["issues"] == []
