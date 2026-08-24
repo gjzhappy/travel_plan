@@ -33,6 +33,7 @@ EVENT_NODE_IDS = {
     "SCOPED_REPLAN_COMPLETED": "scoped_replanner",
     "PLAN_VERSION_SAVED": "output",
     "WORKFLOW_COMPLETED": "output",
+    "QUALITY_REVIEW_BLOCKED": "output",
 }
 STAGE_NODE_IDS = {
     "REQUIREMENT": "requirement", "RETRIEVAL": "retrieval", "PLANNER": "planner",
@@ -136,6 +137,7 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         if event_type == "PLAN_GENERATED": state["planner"] = "completed"
         if event_type == "PLAN_VERSION_SAVED": state["output"] = "completed"
         if event_type == "WORKFLOW_COMPLETED": state["output"] = "completed"
+        if event_type == "QUALITY_REVIEW_BLOCKED": state["output"] = "failed"
         failed_review_event = event_type == "REVIEW_FAILED" or (
             event_type == "REVIEW_COMPLETED" and payload.get("passed") is False
         )

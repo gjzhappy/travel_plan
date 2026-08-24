@@ -27,9 +27,11 @@ class RoutePlanner:
         # This is only a computational/safety ceiling.  Feasibility below (time,
         # travel, opening hours and meal reservations), rather than a pace-specific
         # POI quota, decides when a day is full.
-        cap=self.config.max_pois_per_day
         remaining=list(pois); days=[]
         for index in range(req.days):
+            day_number=index+1
+            configured=req.day_constraints.get(day_number,{}).get("max_attractions")
+            cap=min(self.config.max_pois_per_day,configured) if configured is not None else self.config.max_pois_per_day
             day_date=date.fromisoformat(req.start_date)+timedelta(days=index)
             feasible=[p for p in remaining if hours_for_day(p.opening_hours,day_date)]
             # Candidate retrieval is relevance-led. Spatial decisions below use
@@ -38,6 +40,9 @@ class RoutePlanner:
             anchor=max(feasible,key=lambda p:p.priority)
             required_ids=_must_visit_ids(req)
             required_candidates=[p for p in feasible if p.poi_id in required_ids]
+            # Explicit must-visits outrank the repair capacity. If hard intent
+            # itself exceeds the quality limit, review remains fail-closed.
+            cap=max(cap,len(required_candidates))
             optional=sorted(
                 (p for p in feasible if p.poi_id not in required_ids),
                 key=lambda p:-(p.priority-self.transport.route(_loc(anchor),_loc(p),req.transport).duration_min*.7),
@@ -69,6 +74,10 @@ class RoutePlanner:
         """Plan exactly one requested day; it never evaluates another day."""
         from copy import copy
         local=copy(req);local.days=1;local.start_date=(date.fromisoformat(req.start_date)+timedelta(days=day_number-1)).isoformat()
+        # ``plan`` numbers its one-day local horizon from 1; project the real
+        # trip day's constraint into that local coordinate system.
+        local.day_constraints=({1: dict(req.day_constraints[day_number])}
+                               if day_number in req.day_constraints else {})
         if required_poi_ids is not None:
             # Scoped callers preserve only hard intents currently assigned to the
             # affected day. A must-visit already satisfied elsewhere is protected
