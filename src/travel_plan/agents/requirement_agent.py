@@ -72,6 +72,10 @@ class RequirementAgent:
         meal="dinner" if "晚" in text else "lunch"
         start_date=existing.start_date if existing else (self.reference_date or date.today()).isoformat()
         req=Requirement(city,days,start_date,party,interests,pace,"public_transit" if "公共交通" in text or not existing else existing.transport,"low" if "少走路" in text else (existing.walking if existing else "medium"),must,rejected,rejected_categories,foods,True,lodging,changes,budget," ".join(interests+must+(["亲子"] if party.child else [])),True,scope,day_no,None,target_name,meal if scope=="MEAL" else None,foods if scope=="MEAL" else [])
+        req.must_eat=list(existing.must_eat) if existing else []
+        explicit_meal=re.search(r"(?:必须吃|一定要吃|指定餐厅[:：]?)([^，。；,;]{2,24})",text)
+        if explicit_meal and explicit_meal.group(1).strip() not in req.must_eat:
+            req.must_eat.append(explicit_meal.group(1).strip())
         return req,{"scope":scope,"day":day_no,"meal":"dinner" if "晚" in text else "lunch","lock_day":lock}
 
     def refine(self,requirement,review,current_plan=None):

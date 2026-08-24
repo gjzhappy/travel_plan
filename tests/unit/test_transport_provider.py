@@ -6,13 +6,23 @@ def test_popular_route_comes_from_cache():
     provider = HierarchicalMockTransportProvider()
 
     result = provider.route(
-        Location("外滩", 31.25, 121.48),
-        Location("东方明珠", 31.35, 121.58),
+        Location("外滩", 31.24, 121.49),
+        Location("东方明珠", 31.24, 121.50),
     )
 
     assert result.source == "mock_cache"
     assert result.mode == "metro"
     assert result.duration_min == 15
+
+
+def test_stale_named_cache_falls_back_when_coordinates_disagree():
+    provider = HierarchicalMockTransportProvider()
+    result = provider.route(
+        Location("外滩",31.10,121.20),
+        Location("东方明珠",31.35,121.60),
+    )
+    assert result.source=="rule_estimate"
+    assert result.distance_km>40
 
 
 def test_uncached_route_uses_stable_rule_estimate():

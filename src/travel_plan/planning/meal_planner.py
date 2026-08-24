@@ -33,10 +33,14 @@ class MealPlanner:
                 if cost>max(1,req.budget)*.12:continue
                 a=self.map.route(_loc(previous,hotel),_loc(r),req.transport);b=self.map.route(_loc(r),_loc(next_node,hotel),req.transport);direct=self.map.route(_loc(previous,hotel),_loc(next_node,hotel),req.transport)
                 detour=max(0,a.duration_min+b.duration_min-direct.duration_min)
-                if detour>45:continue
-                pref=40 if r.cuisine in req.food_preferences else 0
+                explicit=r.name in req.must_eat
+                if detour>45 and not explicit:continue
+                # Cuisine is a meaningful soft preference, but a generic match
+                # must not buy an otherwise needless cross-city meal detour.
+                pref=18 if r.cuisine in req.food_preferences else 0
                 duplicate = r.restaurant_id in used_restaurants
-                candidates.append((duplicate,pref-detour-r.price_per_person*.05,r,detour,a,b,cost))
+                score=(10_000 if explicit else 0)+pref-detour-r.price_per_person*.05
+                candidates.append((duplicate,score,r,detour,a,b,cost))
             if not candidates:continue
             # Exclude an already-used restaurant whenever another feasible choice
             # exists.  A duplicate remains a deterministic fallback for a sparse DB.
@@ -44,7 +48,7 @@ class MealPlanner:
             duplicate,_,r,detour,leg,next_leg,cost=max(distinct or candidates,key=lambda x:x[1])
             arrival=(datetime.combine(day_date,datetime.strptime(previous.end_time if isinstance(previous,Node) else window[0],"%H:%M").time())+timedelta(minutes=leg.duration_min))
             start=max(arrival,datetime.combine(day_date,at));end=start+timedelta(minutes=60)
-            node=Node(meal,r.name,start.strftime("%H:%M"),end.strftime("%H:%M"),None,req.transport,leg.distance_km,leg.duration_min,cost,{"restaurant_id":r.restaurant_id,"cuisine":r.cuisine,"price_per_person":r.price_per_person,"detour_min":detour,"opening_hours":r.opening_hours,"lat":r.lat,"lon":r.lon,"next_travel_min":next_leg.duration_min,"previous_node":previous.name,"next_node":next_node.name,"duplicate_reason":"only feasible restaurant" if duplicate else None})
+            node=Node(meal,r.name,start.strftime("%H:%M"),end.strftime("%H:%M"),None,req.transport,leg.distance_km,leg.duration_min,cost,{"restaurant_id":r.restaurant_id,"cuisine":r.cuisine,"price_per_person":r.price_per_person,"detour_min":detour,"explicit_preference":r.name in req.must_eat,"opening_hours":r.opening_hours,"lat":r.lat,"lon":r.lon,"next_travel_min":next_leg.duration_min,"previous_node":previous.name,"next_node":next_node.name,"duplicate_reason":"only feasible restaurant" if duplicate else None})
             pos=day.nodes.index(previous)+1 if isinstance(previous,Node) and previous in day.nodes else len(day.nodes);day.nodes.insert(pos,node)
             if isinstance(next_node,Node):
                 earliest=end+timedelta(minutes=next_leg.duration_min);current=datetime.combine(day_date,datetime.strptime(next_node.start_time,"%H:%M").time())

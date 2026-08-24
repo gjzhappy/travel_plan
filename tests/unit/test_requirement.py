@@ -24,3 +24,6 @@ def test_budget_change_and_validation():
     with pytest.raises(RequirementError):Requirement(days=0)
     with pytest.raises(RequirementError):Requirement(start_date="bad")
 
+def test_explicit_restaurant_is_preserved_as_hard_meal_intent():
+    req=RequirementAgent().parse("上海一日游，必须吃远方餐厅")[0]
+    assert req.must_eat==["远方餐厅"]

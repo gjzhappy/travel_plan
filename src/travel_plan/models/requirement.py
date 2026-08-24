@@ -36,6 +36,7 @@ class Requirement:
     target_poi_name: str | None = None
     target_meal: str | None = None
     replacement_constraints: list[str] = field(default_factory=list)
+    must_eat: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         errors = []

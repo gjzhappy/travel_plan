@@ -58,3 +58,61 @@ def test_route_order_changes_when_transport_cost_changes():
  assert [n.name for n in first[0].nodes]==["A","B"]
  assert [n.name for n in second[0].nodes]==["B","A"]
  assert first[0].route_score != 0 and second[0].route_score != 0
+
+
+class MatrixTransport:
+ def __init__(self,durations):self.durations=durations
+ def route(self,origin,destination,preference=None):
+  from travel_plan.retrieval.transport_provider import TransportResult
+  duration=self.durations.get((origin.name,destination.name),self.durations.get((destination.name,origin.name),5))
+  return TransportResult("metro",duration,1,3,0,"test_matrix")
+
+
+def test_lunch_prefers_lower_detour_over_small_quality_gain():
+ hotel=SimpleNamespace(name="hotel",lat=31,lon=121)
+ day=DayPlan(1,"2026-08-19","",[
+  Node("attraction","A","09:00","11:00",metadata={"lat":31,"lon":121}),
+  Node("attraction","B","13:00","14:00",metadata={"lat":31.1,"lon":121.1}),
+ ])
+ near=Restaurant(1,"Near","本帮菜","one",31.01,121.01,80,H)
+ far=Restaurant(2,"Far","本帮菜","two",31.5,121.5,60,H)
+ transport=MatrixTransport({("A","Near"):8,("Near","B"):10,("A","Far"):35,("Far","B"):40,("A","B"):10})
+ req=Requirement(start_date="2026-08-19",food_preferences=["本帮菜"],budget=5000)
+ MealPlanner(transport,Config()).insert(day,[near,far],req,hotel,only_meal="lunch")
+ lunch=next(n for n in day.nodes if n.type=="lunch")
+ assert lunch.name=="Near" and lunch.metadata["detour_min"]==8
+
+
+def test_must_eat_overrides_meal_detour():
+ hotel=SimpleNamespace(name="hotel",lat=31,lon=121)
+ day=DayPlan(1,"2026-08-19","",[
+  Node("attraction","A","09:00","11:00",metadata={"lat":31,"lon":121}),
+  Node("attraction","B","13:00","14:00",metadata={"lat":31.1,"lon":121.1}),
+ ])
+ near=Restaurant(1,"Near","本帮菜","one",31.01,121.01,80,H)
+ far=Restaurant(2,"Far","本帮菜","two",31.5,121.5,60,H)
+ transport=MatrixTransport({("A","Near"):8,("Near","B"):10,("A","Far"):35,("Far","B"):40,("A","B"):10})
+ req=Requirement(start_date="2026-08-19",must_eat=["Far"],budget=5000)
+ MealPlanner(transport,Config()).insert(day,[near,far],req,hotel,only_meal="lunch")
+ assert next(n for n in day.nodes if n.type=="lunch").name=="Far"
+
+
+def test_route_penalizes_zig_zag_but_keeps_high_value_poi():
+ hotel=SimpleNamespace(name="hotel",lat=31,lon=121)
+ pois=[p(21,"A","one",50),p(22,"B","two",51),p(23,"C","one",50)]
+ durations={("hotel","A"):5,("hotel","B"):40,("hotel","C"):5,
+            ("A","B"):40,("B","C"):40,("A","C"):10}
+ req=Requirement(days=1,start_date="2026-08-19",include_meals=False)
+ day=RoutePlanner(MatrixTransport(durations),Config()).plan(pois,req,hotel)[0]
+ assert [n.name for n in day.nodes] != ["A","B","C"]
+ assert {n.name for n in day.nodes}=={"A","B","C"}
+
+
+def test_dinner_scores_complete_path_to_hotel():
+ hotel=SimpleNamespace(name="hotel",lat=31,lon=121)
+ day=DayPlan(1,"2026-08-19","",[Node("attraction","Last","15:00","17:00",metadata={"lat":31,"lon":121})])
+ a=Restaurant(1,"A","本帮菜","one",31.1,121.1,50,H);b=Restaurant(2,"B","本帮菜","two",31.2,121.2,50,H)
+ transport=MatrixTransport({("Last","A"):5,("A","hotel"):45,("Last","B"):10,("B","hotel"):10,("Last","hotel"):15})
+ MealPlanner(transport,Config()).insert(day,[a,b],Requirement(start_date="2026-08-19",budget=5000),hotel,only_meal="dinner")
+ dinner=next(n for n in day.nodes if n.type=="dinner")
+ assert dinner.name=="B" and dinner.metadata["next_node"]=="hotel"

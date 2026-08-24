@@ -21,10 +21,16 @@ class RoutePlanner:
         for index in range(req.days):
             day_date=date.fromisoformat(req.start_date)+timedelta(days=index)
             feasible=[p for p in remaining if hours_for_day(p.opening_hours,day_date)]
-            # Region-aware selection, while never starving high priority must-visits.
-            anchor=max(feasible,key=lambda p:p.priority,default=None)
-            if not anchor: days.append(DayPlan(index+1,day_date.isoformat(),"自由活动",[])); continue
-            regional=sorted(feasible,key=lambda p:(p.district!=anchor.district,-p.priority))[:self.config.route_candidate_limit]
+            # Candidate retrieval is relevance-led. Spatial decisions below use
+            # provider durations, never administrative district labels.
+            if not feasible: days.append(DayPlan(index+1,day_date.isoformat(),"自由活动",[])); continue
+            anchor=max(feasible,key=lambda p:p.priority)
+            required_candidates=[p for p in feasible if p.name in req.must_visit]
+            optional=sorted(
+                (p for p in feasible if p.name not in req.must_visit),
+                key=lambda p:-(p.priority-self.transport.route(_loc(anchor),_loc(p),req.transport).duration_min*.7),
+            )
+            regional=(required_candidates+optional)[:max(self.config.route_candidate_limit,len(required_candidates))]
             best=None; selected=[]
             required={p.name for p in regional if p.name in req.must_visit}
             for count in range(min(cap,len(regional)),0,-1):
@@ -60,6 +66,7 @@ class RoutePlanner:
         )
         for order in permutations(pois):
             now=_dt(day,self.config.daily_start_time); current=hotel; nodes=[]; total_priority=transport=transport_penalty=waiting=repeated=0; previous_cat=None; valid=True
+            locations=[hotel]
             for p in order:
                 leg=self.transport.route(_loc(current),_loc(p),mode); arrival=now+timedelta(minutes=leg.duration_min); window=hours_for_day(p.opening_hours,day)
                 if not window: valid=False;break
@@ -86,8 +93,14 @@ class RoutePlanner:
                     transport_penalty += leg.duration_min * (0.15 if leg.mode=="taxi" else 0)
                 repeated+=int(previous_cat==p.category); previous_cat=p.category; total_priority+=p.priority
                 nodes.append(Node("attraction",p.name,start.strftime("%H:%M"),end.strftime("%H:%M"),p.poi_id,leg.mode,leg.distance_km,leg.duration_min,p.ticket_price,{"category":p.category,"priority":p.priority,"must_visit":p.name in req.must_visit,"opening_hours":p.opening_hours,"reservation_required":p.reservation_required,"latest_entry_time":latest,"lat":p.lat,"lon":p.lon}))
-                now=end+timedelta(minutes=buffer_min);current=p
+                locations.append(p);now=end+timedelta(minutes=buffer_min);current=p
             if valid:
-                score=route_score(total_priority,transport+transport_penalty,waiting,max(0,(transport+sum(p.duration_min for p in order)-600)*tightness),repeated)
+                discontinuity=0
+                for a,b,c in zip(locations,locations[1:],locations[2:]):
+                    via=(self.transport.route(_loc(a),_loc(b),mode).duration_min+
+                         self.transport.route(_loc(b),_loc(c),mode).duration_min)
+                    direct=self.transport.route(_loc(a),_loc(c),mode).duration_min
+                    discontinuity+=max(0,via-direct)
+                score=route_score(total_priority,transport+transport_penalty,waiting,max(0,(transport+sum(p.duration_min for p in order)-600)*tightness),repeated,discontinuity)
                 if best is None or score>best[1]: best=(nodes,score)
         return best

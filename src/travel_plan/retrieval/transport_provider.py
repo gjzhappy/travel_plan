@@ -52,11 +52,17 @@ class HierarchicalMockTransportProvider:
         cached = self._routes.get(frozenset((from_poi.name, to_poi.name)))
         if cached:
             option = self._select(cached["options"], preference)
-            return TransportResult(
-                option["mode"], option["duration_min"],
-                option.get("distance_km", distance), option["walking_minutes"],
-                option["transfer_count"], "mock_cache", self.retrieved_at,
-            )
+            cached_distance = option.get("distance_km", distance)
+            # Names alone cannot make a cached corridor authoritative. Seed data
+            # can move or be replaced, so reject a cache entry whose geometry no
+            # longer agrees with the supplied coordinates and use the same generic
+            # geographic fallback as every uncached pair.
+            if abs(cached_distance-distance) <= max(2.0,cached_distance*.5):
+                return TransportResult(
+                    option["mode"], option["duration_min"], cached_distance,
+                    option["walking_minutes"], option["transfer_count"],
+                    "mock_cache", self.retrieved_at,
+                )
         return self._estimate(distance, preference)
 
     @staticmethod
