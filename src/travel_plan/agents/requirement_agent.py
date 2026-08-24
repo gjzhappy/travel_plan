@@ -16,6 +16,15 @@ _REVIEW_REFINEMENT_FIELDS = {
 }
 
 
+def _explicit_must_visits(text: str) -> list[str]:
+    """Extract only phrases that the user explicitly marks as mandatory."""
+    matches = re.findall(r"(?:必须(?:包含|去))\s*([^，。；,;]{2,30})", text)
+    matches += re.findall(r"([^，。；,;]{2,30}?)\s*一定要去", text)
+    cleaned = ("上海迪士尼" if match.strip() == "迪士尼" else match.strip()
+               for match in matches if match.strip())
+    return list(dict.fromkeys(cleaned))
+
+
 def preserve_user_intent(original: Requirement, proposed: Requirement) -> Requirement:
     """Apply only review-owned refinements to a copy of user-owned intent."""
     result = deepcopy(original)
@@ -45,7 +54,8 @@ class RequirementAgent:
         for word in ("科技","自然","夜景","历史","艺术","亲子"):
             if word in text and word not in interests:interests.append(word)
         must=list(existing.must_visit) if existing else []
-        if "必须去迪士尼" in text and "上海迪士尼" not in must:must.append("上海迪士尼")
+        for place in _explicit_must_visits(text):
+            if place not in must:must.append(place)
         rejected=list(existing.rejected_pois) if existing else [];rejected_categories=list(existing.rejected_categories) if existing else []
         if "不要去博物馆" in text or "不要再推荐博物馆" in text:
             if "博物馆" not in rejected_categories:rejected_categories.append("博物馆")

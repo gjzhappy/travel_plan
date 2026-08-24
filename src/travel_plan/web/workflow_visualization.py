@@ -105,7 +105,7 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
     recorded_durations: dict[str, int | float] = {}
     stage_nodes = {stage: (node,) for stage, node in STAGE_NODE_IDS.items()}
     observed_types: set[str] = set()
-    review_failed = False
+    review_advisory = False
     refinement_completed = False
     scoped_replan_completed = False
     for event in events:
@@ -133,15 +133,18 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
             # represented by several presentation nodes.
             recorded_durations[stage or event_type] = event["duration_ms"]
         if event_type == "WORKFLOW_STARTED": state["input"] = "completed"
+        if event_type == "PLAN_GENERATED": state["planner"] = "completed"
         if event_type == "PLAN_VERSION_SAVED": state["output"] = "completed"
         if event_type == "WORKFLOW_COMPLETED": state["output"] = "completed"
         failed_review_event = event_type == "REVIEW_FAILED" or (
             event_type == "REVIEW_COMPLETED" and payload.get("passed") is False
         )
         if failed_review_event:
-            review_failed = True
-            state["review"] = "failed"
-            state["requirement_refinement"] = "running"
+            # The Review Agent executed successfully. ``passed=false`` is a
+            # business advisory that can trigger refinement, not a failed
+            # stage lifecycle or evidence that refinement has started.
+            review_advisory = True
+            state["review"] = "completed"
         if stage == "REQUIREMENT_REFINEMENT" and mapped == "completed":
             refinement_completed = True
         if event_type in {"REPLAN_COMPLETED", "SCOPED_REPLAN_COMPLETED"} or (
@@ -174,7 +177,7 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
         if source == "review":
             if "REQUIREMENT_REFINEMENT_STARTED" in observed_types:
                 return "active"
-            return "executed" if review_failed else "available"
+            return "executed" if review_advisory else "available"
         if source == "requirement_refinement":
             if "SCOPED_REPLAN_STARTED" in observed_types:
                 return "active"

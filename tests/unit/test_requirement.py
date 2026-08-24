@@ -27,3 +27,12 @@ def test_budget_change_and_validation():
 def test_explicit_restaurant_is_preserved_as_hard_meal_intent():
     req=RequirementAgent().parse("上海一日游，必须吃远方餐厅")[0]
     assert req.must_eat==["远方餐厅"]
+
+
+@pytest.mark.parametrize(("text", "expected"), [
+    ("上海4天，必须包含上海迪士尼乐园。", "上海迪士尼乐园"),
+    ("上海3天，上海迪士尼一定要去。", "上海迪士尼"),
+    ("上海2天，不存在的测试景点ABC一定要去。", "不存在的测试景点ABC"),
+])
+def test_explicit_must_visit_phrasings_are_preserved(text, expected):
+    assert RequirementAgent().parse(text)[0].must_visit == [expected]

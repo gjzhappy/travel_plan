@@ -69,7 +69,13 @@ class RoutePlanner:
         """Plan exactly one requested day; it never evaluates another day."""
         from copy import copy
         local=copy(req);local.days=1;local.start_date=(date.fromisoformat(req.start_date)+timedelta(days=day_number-1)).isoformat()
-        local.resolved_must_visit=[item for item in req.resolved_must_visit if any(p.poi_id==item["poi_id"] for p in pois)] if day_number==1 else []
+        if day_number == 1:
+            local.resolved_must_visit=[item for item in req.resolved_must_visit if any(p.poi_id==item["poi_id"] for p in pois)]
+        else:
+            # A whole-trip must-visit is scheduled once by the global plan. A
+            # later scoped day replan must not re-resolve and duplicate it.
+            local.must_visit=[]
+            local.resolved_must_visit=[]
         result=self.plan(pois,local,hotel)[0];result.day=day_number
         return result
     def _best_order(self,pois,day,hotel,req):

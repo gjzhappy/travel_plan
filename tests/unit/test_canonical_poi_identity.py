@@ -4,8 +4,11 @@ import pytest
 
 from travel_plan.agents.requirement_agent import preserve_user_intent
 from travel_plan.errors import MustVisitResolutionError
+from travel_plan.config import Config
+from travel_plan.models.trip import DayPlan
 from travel_plan.models.poi import POI
 from travel_plan.models.requirement import Requirement
+from travel_plan.planning.route_planner import RoutePlanner
 from travel_plan.retrieval.poi_resolver import CanonicalPOIResolver
 from travel_plan.retrieval.qdrant_repository import QdrantRepository
 from travel_plan.retrieval.service import RetrievalService
@@ -84,3 +87,23 @@ def test_review_refinement_and_persistence_representation_preserve_identity():
     assert refined.resolved_must_visit == original.resolved_must_visit
     assert "resolved_must_visit" in refined.to_dict(include_resolution=True)
     assert "resolved_must_visit" not in refined.to_dict()
+
+
+def test_scoped_replan_does_not_duplicate_whole_trip_must_visit(monkeypatch):
+    planner = RoutePlanner(None, Config())
+    requirement = Requirement(days=4, must_visit=["上海迪士尼"], resolved_must_visit=[{
+        "source_text": "上海迪士尼", "status": "resolved", "poi_id": 1046,
+        "canonical_name": "上海迪士尼乐园", "matched_by": "alias",
+        "matched_value": "上海迪士尼", "candidates": [],
+    }])
+    observed = {}
+
+    def capture(_pois, local, _hotel):
+        observed["must_visit"] = local.must_visit
+        observed["resolved_must_visit"] = local.resolved_must_visit
+        return [DayPlan(1, local.start_date, "测试", [])]
+
+    monkeypatch.setattr(planner, "plan", capture)
+    planner.plan_day([], requirement, object(), 2)
+
+    assert observed == {"must_visit": [], "resolved_must_visit": []}
