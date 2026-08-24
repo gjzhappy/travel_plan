@@ -24,7 +24,7 @@ class HardValidator:
                     if not can_visit(hours,date.fromisoformat(day.date),start,int((datetime.combine(date.today(),end)-datetime.combine(date.today(),start)).seconds/60)):
                         issues.append(ValidationIssue("poi_closed_or_late",f"{n.name} is closed, too late, or duration does not fit",day.day,n.name))
                 if n.type in {"lunch","dinner"} and not can_visit(n.metadata.get("opening_hours",{}),date.fromisoformat(day.date),start,60): issues.append(ValidationIssue("restaurant_closed",f"{n.name} is closed",day.day,n.name))
-                if n.metadata.get("detour_min",0)>45:issues.append(ValidationIssue("meal_detour",f"{n.name} detour too large",day.day,n.name))
+                if n.metadata.get("detour_min",0)>45 and not n.metadata.get("explicit_preference"):issues.append(ValidationIssue("meal_detour",f"{n.name} detour too large",day.day,n.name))
                 if index:
                     prior=ordered[index-1]
                     prior_end=datetime.combine(date.fromisoformat(day.date),datetime.strptime(prior.end_time,"%H:%M").time())
