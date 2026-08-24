@@ -156,6 +156,8 @@ def workflow_graph(events: list[dict[str, Any]]) -> dict[str, Any]:
             state["scoped_replanner"] = "completed"
             state["feedback_validator"] = "running"
             metadata.setdefault("scoped_replanner", {})["event_type"] = event_type
+            if payload.get("affected_days"):
+                metadata["scoped_replanner"]["affected_days"] = payload["affected_days"]
         elif scoped_replan_completed and stage in {"HARD_VALIDATION", "FINAL_VALIDATION"}:
             state["feedback_validator"] = mapped
             metadata.setdefault("feedback_validator", {})["event_type"] = event_type

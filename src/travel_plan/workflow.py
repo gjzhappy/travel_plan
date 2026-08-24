@@ -130,8 +130,9 @@ class TravelWorkflow:
             })
             shortlist=self.retrieval.shortlist(req)
             scope=req.scope;affected=req.target_day;did_replan=False
+            event_target_day=(affected_days[0] if len(affected_days)==1 else None) if affected_days else affected
             replan_started=monotonic()
-            self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected,"affected_days":affected_days})
+            self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":event_target_day,"affected_days":affected_days})
             if affected_days:
                 # One review/refinement iteration may perform several existing
                 # DAY replans. Each replacement sees the latest full plan so its
@@ -165,7 +166,7 @@ class TravelWorkflow:
                 plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
                 did_replan=True
             if did_replan:
-                self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"trigger_review_number":plan.review_count,"scope":"DAY" if affected_days else scope,"target_day":affected,"affected_days":affected_days,"duration_ms":self._elapsed(replan_started)})
+                self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"trigger_review_number":plan.review_count,"scope":"DAY" if affected_days else scope,"target_day":event_target_day,"affected_days":affected_days,"duration_ms":self._elapsed(replan_started)})
             else:
                 self._event(plan.trip_id,version,parent_version,"STAGE_FAILED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected,"duration_ms":self._elapsed(replan_started)})
             revalidation_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","validator",{"stage":"HARD_VALIDATION","iteration":plan.review_count})

@@ -253,3 +253,13 @@ def test_feedback_validator_state_follows_only_post_replan_validation_events():
     assert node["status"] == "completed"
     assert node["event_type"] == "STAGE_COMPLETED"
     assert node["duration_ms"] == 42
+
+
+def test_scoped_replanner_exposes_all_observed_affected_days():
+    graph = workflow_graph([
+        {"event_type": "STAGE_COMPLETED", "stage": "SCOPED_REPLAN",
+         "scope": "DAY", "affected_days": [2, 3, 4]},
+    ])
+    node = next(node for node in graph["nodes"] if node["id"] == "scoped_replanner")
+    assert node["status"] == "completed"
+    assert node["affected_days"] == [2, 3, 4]
