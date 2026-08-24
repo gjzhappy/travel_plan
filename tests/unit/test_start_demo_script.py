@@ -78,3 +78,43 @@ def test_posix_launcher_delegates_to_python_launcher():
     assert "start_demo.py" in content
     assert '"$@"' in content
     assert "agent-mode" not in content
+
+
+def test_bat_prints_feedback_before_python_invocation():
+    lines = [line.strip().lower() for line in BAT.read_text(encoding="ascii").splitlines()]
+    title = next(index for index, line in enumerate(lines) if "shanghai ai travel planner demo" in line)
+    launching = next(index for index, line in enumerate(lines) if "launching demo" in line)
+    invocation = next(index for index, line in enumerate(lines) if line.startswith(("py -3 ", "python ")))
+    assert title < launching < invocation
+
+
+def test_launcher_import_does_not_load_application_or_ml_packages():
+    command = (
+        "import importlib.util,sys; "
+        f"s=importlib.util.spec_from_file_location('launcher', {str(PYTHON)!r}); "
+        "m=importlib.util.module_from_spec(s); s.loader.exec_module(m); "
+        "forbidden=('torch','sentence_transformers','qdrant_client','travel_plan.web.server'); "
+        "print(','.join(name for name in forbidden if name in sys.modules))"
+    )
+    result = subprocess.run([sys.executable, "-c", command], text=True, capture_output=True, check=True)
+    assert result.stdout.strip() == ""
+
+
+def test_checking_status_precedes_environment_validation(monkeypatch, tmp_path, capsys):
+    launcher = load_launcher()
+    monkeypatch.setattr(launcher, "project_root", lambda: tmp_path)
+
+    def validation(_root, _mode):
+        assert "Checking..." in capsys.readouterr().out
+        return "deliberate validation failure"
+
+    monkeypatch.setattr(launcher, "_validate_environment", validation)
+    assert launcher.launch(launcher.parse_args([])) == 1
+
+
+def test_embedding_check_is_configuration_only():
+    source = PYTHON.read_text(encoding="utf-8")
+    assert "SentenceTransformer" not in source
+    assert "BGEEmbeddingProvider" not in source
+    assert "torch" not in source
+    assert "loads when needed" in source
