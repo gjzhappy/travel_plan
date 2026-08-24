@@ -37,3 +37,13 @@ def test_duration_formatter_distinguishes_short_real_execution_times():
     )
 
     assert json.loads(result.stdout) == ["执行时间极短", "<0.1秒", "350毫秒", "1.3秒"]
+
+
+def test_follow_mode_is_container_scoped_and_never_scrolls_story_row_into_view():
+    javascript = (STATIC / "app.js").read_text(encoding="utf-8")
+    follow = javascript[javascript.index("function isNearBottom"):javascript.index("function renderAgentRuntime")]
+    assert "scrollHeight-container.scrollTop-container.clientHeight<=threshold" in follow
+    assert "container.scrollTop=container.scrollHeight" in follow
+    assert "container.scrollTop=position" in follow
+    assert "scrollIntoView" not in follow
+    assert "查看最新进展" in (STATIC / "index.html").read_text(encoding="utf-8")

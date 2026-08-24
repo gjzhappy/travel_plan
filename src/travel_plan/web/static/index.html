@@ -27,7 +27,7 @@
       <section class="demo-support"><div><span class="section-kicker">方案可信度来源</span><h2>每一步都有事实依据</h2><div class="credibility" id="credibility"><article><b>上海旅游知识库</b><span>正在读取地点数量…</span></article><article><b>中文语义检索</b><span>BGE-small-zh-v1.5</span></article><article><b>结构化事实校验</b><span>开放时间 / 交通 / 预算</span></article><article><b>Python 规划算法</b><span>路线与时间优化</span></article><article><b>可行性验证</b><span>时间冲突检查</span></article></div></div><aside><span class="section-kicker">推荐演示流程</span><ol><li>点击开始体验</li><li>查看实时规划过程</li><li>查看生成路线</li><li>展开“为什么这样安排”</li><li>输入“第二天增加科技馆，减少步行”查看重新规划闭环</li></ol></aside></section>
     </section>
 
-    <section class="loading hidden" id="loading"><div class="loader"></div><h2>正在编排行程</h2><p id="loading-copy" aria-live="polite">等待工作流启动…</p><details class="workflow-view" open><summary><b>查看规划流程</b><small>实时运行时架构图</small></summary><div class="workflow-graph" id="workflow-graph" aria-label="规划过程运行时流程图"></div></details><div class="live-trace" id="live-trace" aria-label="工作流实时执行记录"></div><p class="trace-notice">流程图展示工作流执行状态，不展示模型思考过程。</p></section>
+    <section class="loading hidden" id="loading"><div class="loader"></div><h2>正在编排行程</h2><p id="loading-copy" aria-live="polite">等待工作流启动…</p><details class="workflow-view" open><summary><b>查看规划流程</b><small>实时运行时架构图</small></summary><div class="workflow-graph" id="workflow-graph" aria-label="规划过程运行时流程图"></div></details><section class="story-section"><h3>本次规划过程</h3><div class="live-trace planning-story" id="live-trace" aria-label="规划故事"></div><button class="follow-latest hidden" id="live-follow" type="button">↓ 查看最新进展</button></section><p class="trace-notice">流程图与规划故事来自同一 Event Trace，不展示模型思考过程。</p></section>
     <section class="error hidden" id="error"><b>没有成功生成行程</b><span></span><button type="button">返回修改</button></section>
 
     <section class="result hidden" id="result">
@@ -60,7 +60,8 @@
         <details>
           <summary><span><span class="section-kicker">PLANNING EVIDENCE</span><b>查看 AI 是如何规划这条路线的</b><small>真实执行路径、耗时与可用反馈闭环</small></span><i>＋</i></summary>
           <div class="workflow-graph" id="result-workflow-graph" aria-label="本次规划最终流程图"></div>
-          <div class="live-trace" id="result-live-trace" aria-label="本次规划最终执行记录"></div>
+          <section class="story-section"><h3>本次规划过程</h3><div class="live-trace planning-story" id="result-live-trace" aria-label="本次规划故事"></div><button class="follow-latest hidden" id="result-follow" type="button">↓ 查看最新进展</button></section>
+          <details class="technical-events"><summary>查看技术执行详情</summary><div id="technical-event-list"></div></details>
           <p class="trace-notice">完成后保留本次真实执行快照；新计划开始时才会清理。流程图不展示模型思考过程。</p>
         </details>
       </section>

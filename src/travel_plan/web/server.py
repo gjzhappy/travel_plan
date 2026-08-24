@@ -18,6 +18,7 @@ from travel_plan.web.presenter import present_plan
 from travel_plan.web.explainability import build_explainability
 from travel_plan.web.repository import PlanRepository
 from travel_plan.web.workflow_visualization import workflow_graph, workflow_node_id
+from travel_plan.web.planning_story import planning_story
 
 STATIC_DIR = Path(__file__).with_name("static")
 DEMO_DIR = Path("data/demo")
@@ -197,6 +198,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             send({"type": "trace", "event": presented})
             streamed_events.append(presented)
             send({"type": "workflow_graph", "graph": workflow_graph(streamed_events)})
+            send({"type": "planning_story", "story": planning_story(streamed_events)})
             runtime.observe(presented)
 
         streamed_events = []
@@ -294,7 +296,8 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
     @staticmethod
     def _plan_response(record):
         return {"plan_id": record.plan_id, "version": record.version, "plan": record.display_result,
-                "events": record.events, "workflow_graph": workflow_graph(record.events)}
+                "events": record.events, "workflow_graph": workflow_graph(record.events),
+                "planning_story": planning_story(record.events)}
 
     @staticmethod
     def _version_response(record):
@@ -305,6 +308,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             "plan": record.display_result,
             "events": record.events,
             "workflow_graph": workflow_graph(record.events),
+            "planning_story": planning_story(record.events),
             "review": record.review,
             "explainability": record.explainability,
             "change": {
@@ -485,7 +489,7 @@ def _stream_event(event):
     }
     # These are deterministic routing facts used by the visualization.  Prompts,
     # review text, and model reasoning stay behind the presentation boundary.
-    for key in ("passed", "task", "scope", "target_day", "iteration", "review_number", "trigger_review_number"):
+    for key in ("passed", "issues", "task", "scope", "target_day", "iteration", "review_number", "trigger_review_number"):
         if key in details:
             presented[key] = details[key]
     presented["workflow_node_id"] = workflow_node_id(presented)
