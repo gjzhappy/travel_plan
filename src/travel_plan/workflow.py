@@ -17,6 +17,7 @@ from travel_plan.planning.route_planner import RoutePlanner
 from travel_plan.renderer.markdown_renderer import MarkdownRenderer
 from travel_plan.validation.repair import CodeRepair
 from travel_plan.validation.validator import HardValidator
+from travel_plan.planning.transport_quality import daily_transport_metrics
 
 log=logging.getLogger("travel_plan")
 class TravelWorkflow:
@@ -129,9 +130,11 @@ class TravelWorkflow:
     def recompute_derived(self,plan,req):
         people=req.party.adult+req.party.child
         plan.budget=Budget(tickets=sum(n.cost*people for d in plan.days for n in d.nodes if n.type=="attraction"),meals=sum(n.cost for d in plan.days for n in d.nodes if n.type in {"lunch","dinner"}),hotels=sum(s.nightly_price*(s.end_day-s.start_day+1) for s in plan.hotels),transport=sum(n.duration_min*.3 for d in plan.days for n in d.nodes if n.transport_mode))
-        plan.evidence=[{"day":d.day,"poi_ids":[n.poi_id for n in d.nodes if n.poi_id],"route_score":d.route_score} for d in plan.days]
+        for day in plan.days:
+            day.transport_metrics=asdict(daily_transport_metrics(day,self.config,req.pace))
+        plan.evidence=[{"day":d.day,"poi_ids":[n.poi_id for n in d.nodes if n.poi_id],"route_score":d.route_score,"transport_metrics":d.transport_metrics} for d in plan.days]
 
 def _plan_from_dict(raw):
     from travel_plan.models.trip import Budget,DayPlan,HotelSegment,Node,TripPlan
-    days=[DayPlan(d["day"],d["date"],d["theme"],[Node(**n) for n in d["nodes"]],d.get("route_score",0)) for d in raw["days"]];b=dict(raw["budget"]);b.pop("total",None)
+    days=[DayPlan(d["day"],d["date"],d["theme"],[Node(**n) for n in d["nodes"]],d.get("route_score",0),d.get("transport_metrics",{})) for d in raw["days"]];b=dict(raw["budget"]);b.pop("total",None)
     return TripPlan(raw["trip_id"],days,[HotelSegment(**h) for h in raw["hotels"]],Budget(**b),raw.get("hotel_decision",{}),raw.get("evidence",[]),raw.get("remaining_issues",[]),raw.get("review_count",0))

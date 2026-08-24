@@ -15,6 +15,7 @@ class Node:
 @dataclass
 class DayPlan:
     day: int; date: str; theme: str; nodes: list[Node] = field(default_factory=list); route_score: float = 0
+    transport_metrics: dict[str, Any] = field(default_factory=dict)
 
 @dataclass
 class HotelSegment:
@@ -33,4 +34,3 @@ class TripPlan:
     remaining_issues: list[dict[str, Any]] = field(default_factory=list); review_count: int = 0
     def to_dict(self):
         result=asdict(self); result["budget"]["total"]=self.budget.total; return result
-

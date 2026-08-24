@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 from travel_plan.validation.opening_hours import can_visit
+from travel_plan.planning.transport_quality import daily_transport_metrics, policy_for, transport_legs
 
 @dataclass
 class ValidationIssue:
-    code:str; message:str; day:int|None=None; node:str|None=None
+    code:str; message:str; day:int|None=None; node:str|None=None; details:dict|None=None
 
 class HardValidator:
     def __init__(self,config):self.config=config
@@ -52,6 +53,28 @@ class HardValidator:
             if "hotel_checkout" in types:
                 positions=[types.index(t) if t in types else -1 for t in ("hotel_checkout","luggage_drop","hotel_checkin")]
                 if not (positions[0]<positions[1]<positions[2]):issues.append(ValidationIssue("luggage_chain", "checkout/drop/checkin luggage chain is incomplete",day.day))
+            metrics=daily_transport_metrics(day,self.config,req.pace)
+            if metrics.quality_status=="excessive":
+                policy=policy_for(self.config,req.pace)
+                legs=transport_legs(day)
+                ordinary=[]
+                for index,leg in enumerate(legs):
+                    previous=legs[index-1] if index else None
+                    exceptional=(leg.type=="luggage_drop" or
+                                 leg.metadata.get("accepted_long_distance") or
+                                 leg.metadata.get("must_visit_related") or
+                                 leg.metadata.get("must_visit") or
+                                 bool(previous and previous.metadata.get("must_visit")))
+                    if not exceptional:ordinary.append(leg.duration_min)
+                # A hard requirement can explain the excess only when the route
+                # left after removing its related legs is within preferred bounds.
+                exempted=(sum(ordinary)<=policy.preferred_total_min and
+                          max(ordinary,default=0)<=policy.preferred_single_leg_min)
+                if not exempted:
+                    threshold={"total_transport_min":policy.hard_total_min,"single_leg_min":policy.hard_single_leg_min}
+                    reason="daily total exceeds hard limit" if metrics.total_transport_min>policy.hard_total_min else "single transfer exceeds hard limit"
+                    details={"day":day.day,"total_transport_min":metrics.total_transport_min,"largest_transfer_min":metrics.largest_transfer_min,"threshold":threshold,"reason":reason}
+                    issues.append(ValidationIssue("excessive_daily_transport",f"day {day.day} has {metrics.total_transport_min} transport minutes; largest transfer {metrics.largest_transfer_min}",day.day,details=details))
         if req.lodging_strategy=="fixed" and len(plan.hotels)>1:issues.append(ValidationIssue("fixed_hotel_violated","fixed lodging has multiple hotels"))
         if len(plan.hotels)-1>req.max_hotel_changes:issues.append(ValidationIssue("hotel_changes_exceeded","too many hotel changes"))
         if plan.budget.total>req.budget:issues.append(ValidationIssue("budget_exceeded",f"estimated {plan.budget.total} > budget {req.budget}"))

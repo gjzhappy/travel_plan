@@ -4,6 +4,7 @@ from travel_plan.config import Config
 from travel_plan.errors import MustVisitResolutionError, NoFeasibleRouteError
 from travel_plan.models.trip import DayPlan, Node
 from travel_plan.planning.scoring import route_score
+from travel_plan.planning.transport_quality import excess_transport_penalty, policy_for
 from travel_plan.retrieval.map_client import Location
 from travel_plan.validation.opening_hours import hours_for_day
 from travel_plan.retrieval.poi_resolver import CanonicalPOIResolver
@@ -52,6 +53,8 @@ class RoutePlanner:
                 if best: break
             if not best: raise NoFeasibleRouteError(f"day {index+1} has no feasible route")
             nodes,score=best; used={n.poi_id for n in nodes if n.poi_id}; remaining=[p for p in remaining if p.poi_id not in used]
+            if len(nodes)<min(cap,len(regional)):
+                for node in nodes:node.metadata.setdefault("idle_gap_reason","higher-count routes exceed hard transport burden or feasibility")
             if index==req.days-1:
                 # Every remaining candidate has now been evaluated for this final
                 # day and rejected by the same travel/opening/duration constraints.
@@ -79,6 +82,7 @@ class RoutePlanner:
         )
         for order in permutations(pois):
             now=_dt(day,self.config.daily_start_time); current=hotel; nodes=[]; total_priority=transport=transport_penalty=waiting=repeated=0; previous_cat=None; valid=True
+            leg_durations=[]
             locations=[hotel]
             for p in order:
                 leg=self.transport.route(_loc(current),_loc(p),mode); arrival=now+timedelta(minutes=leg.duration_min); window=hours_for_day(p.opening_hours,day)
@@ -99,21 +103,29 @@ class RoutePlanner:
                 if latest and start.time()>datetime.strptime(latest,"%H:%M").time():valid=False;break
                 end=start+timedelta(minutes=p.duration_min)
                 if end.time()>window[1] or end>_dt(day,min(self.config.daily_latest_end_time,latest_end)):valid=False;break
-                wait=max(0,int((start-arrival).total_seconds()/60)); waiting+=wait; transport+=leg.duration_min
+                wait=max(0,int((start-arrival).total_seconds()/60)); waiting+=wait; transport+=leg.duration_min;leg_durations.append(leg.duration_min)
                 if mobility_sensitive:
                     transport_penalty += leg.walking_minutes + leg.transfer_count * 10
                 elif req.walking=="high" or req.budget <= 1000:
                     transport_penalty += leg.duration_min * (0.15 if leg.mode=="taxi" else 0)
                 repeated+=int(previous_cat==p.category); previous_cat=p.category; total_priority+=p.priority
-                nodes.append(Node("attraction",p.canonical_name,start.strftime("%H:%M"),end.strftime("%H:%M"),p.poi_id,leg.mode,leg.distance_km,leg.duration_min,p.ticket_price,{"category":p.category,"priority":p.priority,"must_visit":p.poi_id in _must_visit_ids(req),"opening_hours":p.opening_hours,"reservation_required":p.reservation_required,"latest_entry_time":latest,"lat":p.lat,"lon":p.lon}))
+                nodes.append(Node("attraction",p.canonical_name,start.strftime("%H:%M"),end.strftime("%H:%M"),p.poi_id,leg.mode,leg.distance_km,leg.duration_min,p.ticket_price,{"category":p.category,"priority":p.priority,"must_visit":p.poi_id in _must_visit_ids(req),"opening_hours":p.opening_hours,"reservation_required":p.reservation_required,"latest_entry_time":latest,"lat":p.lat,"lon":p.lon,"previous_node":current.name,"transport_source":leg.source}))
                 locations.append(p);now=end+timedelta(minutes=buffer_min);current=p
             if valid:
+                return_leg=self.transport.route(_loc(current),_loc(hotel),mode)
+                complete_transport=transport+return_leg.duration_min
+                complete_largest=max(leg_durations+[return_leg.duration_min])
                 discontinuity=0
                 for a,b,c in zip(locations,locations[1:],locations[2:]):
                     via=(self.transport.route(_loc(a),_loc(b),mode).duration_min+
                          self.transport.route(_loc(b),_loc(c),mode).duration_min)
                     direct=self.transport.route(_loc(a),_loc(c),mode).duration_min
                     discontinuity+=max(0,via-direct)
-                score=route_score(total_priority,transport+transport_penalty,waiting,max(0,(transport+sum(p.duration_min for p in order)-600)*tightness),repeated,discontinuity)
+                policy=policy_for(self.config,req.pace)
+                contains_must=any(p.poi_id in _must_visit_ids(req) for p in order)
+                if (complete_transport>policy.hard_total_min or complete_largest>policy.hard_single_leg_min) and not contains_must:
+                    continue
+                excess=excess_transport_penalty(complete_transport,complete_largest,policy)
+                score=route_score(total_priority,complete_transport+transport_penalty,waiting,max(0,(complete_transport+sum(p.duration_min for p in order)-600)*tightness),repeated,discontinuity,excess)
                 if best is None or score>best[1]: best=(nodes,score)
         return best

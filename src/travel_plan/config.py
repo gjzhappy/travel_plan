@@ -23,6 +23,10 @@ class Config:
     mock_retrieved_at: str = "2026-01-01T00:00:00Z"
     state_dir: str = "data/state"
     route_candidate_limit: int = 6
+    transport_long_transfer_min: int = 60
+    transport_relaxed: tuple[int, int, int, int] = (150, 240, 60, 90)
+    transport_moderate: tuple[int, int, int, int] = (180, 270, 70, 100)
+    transport_intensive: tuple[int, int, int, int] = (210, 300, 80, 110)
 
 
 DEFAULT_CONFIG = Config()
