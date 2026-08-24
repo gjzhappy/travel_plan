@@ -48,9 +48,13 @@ class MealPlanner:
             duplicate,_,r,detour,leg,next_leg,cost=max(distinct or candidates,key=lambda x:x[1])
             arrival=(datetime.combine(day_date,datetime.strptime(previous.end_time if isinstance(previous,Node) else window[0],"%H:%M").time())+timedelta(minutes=leg.duration_min))
             start=max(arrival,datetime.combine(day_date,at));end=start+timedelta(minutes=60)
-            node=Node(meal,r.name,start.strftime("%H:%M"),end.strftime("%H:%M"),None,req.transport,leg.distance_km,leg.duration_min,cost,{"restaurant_id":r.restaurant_id,"cuisine":r.cuisine,"price_per_person":r.price_per_person,"detour_min":detour,"explicit_preference":r.name in req.must_eat,"opening_hours":r.opening_hours,"lat":r.lat,"lon":r.lon,"next_travel_min":next_leg.duration_min,"previous_node":previous.name,"next_node":next_node.name,"duplicate_reason":"only feasible restaurant" if duplicate else None})
+            node=Node(meal,r.name,start.strftime("%H:%M"),end.strftime("%H:%M"),None,leg.mode,leg.distance_km,leg.duration_min,cost,{"restaurant_id":r.restaurant_id,"cuisine":r.cuisine,"price_per_person":r.price_per_person,"detour_min":detour,"explicit_preference":r.name in req.must_eat,"opening_hours":r.opening_hours,"lat":r.lat,"lon":r.lon,"next_travel_min":next_leg.duration_min,"next_travel_source":next_leg.source,"previous_node":previous.name,"next_node":next_node.name,"transport_source":leg.source,"must_visit_related":bool(isinstance(previous,Node) and previous.metadata.get("must_visit")),"duplicate_reason":"only feasible restaurant" if duplicate else None})
             pos=day.nodes.index(previous)+1 if isinstance(previous,Node) and previous in day.nodes else len(day.nodes);day.nodes.insert(pos,node)
             if isinstance(next_node,Node):
+                # The destination owns its incoming canonical leg. Replacing the
+                # former attraction-to-attraction leg prevents double counting.
+                next_node.transport_mode=next_leg.mode;next_node.distance_km=next_leg.distance_km;next_node.duration_min=next_leg.duration_min
+                next_node.metadata.update({"previous_node":r.name,"transport_source":next_leg.source,"must_visit_related":bool(next_node.metadata.get("must_visit"))})
                 earliest=end+timedelta(minutes=next_leg.duration_min);current=datetime.combine(day_date,datetime.strptime(next_node.start_time,"%H:%M").time())
                 shift=max(0,int((earliest-current).total_seconds()/60))
                 if shift:
@@ -59,5 +63,12 @@ class MealPlanner:
                         a=datetime.combine(day_date,datetime.strptime(later.start_time,"%H:%M").time())+timedelta(minutes=shift);b=datetime.combine(day_date,datetime.strptime(later.end_time,"%H:%M").time())+timedelta(minutes=shift)
                         later.start_time=a.strftime("%H:%M");later.end_time=b.strftime("%H:%M")
             used_restaurants.add(r.restaurant_id)
+        day.nodes[:]=[node for node in day.nodes if node.type!="hotel_return"]
+        dinner=next((node for node in day.nodes if node.type=="dinner"),None)
+        if dinner:
+            leg=self.map.route(_loc(dinner),_loc(hotel),req.transport)
+            start=datetime.combine(date.fromisoformat(day.date),datetime.strptime(dinner.end_time,"%H:%M").time())+timedelta(minutes=leg.duration_min)
+            end=start+timedelta(minutes=15)
+            day.nodes.append(Node("hotel_return",hotel.name,start.strftime("%H:%M"),end.strftime("%H:%M"),transport_mode=leg.mode,distance_km=leg.distance_km,duration_min=leg.duration_min,metadata={"lat":hotel.lat,"lon":hotel.lon,"previous_node":dinner.name,"transport_source":leg.source,"hotel_related":True}))
         day.nodes.sort(key=lambda n:n.start_time)
         return day

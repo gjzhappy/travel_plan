@@ -5,6 +5,7 @@ def route_score(
     tightness: int,
     repeated: int,
     spatial_discontinuity: int = 0,
+    excess_transport: float = 0,
 ) -> float:
     """Return the deterministic, relative objective for one feasible POI route.
 
@@ -19,6 +20,7 @@ def route_score(
         - waiting * 0.3
         - tightness * 1.2
         - repeated * 18
-        - spatial_discontinuity * 0.45,
+        - spatial_discontinuity * 0.45
+        - excess_transport,
         2,
     )

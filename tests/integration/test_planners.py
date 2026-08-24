@@ -116,3 +116,5 @@ def test_dinner_scores_complete_path_to_hotel():
  MealPlanner(transport,Config()).insert(day,[a,b],Requirement(start_date="2026-08-19",budget=5000),hotel,only_meal="dinner")
  dinner=next(n for n in day.nodes if n.type=="dinner")
  assert dinner.name=="B" and dinner.metadata["next_node"]=="hotel"
+ hotel_return=next(n for n in day.nodes if n.type=="hotel_return")
+ assert hotel_return.duration_min==10 and hotel_return.metadata["previous_node"]=="B"

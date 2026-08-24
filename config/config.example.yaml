@@ -15,3 +15,9 @@ mock_mode: true
 mock_reference_date: "2026-01-01"
 mock_retrieved_at: "2026-01-01T00:00:00Z"
 state_dir: data/state
+# Daily transport policy tuples are: preferred total, hard total,
+# preferred single leg, hard single leg (minutes).
+transport_relaxed: [150, 240, 60, 90]
+transport_moderate: [180, 270, 70, 100]
+transport_intensive: [210, 300, 80, 110]
+transport_long_transfer_min: 60
