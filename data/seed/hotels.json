@@ -7,7 +7,9 @@
     "lat": 31.23,
     "lon": 121.47,
     "nightly_price": 420,
-    "luggage_storage": 1
+    "supports_luggage_storage": 1,
+    "check_in_time": "15:00",
+    "check_out_time": "12:00"
   },
   {
     "hotel_id": 3002,
@@ -17,7 +19,9 @@
     "lat": 31.14,
     "lon": 121.66,
     "nightly_price": 520,
-    "luggage_storage": 1
+    "supports_luggage_storage": 1,
+    "check_in_time": "15:00",
+    "check_out_time": "12:00"
   },
   {
     "hotel_id": 3003,
@@ -27,7 +31,9 @@
     "lat": 31.19,
     "lon": 121.44,
     "nightly_price": 380,
-    "luggage_storage": 1
+    "supports_luggage_storage": 1,
+    "check_in_time": "15:00",
+    "check_out_time": "12:00"
   },
   {
     "hotel_id": 3004,
@@ -37,6 +43,8 @@
     "lat": 31.24,
     "lon": 121.45,
     "nightly_price": 450,
-    "luggage_storage": 1
+    "supports_luggage_storage": 1,
+    "check_in_time": "15:00",
+    "check_out_time": "12:00"
   }
 ]

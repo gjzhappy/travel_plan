@@ -20,6 +20,9 @@ class DayPlan:
 @dataclass
 class HotelSegment:
     hotel_id: int; name: str; start_day: int; end_day: int; nightly_price: float
+    supports_luggage_storage: bool = True
+    check_in_time: str = "15:00"; check_out_time: str = "12:00"
+    lat: float | None = None; lon: float | None = None
 
 @dataclass
 class Budget:

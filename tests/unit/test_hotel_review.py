@@ -6,7 +6,7 @@ from travel_plan.models.trip import Budget,DayPlan,Node,TripPlan
 from travel_plan.planning.hotel_optimizer import HotelOptimizer
 from travel_plan.retrieval.map_client import MockMapClient
 
-hotels=[SimpleNamespace(hotel_id=1,name="A",district="黄浦",nightly_price=300),SimpleNamespace(hotel_id=2,name="B",district="浦东",nightly_price=300)]
+hotels=[SimpleNamespace(hotel_id=i,name=name,district=area,nightly_price=300,lat=31+i*.01,lon=121+i*.01,supports_luggage_storage=True,check_in_time="15:00",check_out_time="12:00") for i,name,area in ((1,"A","黄浦"),(2,"B","浦东"))]
 days=[DayPlan(i,"2026-08-19","浦东",[]) for i in range(1,5)]
 def test_hotel_keep_change_fixed_zero():
  opt=HotelOptimizer(MockMapClient(),Config())
@@ -20,4 +20,3 @@ def test_review_pass_tiring_repetitive_and_no_mutation():
  plan=TripPlan("x",[DayPlan(1,"2026-08-19","",nodes)],[],Budget());before=plan.to_dict();review=ReviewAgent().review(req,plan)
  assert not review.passed and {i.type for i in review.issues}>={"too_tiring","content_repetitive"};assert plan.to_dict()==before
  assert ReviewAgent().review(Requirement(interests=[]),TripPlan("x",[],[],Budget())).passed
-

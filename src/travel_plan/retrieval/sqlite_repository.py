@@ -32,4 +32,4 @@ class SQLiteRepository:
     def restaurants(self,city:str)->list[Restaurant]:
         return [Restaurant(**{**dict(r),"opening_hours":json.loads(r["opening_hours"])}) for r in self._rows("SELECT restaurant_id,name,cuisine,district,lat,lon,price_per_person,opening_hours FROM restaurants WHERE city=?",(city,))]
     def hotels(self,city:str)->list[Hotel]:
-        return [Hotel(**{**dict(r),"luggage_storage":bool(r["luggage_storage"])}) for r in self._rows("SELECT hotel_id,name,district,lat,lon,nightly_price,luggage_storage FROM hotels WHERE city=?",(city,))]
+        return [Hotel(**{**dict(r),"supports_luggage_storage":bool(r["supports_luggage_storage"])}) for r in self._rows("SELECT hotel_id,name,district,lat,lon,nightly_price,supports_luggage_storage,check_in_time,check_out_time FROM hotels WHERE city=?",(city,))]
