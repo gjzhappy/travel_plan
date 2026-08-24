@@ -20,7 +20,7 @@ def present_plan(
 ) -> dict[str, Any]:
     """Add deterministic display copy while preserving the engine response."""
     result = {**plan, "version": version}
-    result["days"] = [_present_day(day) for day in plan["days"]]
+    result["days"] = [_present_day(day, plan.get("hotels", [])) for day in plan["days"]]
     result["explanation"] = _explanation(plan)
     result["overview"] = _overview(plan, requirement or {})
     return result
@@ -54,23 +54,33 @@ def _overview(plan: dict[str, Any], requirement: dict[str, Any]) -> dict[str, An
     }
 
 
-def _present_day(day: dict[str, Any]) -> dict[str, Any]:
+def _present_day(day: dict[str, Any], hotels: list[dict[str, Any]]) -> dict[str, Any]:
     """Create timeline and route DTOs without mutating or re-planning the day."""
-    timeline = sorted(
+    canonical = sorted(
         ({**node, "display": _node_display(node)} for node in day["nodes"]),
         key=lambda node: (node.get("start_time") or "99:99", node.get("end_time") or "99:99"),
     )
+    timeline = _hotel_context(day, canonical, hotels)
     route_nodes = []
     for node in timeline:
         metadata = node.get("metadata", {})
-        if node.get("type") != "attraction" or not _has_coordinates(metadata):
+        if not _has_coordinates(metadata):
             continue
+        node_type = node.get("type", "")
+        is_numbered = node_type in {"attraction", "lunch", "dinner"}
+        display_order = 1 + sum(item["display_order"] is not None for item in route_nodes) if is_numbered else None
         route_nodes.append({
+            "route_id": f"day-{day['day']}-node-{len(route_nodes) + 1}",
             "order": len(route_nodes) + 1,
+            "display_order": display_order,
+            "marker_label": str(display_order) if display_order is not None else "H",
+            "type": node_type,
             "name": node.get("name", ""),
             "lat": metadata["lat"],
             "lng": metadata["lon"],
-            "node_sequence": len(route_nodes) + 1,
+            "node_sequence": node.get("presentation_sequence"),
+            "start_time": node.get("start_time"),
+            "end_time": node.get("end_time"),
         })
     return {
         **day,
@@ -87,6 +97,32 @@ def _present_day(day: dict[str, Any]) -> dict[str, Any]:
         },
         "summary": _day_summary(day),
     }
+
+
+def _hotel_context(
+    day: dict[str, Any], canonical: list[dict[str, Any]], hotels: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Expose the recorded hotel assignment as presentation context, never as a canonical node."""
+    assigned = next(
+        (hotel for hotel in hotels if hotel.get("start_day", 0) <= day["day"] <= hotel.get("end_day", 0)),
+        None,
+    )
+    if not assigned:
+        return [{**node, "presentation_sequence": index} for index, node in enumerate(canonical, 1)]
+    types = {node.get("type") for node in canonical}
+    context = {
+        "name": assigned.get("name", "住宿"), "start_time": "", "end_time": "",
+        "duration_min": 0, "metadata": {},
+        "presentation_derived": True, "presentation_source": "hotel_assignment",
+    }
+    before = [] if types & {"hotel_departure", "hotel_checkout"} else [
+        {**context, "type": "hotel_departure", "display": _node_display({**context, "type": "hotel_departure"})}
+    ]
+    after = [] if types & {"hotel_return", "hotel_checkin"} else [
+        {**context, "type": "hotel_return", "display": _node_display({**context, "type": "hotel_return"})}
+    ]
+    result = before + canonical + after
+    return [{**node, "presentation_sequence": index} for index, node in enumerate(result, 1)]
 
 
 def _has_coordinates(metadata: dict[str, Any]) -> bool:
@@ -124,7 +160,7 @@ def _explanation(plan: dict[str, Any]) -> list[dict[str, str]]:
         names = "、".join(node["name"] for node in attractions)
         reasons.append({
             "title": f"第 {day['day']} 天 · {day['theme']}",
-            "text": f"将 {names or '自由活动'} 组合在同一天，并按开放时间、路程与停留时长排定顺序。路线评分 {day.get('route_score', 0):.1f}。",
+            "text": f"将 {names or '自由活动'} 组合在同一天，并按已有时间、路程与停留时长事实展示顺序。",
         })
     decision = plan.get("hotel_decision", {})
     reasons.append({

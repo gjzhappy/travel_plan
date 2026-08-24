@@ -46,7 +46,6 @@ def build_explainability(
             "day_count": len(days),
             "attraction_count": sum(item["facts"]["attraction_count"] for item in days),
             "evidence_count": len(plan.get("evidence", [])),
-            "route_score_label": "路线评分为既有 Planner 输出，仅用于展示。",
         },
         "days": days,
         "validator": _validator_card(validators),
@@ -68,7 +67,6 @@ def _day_card(
         "facts": {
             "attraction_count": len(attractions),
             "attractions": [node.get("name", "") for node in attractions],
-            "route_score": evidence.get("route_score", day.get("route_score", 0)),
             "travel_minutes": travel_minutes,
         },
         "evidence": [
@@ -105,8 +103,6 @@ def _route_reason(
         details.append(f"按既有节点顺序串联 {len(attractions)} 处景点")
     if any(node.get("duration_min") is not None for node in attractions):
         details.append(f"已有交通时间合计：{travel_minutes} 分钟")
-    if "route_score" in evidence:
-        details.append(f"既有路线评分：{float(evidence['route_score']):.1f}")
     return _reason("路线原因", details, "Route Plan / Transport Result")
 
 
