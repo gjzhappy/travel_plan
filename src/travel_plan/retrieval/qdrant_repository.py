@@ -81,6 +81,7 @@ def qdrant_points(pois: Iterable[dict], guides: Iterable[dict], provider: Embedd
     records: list[tuple[str, dict]] = []
     for poi in pois:
         payload = {key: poi[key] for key in ("poi_id", "name", "category", "tags", "description")}
+        payload.update({"canonical_name": poi.get("canonical_name", poi["name"]), "aliases": poi.get("aliases", [])})
         payload.update({"type": "poi", "city": "上海"})
         text = " ".join([poi["name"], poi["category"], *poi["tags"], poi["description"]])
         records.append((text, payload))

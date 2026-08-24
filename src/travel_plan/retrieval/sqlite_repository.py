@@ -25,6 +25,7 @@ class SQLiteRepository:
         rows=self._rows(f"SELECT * FROM pois WHERE poi_id IN ({','.join('?'*len(ids))})",ids)
         return [POI(**{**dict(r),"opening_hours":json.loads(r["opening_hours"]),
             "tags":json.loads(r["tags"]), "special_dates":json.loads(r["special_dates"]),
+            "aliases":json.loads(r["aliases"]),
             "reservation_required":bool(r["reservation_required"]),"outdoor":bool(r["outdoor"]),
             "ticket_required":bool(r["ticket_required"]), "indoor":bool(r["indoor"])}) for r in rows]
     def all_pois(self,city:str)->list[POI]: return self.get_pois([r["poi_id"] for r in self._rows("SELECT poi_id FROM pois WHERE city=?",(city,))])

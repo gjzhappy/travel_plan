@@ -10,6 +10,8 @@ class MapError(TravelError):
     """A required map route failed."""
 class NoFeasibleRouteError(TravelError):
     """No route satisfies the hard constraints."""
+class MustVisitResolutionError(TravelError):
+    """A hard place expression cannot be resolved to one canonical POI."""
 class ValidationError(TravelError):
     """A plan remains invalid after safe repair."""
 class ReviewError(TravelError):

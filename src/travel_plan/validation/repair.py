@@ -8,7 +8,8 @@ class CodeRepair:
             day=next((d for d in fixed.days if d.day==issue.day),None)
             if not day:continue
             if issue.code in {"poi_closed_or_late","overlap"}:
-                candidates=[n for n in day.nodes if n.type=="attraction" and n.name not in req.must_visit]
+                required_ids={item["poi_id"] for item in req.resolved_must_visit}
+                candidates=[n for n in day.nodes if n.type=="attraction" and n.poi_id not in required_ids]
                 if candidates: day.nodes.remove(min(candidates,key=lambda n:n.metadata.get("priority",0)))
             elif issue.code=="restaurant_closed" and restaurants:
                 # replacement is delegated to MealPlanner by removing the invalid node
@@ -17,4 +18,3 @@ class CodeRepair:
                 node=next((n for n in day.nodes if n.name==issue.node),None)
                 if node: node.end_time=node.start_time
         return fixed
-

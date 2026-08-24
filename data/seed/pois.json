@@ -50,7 +50,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "亲子 科技 梦幻 夜景",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "上海迪士尼",
+    "aliases": []
   },
   {
     "poi_id": 1002,
@@ -100,7 +102,11 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "科技 亲子 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "上海科技馆",
+    "aliases": [
+      "科技馆"
+    ]
   },
   {
     "poi_id": 1003,
@@ -153,7 +159,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "城市 夜景 建筑",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "外滩",
+    "aliases": []
   },
   {
     "poi_id": 1004,
@@ -206,7 +214,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "历史 园林 本帮",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "豫园",
+    "aliases": []
   },
   {
     "poi_id": 1005,
@@ -256,7 +266,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "历史 艺术 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "上海博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1006,
@@ -309,7 +321,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "自然 亲子 轻松",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "世纪公园",
+    "aliases": []
   },
   {
     "poi_id": 1007,
@@ -362,7 +376,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "科技 城市 夜景",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "东方明珠",
+    "aliases": []
   },
   {
     "poi_id": 1008,
@@ -415,7 +431,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "自然 亲子 科普",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "上海自然博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1009,
@@ -468,7 +486,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "科技 宇宙 亲子",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "上海天文馆",
+    "aliases": []
   },
   {
     "poi_id": 1010,
@@ -521,7 +541,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "水乡 历史 轻松",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "朱家角古镇",
+    "aliases": []
   },
   {
     "poi_id": 1011,
@@ -574,7 +596,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "艺术 美食 街区",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "田子坊",
+    "aliases": []
   },
   {
     "poi_id": 1012,
@@ -627,7 +651,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "建筑 夜生活",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "新天地",
+    "aliases": []
   },
   {
     "poi_id": 1013,
@@ -680,7 +706,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "建筑 漫步",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "武康路",
+    "aliases": []
   },
   {
     "poi_id": 1014,
@@ -733,7 +761,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "阅读 建筑 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "徐家汇书院",
+    "aliases": []
   },
   {
     "poi_id": 1015,
@@ -786,7 +816,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "植物 自然 亲子",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "上海植物园",
+    "aliases": []
   },
   {
     "poi_id": 1016,
@@ -839,7 +871,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "森林 户外 亲子",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "共青森林公园",
+    "aliases": []
   },
   {
     "poi_id": 1017,
@@ -892,7 +926,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "高空 城市 夜景",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "上海中心观光厅",
+    "aliases": []
   },
   {
     "poi_id": 1018,
@@ -945,7 +981,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "艺术 夜景 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "浦东美术馆",
+    "aliases": []
   },
   {
     "poi_id": 1019,
@@ -998,7 +1036,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "艺术 建筑 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "中华艺术宫",
+    "aliases": []
   },
   {
     "poi_id": 1020,
@@ -1051,7 +1091,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "海洋 亲子 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "上海海洋水族馆",
+    "aliases": []
   },
   {
     "poi_id": 1021,
@@ -1104,7 +1146,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "公园 轻松",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "复兴公园",
+    "aliases": []
   },
   {
     "poi_id": 1022,
@@ -1157,7 +1201,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "寺庙 历史",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "龙华寺",
+    "aliases": []
   },
   {
     "poi_id": 1023,
@@ -1210,7 +1256,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "电影 亲子",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "上海影视乐园",
+    "aliases": []
   },
   {
     "poi_id": 1024,
@@ -1263,7 +1311,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "遗址 夜景",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "广富林文化遗址",
+    "aliases": []
   },
   {
     "poi_id": 1025,
@@ -1316,7 +1366,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "自然 植物 亲子",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "辰山植物园",
+    "aliases": []
   },
   {
     "poi_id": 1026,
@@ -1369,7 +1421,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "动物 亲子 户外",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "上海动物园",
+    "aliases": []
   },
   {
     "poi_id": 1027,
@@ -1422,7 +1476,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "海洋 亲子 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "长风海洋世界",
+    "aliases": []
   },
   {
     "poi_id": 1028,
@@ -1475,7 +1531,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "城市 漫步 夜景",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "苏州河步道",
+    "aliases": []
   },
   {
     "poi_id": 1029,
@@ -1528,7 +1586,9 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "历史 纪念 雨天",
-    "outdoor": 0
+    "outdoor": 0,
+    "canonical_name": "四行仓库",
+    "aliases": []
   },
   {
     "poi_id": 1030,
@@ -1581,6 +1641,8 @@
       "latest_entry_time": "18:30"
     },
     "semantic_description": "艺术 创意 街区",
-    "outdoor": 1
+    "outdoor": 1,
+    "canonical_name": "M50创意园",
+    "aliases": []
   }
 ]
