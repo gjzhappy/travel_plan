@@ -11,6 +11,7 @@ class HardValidator:
     def __init__(self,config):self.config=config
     def validate(self,plan,req):
         issues=[]
+        assignments={day:segment for segment in plan.hotels for day in range(segment.start_day,segment.end_day+1)}
         for day in plan.days:
             previous_end=None
             types=[n.type for n in day.nodes]
@@ -26,6 +27,21 @@ class HardValidator:
                         issues.append(ValidationIssue("poi_closed_or_late",f"{n.name} is closed, too late, or duration does not fit",day.day,n.name))
                 if n.type in {"lunch","dinner"} and not can_visit(n.metadata.get("opening_hours",{}),date.fromisoformat(day.date),start,60): issues.append(ValidationIssue("restaurant_closed",f"{n.name} is closed",day.day,n.name))
                 if n.metadata.get("detour_min",0)>45 and not n.metadata.get("explicit_preference"):issues.append(ValidationIssue("meal_detour",f"{n.name} detour too large",day.day,n.name))
+                hotel=next((h for h in plan.hotels if h.hotel_id==n.metadata.get("hotel_id")),None)
+                if n.type in {"hotel_checkout","hotel_checkin","luggage_drop"} and hotel is None:
+                    issues.append(ValidationIssue("hotel_assignment_discontinuity",f"{n.name} has no canonical hotel_id assignment",day.day,n.name))
+                if n.type=="luggage_drop":
+                    target=hotel
+                    if not target or not target.supports_luggage_storage:
+                        issues.append(ValidationIssue("hotel_luggage_storage_unsupported",f"{n.name} does not have structured luggage-storage support",day.day,n.name))
+                    if not target or target.lat is None or target.lon is None or n.metadata.get("lat") is None or n.metadata.get("lon") is None:
+                        issues.append(ValidationIssue("hotel_transfer_missing_transport",f"{n.name} luggage transfer has no usable hotel coordinates",day.day,n.name))
+                    if not n.transport_mode or n.duration_min<=0:
+                        issues.append(ValidationIssue("hotel_transfer_missing_transport",f"{n.name} luggage transfer has no canonical incoming transport leg",day.day,n.name))
+                if n.type=="hotel_checkin" and hotel and n.start_time < hotel.check_in_time:
+                    issues.append(ValidationIssue("hotel_checkin_too_early",f"{n.start_time} is before {hotel.check_in_time}",day.day,n.name))
+                if n.type=="hotel_checkout" and hotel and n.end_time > hotel.check_out_time:
+                    issues.append(ValidationIssue("hotel_checkout_too_late",f"{n.end_time} is after {hotel.check_out_time}",day.day,n.name))
                 if index:
                     prior=ordered[index-1]
                     prior_end=datetime.combine(date.fromisoformat(day.date),datetime.strptime(prior.end_time,"%H:%M").time())
@@ -53,6 +69,24 @@ class HardValidator:
             if "hotel_checkout" in types:
                 positions=[types.index(t) if t in types else -1 for t in ("hotel_checkout","luggage_drop","hotel_checkin")]
                 if not (positions[0]<positions[1]<positions[2]):issues.append(ValidationIssue("luggage_chain", "checkout/drop/checkin luggage chain is incomplete",day.day))
+                else:
+                    checkout=day.nodes[positions[0]];drop=day.nodes[positions[1]];checkin=day.nodes[positions[2]]
+                    if not (checkout.end_time<=drop.start_time and drop.end_time<=checkin.start_time):
+                        issues.append(ValidationIssue("luggage_chain","checkout/drop/checkin timestamps are inconsistent",day.day))
+            assigned=assignments.get(day.day)
+            if not assigned:
+                issues.append(ValidationIssue("hotel_overnight_closure_missing","day has no canonical overnight hotel assignment",day.day))
+            else:
+                returns=[n for n in day.nodes if n.type in {"hotel_return","hotel_checkin"}]
+                if returns and returns[-1].name!=assigned.name:
+                    issues.append(ValidationIssue("hotel_assignment_discontinuity",f"overnight node is not assigned hotel {assigned.name}",day.day))
+                first=ordered[0] if ordered else None
+                expected_start=assignments.get(day.day-1) if day.day>1 else assigned
+                if first and expected_start:
+                    recorded_origin=first.metadata.get("previous_node")
+                    switching=first.type=="hotel_checkout" and first.name==expected_start.name
+                    if recorded_origin and recorded_origin!=expected_start.name and not switching:
+                        issues.append(ValidationIssue("hotel_assignment_discontinuity",f"day starts from {recorded_origin}, expected {expected_start.name}",day.day))
             metrics=daily_transport_metrics(day,self.config,req.pace)
             if metrics.quality_status=="excessive":
                 policy=policy_for(self.config,req.pace)

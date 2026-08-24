@@ -54,8 +54,18 @@ class TravelWorkflow:
         return plan.to_dict(),state,MarkdownRenderer().render(plan)
     def _global(self,trip_id,shortlist,req,hotels,restaurants):
         days=self.route.plan(shortlist,req,hotels[0])
-        for day in days:self.meals.insert(day,restaurants,req,hotels[0])
         segments,decision=self.hotels.optimize(days,hotels,req)
+        hotel_by_id={hotel.hotel_id:hotel for hotel in hotels}
+        for day in days:
+            assigned=next(segment for segment in segments if segment.start_day<=day.day<=segment.end_day)
+            hotel=hotel_by_id[assigned.hotel_id]
+            first=next((node for node in sorted(day.nodes,key=lambda node:node.start_time) if node.type=="attraction"),None)
+            if first and first.metadata.get("previous_node")!=hotel.name:
+                from travel_plan.retrieval.map_client import Location
+                leg=self.map.route(Location(hotel.name,hotel.lat,hotel.lon),Location(first.name,first.metadata["lat"],first.metadata["lon"]),req.transport)
+                first.transport_mode=leg.mode;first.distance_km=leg.distance_km;first.duration_min=leg.duration_min
+                first.metadata.update({"previous_node":hotel.name,"transport_source":leg.source})
+            self.meals.insert(day,restaurants,req,hotel)
         plan=TripPlan(trip_id,days,segments,Budget(),asdict(decision));self.recompute_derived(plan,req);return plan
     def _local(self,plan,shortlist,req,hotels,restaurants,intent,locked):
         day_no=intent.get("day") or req.target_day

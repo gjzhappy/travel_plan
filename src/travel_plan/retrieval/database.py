@@ -38,7 +38,8 @@ CREATE TABLE restaurants(
 CREATE TABLE hotels(
     hotel_id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT NOT NULL,
     district TEXT NOT NULL, lat REAL NOT NULL, lon REAL NOT NULL,
-    nightly_price REAL NOT NULL, luggage_storage INTEGER NOT NULL
+    nightly_price REAL NOT NULL, supports_luggage_storage INTEGER NOT NULL,
+    check_in_time TEXT NOT NULL, check_out_time TEXT NOT NULL
 );
 CREATE TABLE guides(
     guide_id INTEGER PRIMARY KEY AUTOINCREMENT, poi_id INTEGER NOT NULL,

@@ -30,4 +30,9 @@ class Restaurant:
 @dataclass
 class Hotel:
     hotel_id: int; name: str; district: str; lat: float; lon: float; nightly_price: float
-    luggage_storage: bool = True
+    supports_luggage_storage: bool; check_in_time: str; check_out_time: str
+
+    @property
+    def luggage_storage(self) -> bool:
+        """Compatibility alias; the structured capability is the source of truth."""
+        return self.supports_luggage_storage
