@@ -11,6 +11,19 @@ class HardValidator:
     def __init__(self,config):self.config=config
     def validate(self,plan,req):
         issues=[]
+        attraction_days={}
+        for day in plan.days:
+            for node in day.nodes:
+                if node.type=="attraction" and node.poi_id is not None:
+                    attraction_days.setdefault(node.poi_id,set()).add(day.day)
+        for poi_id,days in attraction_days.items():
+            if len(days)>1:
+                ordered=sorted(days)
+                issues.append(ValidationIssue(
+                    "duplicate_trip_poi",
+                    f"attraction poi_id {poi_id} appears on multiple days: {ordered}",
+                    ordered[-1],details={"poi_id":poi_id,"days":ordered},
+                ))
         assignments={day:segment for segment in plan.hotels for day in range(segment.start_day,segment.end_day+1)}
         for day in plan.days:
             previous_end=None

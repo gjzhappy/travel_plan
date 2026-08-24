@@ -65,11 +65,17 @@ class RoutePlanner:
             names=[item["canonical_name"] for item in req.resolved_must_visit if item["poi_id"] in missing]
             raise NoFeasibleRouteError(f"must_visit cannot be scheduled: {', '.join(names)}")
         return days
-    def plan_day(self,pois,req,hotel,day_number):
+    def plan_day(self,pois,req,hotel,day_number,required_poi_ids=None):
         """Plan exactly one requested day; it never evaluates another day."""
         from copy import copy
         local=copy(req);local.days=1;local.start_date=(date.fromisoformat(req.start_date)+timedelta(days=day_number-1)).isoformat()
-        if day_number == 1:
+        if required_poi_ids is not None:
+            # Scoped callers preserve only hard intents currently assigned to the
+            # affected day. A must-visit already satisfied elsewhere is protected
+            # there and must not be injected into this replacement.
+            local.resolved_must_visit=[item for item in req.resolved_must_visit if item["poi_id"] in required_poi_ids]
+            local.must_visit=[item["source_text"] for item in local.resolved_must_visit]
+        elif day_number == 1:
             local.resolved_must_visit=[item for item in req.resolved_must_visit if any(p.poi_id==item["poi_id"] for p in pois)]
         else:
             # A whole-trip must-visit is scheduled once by the global plan. A

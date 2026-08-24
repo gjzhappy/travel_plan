@@ -79,12 +79,14 @@ class TravelWorkflow:
         if f"DAY:{day_no}" in locked: raise LockedPlanConflict(f"day {day_no} is locked")
         day=next(d for d in plan.days if d.day==day_no);scope=intent["scope"]
         if scope=="DAY":
-            replacement=self.route.plan_day(shortlist,req,hotels[0],day_no);self.meals.insert(replacement,restaurants,req,hotels[0]);plan.days[plan.days.index(day)]=replacement
+            candidates,required_ids=self._scoped_candidates(plan,shortlist,req,scope,day_no)
+            replacement=self.route.plan_day(candidates,req,hotels[0],day_no,required_ids);self.meals.insert(replacement,restaurants,req,hotels[0]);plan.days[plan.days.index(day)]=replacement
         elif scope=="MEAL": self.meals.insert(day,restaurants,req,hotels[0],intent.get("meal") or req.target_meal)
         elif scope=="NODE":
             matches=[n for n in day.nodes if n.type=="attraction" and ((req.target_node_id and str(n.poi_id)==req.target_node_id) or (req.target_poi_name and n.name==req.target_poi_name))]
             if len(matches)!=1: raise AmbiguousTargetNodeError("target node must resolve to exactly one attraction")
-            target=matches[0];used={n.poi_id for d in plan.days for n in d.nodes};candidates=[p for p in shortlist if p.poi_id not in used and p.name not in req.rejected_pois]
+            target=matches[0];protected,_=self._scoped_candidates(plan,shortlist,req,scope,day_no,target.poi_id)
+            used={n.poi_id for d in plan.days for n in d.nodes};candidates=[p for p in protected if p.poi_id not in used and p.name not in req.rejected_pois]
             if not candidates: raise AmbiguousTargetNodeError("no eligible replacement node")
             p=max(candidates,key=lambda x:x.priority);target.name=p.name;target.poi_id=p.poi_id;target.cost=p.ticket_price;target.metadata.update({"category":p.category,"priority":p.priority,"lat":p.lat,"lon":p.lon,"must_visit":p.name in req.must_visit})
             self.meals.insert(day,restaurants,req,hotels[0])
@@ -121,7 +123,13 @@ class TravelWorkflow:
                 plan.review_count=review_count
                 did_replan=True
             elif affected and f"DAY:{affected}" not in locked:
-                replacement=self.route.plan_day(shortlist,req,hotels[0],affected);self.meals.insert(replacement,restaurants,req,hotels[0])
+                target_id=req.target_node_id
+                if scope=="NODE" and not target_id and req.target_poi_name:
+                    affected_day=next(day for day in plan.days if day.day==affected)
+                    target=next((node for node in affected_day.nodes if node.type=="attraction" and node.name==req.target_poi_name),None)
+                    target_id=target.poi_id if target else None
+                candidates,required_ids=self._scoped_candidates(plan,shortlist,req,scope,affected,target_id)
+                replacement=self.route.plan_day(candidates,req,hotels[0],affected,required_ids);self.meals.insert(replacement,restaurants,req,hotels[0])
                 candidate=deepcopy(plan);old=next(d for d in candidate.days if d.day==affected);candidate.days[candidate.days.index(old)]=replacement
                 plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
                 did_replan=True
@@ -146,6 +154,25 @@ class TravelWorkflow:
             raise ValidationError(f"plan rejected by final validation gate: {details}")
         plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]
         return plan,req
+    @staticmethod
+    def _scoped_candidates(plan,shortlist,req,scope,day_number,target_poi_id=None):
+        """Exclude stable attraction identities owned by unaffected trip scope."""
+        target_id=int(target_poi_id) if target_poi_id and str(target_poi_id).isdigit() else None
+        protected_poi_ids=set()
+        target_day_ids=set()
+        for day in plan.days:
+            for node in day.nodes:
+                if node.type!="attraction" or node.poi_id is None:
+                    continue
+                in_scope=day.day==day_number and (scope=="DAY" or (scope=="NODE" and node.poi_id==target_id))
+                if in_scope:
+                    target_day_ids.add(node.poi_id)
+                else:
+                    protected_poi_ids.add(node.poi_id)
+        required={item["poi_id"] for item in req.resolved_must_visit}
+        required_on_target=required & target_day_ids
+        candidates=[poi for poi in shortlist if poi.poi_id not in protected_poi_ids or poi.poi_id in required_on_target]
+        return candidates,required_on_target
     def _event(self,trip_id,version,parent_version,event_type,actor,details=None):
         self.events.record(trip_id,version,parent_version,event_type,actor,details)
     def _validator_event(self,trip_id,version,parent_version,stage,issues):
