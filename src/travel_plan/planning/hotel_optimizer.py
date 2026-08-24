@@ -32,5 +32,13 @@ class HotelOptimizer:
         gain=round(saving-migration-handling-luggage_penalty-extra,1); threshold=self.config.hotel_change_min_gain
         if gain<=threshold:return [HotelSegment(base.hotel_id,base.name,1,req.days,base.nightly_price)],HotelDecision("KEEP",gain,f"net gain {gain} <= threshold {threshold}")
         segments=[HotelSegment(base.hotel_id,base.name,1,change_day-1,base.nightly_price),HotelSegment(alt.hotel_id,alt.name,change_day,req.days,alt.nightly_price)]
-        d=days[change_day-1]; d.nodes.insert(0,Node("hotel_checkout",base.name,"08:00","08:15"));d.nodes.insert(1,Node("luggage_drop",alt.name,"08:15","08:45",duration_min=30));d.nodes.append(Node("hotel_checkin",alt.name,"20:30","21:00"))
+        d=days[change_day-1]
+        def route_meta(hotel):
+            result={"route_constraint":True}
+            if hasattr(hotel,"lat"):result.update({"lat":hotel.lat,"lon":hotel.lon})
+            return result
+        base_meta=route_meta(base);alt_meta=route_meta(alt)
+        d.nodes.insert(0,Node("hotel_checkout",base.name,"08:00","08:15",metadata=base_meta))
+        d.nodes.insert(1,Node("luggage_drop",alt.name,"08:15","08:45",transport_mode=req.transport,duration_min=migration,metadata={**alt_meta,"from_hotel":base.name}))
+        d.nodes.append(Node("hotel_checkin",alt.name,"20:30","21:00",metadata=alt_meta))
         return segments,HotelDecision("CHANGE",gain,f"net gain {gain} > threshold {threshold}",change_day)

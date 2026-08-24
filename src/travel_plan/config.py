@@ -13,7 +13,8 @@ class Config:
     daily_latest_end_time: str = "21:30"
     lunch_window: tuple[str, str] = ("11:30", "13:30")
     dinner_window: tuple[str, str] = ("17:30", "20:00")
-    max_pois_per_day: int = 4
+    # Emergency combinatorial guard only; route feasibility is time-driven.
+    max_pois_per_day: int = 6
     hotel_change_min_gain: int = 60
     review_max_retries: int = 2
     transport_mode: str = "public_transit"

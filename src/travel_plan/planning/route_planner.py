@@ -13,7 +13,10 @@ def _loc(x): return Location(x.name,x.lat,x.lon)
 class RoutePlanner:
     def __init__(self,transport_provider,config:Config): self.transport=transport_provider; self.config=config
     def plan(self,pois,req,hotel):
-        limits={"relaxed":3,"moderate":4,"intensive":5}; cap=min(limits[req.pace],self.config.max_pois_per_day)
+        # This is only a computational/safety ceiling.  Feasibility below (time,
+        # travel, opening hours and meal reservations), rather than a pace-specific
+        # POI quota, decides when a day is full.
+        cap=self.config.max_pois_per_day
         remaining=list(pois); days=[]
         for index in range(req.days):
             day_date=date.fromisoformat(req.start_date)+timedelta(days=index)
@@ -32,6 +35,10 @@ class RoutePlanner:
                 if best: break
             if not best: raise NoFeasibleRouteError(f"day {index+1} has no feasible route")
             nodes,score=best; used={n.poi_id for n in nodes if n.poi_id}; remaining=[p for p in remaining if p.poi_id not in used]
+            if index==req.days-1:
+                # Every remaining candidate has now been evaluated for this final
+                # day and rejected by the same travel/opening/duration constraints.
+                for node in nodes:node.metadata["idle_gap_reason"]="no feasible remaining candidate"
             days.append(DayPlan(index+1,day_date.isoformat()," / ".join(dict.fromkeys(p.category for p in selected)),nodes,score))
         scheduled={n.name for d in days for n in d.nodes}; missing=set(req.must_visit)-scheduled
         if missing: raise NoFeasibleRouteError(f"must_visit cannot be scheduled: {', '.join(missing)}")
@@ -57,6 +64,18 @@ class RoutePlanner:
                 leg=self.transport.route(_loc(current),_loc(p),mode); arrival=now+timedelta(minutes=leg.duration_min); window=hours_for_day(p.opening_hours,day)
                 if not window: valid=False;break
                 start=max(arrival,datetime.combine(day,window[0])); latest=p.opening_hours.get("latest_entry_time")
+                # Meals are real reservations in the route search, not nodes
+                # mechanically appended after every attraction has been placed.
+                if req.include_meals:
+                    for meal_start,meal_end in (self.config.lunch_window,self.config.dinner_window):
+                        reserved_start=_dt(day,meal_start);reserved_end=reserved_start+timedelta(minutes=60)
+                        if start < reserved_end and start+timedelta(minutes=p.duration_min) > reserved_start:
+                            start=reserved_end
+                    # Night activities are optional.  This pass ends attraction
+                    # packing at dinner so a restaurant/hotel return can remain
+                    # executable; a future explicit night reservation can override.
+                    if start>=_dt(day,self.config.dinner_window[0]):
+                        valid=False;break
                 if latest and start.time()>datetime.strptime(latest,"%H:%M").time():valid=False;break
                 end=start+timedelta(minutes=p.duration_min)
                 if end.time()>window[1] or end>_dt(day,min(self.config.daily_latest_end_time,latest_end)):valid=False;break

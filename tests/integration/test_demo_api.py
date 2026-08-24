@@ -6,6 +6,8 @@ from urllib.request import Request, urlopen
 
 from travel_plan.web.repository import PlanRepository
 from travel_plan.web.server import create_server
+from travel_plan.main import build_workflow
+from travel_plan.workflow import _plan_from_dict
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,6 +24,24 @@ def test_demo_data_can_be_loaded():
     assert scenario["id"] == "shanghai_family_trip"
     assert "迪士尼" in scenario["request"]
     assert "4天" in scenario["request"]
+
+
+def test_shanghai_family_trip_has_no_unexplained_afternoon_gap(tmp_path):
+    scenario = json.loads((ROOT / "data/demo/shanghai_family_trip.json").read_text(encoding="utf-8"))
+    workflow = build_workflow(ROOT, tmp_path)
+    raw, _, _ = workflow.execute(scenario["request"], "shanghai_family_regression")
+    req, _ = workflow.requirements.parse(scenario["request"])
+    issues = workflow.validator.validate(_plan_from_dict(raw), req)
+    assert not issues
+    for day in raw["days"][:3]:
+        lunch = next(node for node in day["nodes"] if node["type"] == "lunch")
+        dinner = next(node for node in day["nodes"] if node["type"] == "dinner")
+        assert any(
+            node["type"] == "attraction"
+            and node["start_time"] >= lunch["end_time"]
+            and node["end_time"] <= dinner["start_time"]
+            for node in day["nodes"]
+        )
 
 
 def test_demo_api_uses_workflow_and_returns_explainable_itinerary(tmp_path):
