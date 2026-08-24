@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 from travel_plan.web.presenter import present_plan
 
@@ -68,9 +69,34 @@ def test_route_presentation_has_collision_avoidance_and_demo_playback_contracts(
     assert "placeMapLabels" in javascript
     assert "boxesOverlap" in javascript
     assert "minimumVisibleMs" in javascript
-    assert "AGENT_MIN_VISIBLE_MS=900" in javascript
-    assert "PLANNING_MIN_VISIBLE_MS=550" in javascript
-    assert "CHECK_MIN_VISIBLE_MS=400" in javascript
+    assert "AGENT_MIN_VISIBLE_MS=1400" in javascript
+    assert "PLANNING_MIN_VISIBLE_MS=900" in javascript
+    assert "CHECK_MIN_VISIBLE_MS=650" in javascript
+    assert "separateMapMarkers" in javascript
+    assert "visualX" in javascript
     assert "runtimeMode!=='deterministic'" in javascript
     assert "isUrgentEvent" in javascript
     assert "路线评分" not in html
+
+
+def test_completed_workflow_has_a_persistent_result_snapshot():
+    javascript = (STATIC / "app.js").read_text(encoding="utf-8")
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+
+    assert 'id="result-workflow-graph"' in html
+    assert 'id="result-live-trace"' in html
+    assert "finalWorkflowGraph=item.graph" in javascript
+    assert "renderWorkflowGraph(finalWorkflowGraph,'#result-workflow-graph')" in javascript
+    assert "beginWorkflowPresentation" in javascript
+
+
+def test_three_playback_tiers_produce_an_eight_to_twelve_second_demo_without_sleeping():
+    javascript = (STATIC / "app.js").read_text(encoding="utf-8")
+    values = {name: int(value) for name, value in re.findall(
+        r"(AGENT_MIN_VISIBLE_MS|PLANNING_MIN_VISIBLE_MS|CHECK_MIN_VISIBLE_MS)=(\d+)", javascript
+    )}
+    # Representative successful path: requirement + retrieval/facts/route/meal/hotel
+    # + validator + review. This checks presentation time, not trace duration.
+    total = values["AGENT_MIN_VISIBLE_MS"] * 2 + values["PLANNING_MIN_VISIBLE_MS"] * 5 + values["CHECK_MIN_VISIBLE_MS"]
+    assert 7_800 <= total <= 12_000
+    assert "Math.max(0,minimumVisibleMs(event.stage)-" in javascript

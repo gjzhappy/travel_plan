@@ -263,7 +263,10 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
 
     def _execute_and_save(self, workflow, plan_id: str, text: str, request: dict):
         plan, state, _ = workflow.execute(text, plan_id)
-        display = present_plan(plan, state.version, getattr(state, "requirements", {}))
+        display = present_plan(
+            plan, state.version, getattr(state, "requirements", {}),
+            _hotel_locations(self.root),
+        )
         raw_events = [asdict(event) for event in TraceReader(workflow.events.root).read(plan_id)]
         events = _present_events(raw_events, state.version)
         review = _review_result(raw_events, state.version)
@@ -316,6 +319,18 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+
+def _hotel_locations(root: Path) -> dict[int, dict]:
+    """Read coordinates from the existing hotel facts for presentation only."""
+    path = root / "data" / "seed" / "hotels.json"
+    if not path.is_file():
+        return {}
+    hotels = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        item["hotel_id"]: {"lat": item.get("lat"), "lon": item.get("lon")}
+        for item in hotels if isinstance(item, dict) and isinstance(item.get("hotel_id"), int)
+    }
 
 
 def create_server(host="127.0.0.1", port=8000, root=Path("."), workflow_factory=build_workflow, repository=None, config=DEFAULT_CONFIG):

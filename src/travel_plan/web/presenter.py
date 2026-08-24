@@ -16,11 +16,15 @@ TYPE_LABELS = {
 
 
 def present_plan(
-    plan: dict[str, Any], version: int, requirement: dict[str, Any] | None = None
+    plan: dict[str, Any], version: int, requirement: dict[str, Any] | None = None,
+    hotel_locations: dict[int, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Add deterministic display copy while preserving the engine response."""
     result = {**plan, "version": version}
-    result["days"] = [_present_day(day, plan.get("hotels", [])) for day in plan["days"]]
+    result["days"] = [
+        _present_day(day, plan.get("hotels", []), hotel_locations or {})
+        for day in plan["days"]
+    ]
     result["explanation"] = _explanation(plan)
     result["overview"] = _overview(plan, requirement or {})
     return result
@@ -54,17 +58,22 @@ def _overview(plan: dict[str, Any], requirement: dict[str, Any]) -> dict[str, An
     }
 
 
-def _present_day(day: dict[str, Any], hotels: list[dict[str, Any]]) -> dict[str, Any]:
+def _present_day(
+    day: dict[str, Any], hotels: list[dict[str, Any]], hotel_locations: dict[int, dict[str, Any]]
+) -> dict[str, Any]:
     """Create timeline and route DTOs without mutating or re-planning the day."""
     canonical = sorted(
         ({**node, "display": _node_display(node)} for node in day["nodes"]),
         key=lambda node: (node.get("start_time") or "99:99", node.get("end_time") or "99:99"),
     )
-    timeline = _hotel_context(day, canonical, hotels)
+    timeline = _hotel_context(day, canonical, hotels, hotel_locations)
     route_nodes = []
     for node in timeline:
         metadata = node.get("metadata", {})
         if not _has_coordinates(metadata):
+            continue
+        if node.get("map_alias_of"):
+            # The closing edge below points back to the single hotel marker.
             continue
         node_type = node.get("type", "")
         is_numbered = node_type in {"attraction", "lunch", "dinner"}
@@ -74,6 +83,7 @@ def _present_day(day: dict[str, Any], hotels: list[dict[str, Any]]) -> dict[str,
             "order": len(route_nodes) + 1,
             "display_order": display_order,
             "marker_label": str(display_order) if display_order is not None else "H",
+            "marker_type": "hotel" if node_type.startswith("hotel_") else "activity",
             "type": node_type,
             "name": node.get("name", ""),
             "lat": metadata["lat"],
@@ -82,6 +92,12 @@ def _present_day(day: dict[str, Any], hotels: list[dict[str, Any]]) -> dict[str,
             "start_time": node.get("start_time"),
             "end_time": node.get("end_time"),
         })
+    hotel_nodes = [node for node in route_nodes if node["marker_type"] == "hotel"]
+    hotel_names = list(dict.fromkeys(node["name"] for node in hotel_nodes))
+    if len(hotel_names) > 1:
+        labels = {name: f"H{index}" for index, name in enumerate(hotel_names, 1)}
+        for node in hotel_nodes:
+            node["marker_label"] = labels[node["name"]]
     return {
         **day,
         # ``nodes`` remains available for API compatibility; timeline is the
@@ -93,14 +109,16 @@ def _present_day(day: dict[str, Any], hotels: list[dict[str, Any]]) -> dict[str,
             "edges": [
                 {"from": previous["order"], "to": current["order"]}
                 for previous, current in zip(route_nodes, route_nodes[1:])
-            ],
+            ] + ([{"from": route_nodes[-1]["order"], "to": route_nodes[0]["order"]}]
+                 if timeline and timeline[-1].get("map_alias_of") and len(route_nodes) > 1 else []),
         },
         "summary": _day_summary(day),
     }
 
 
 def _hotel_context(
-    day: dict[str, Any], canonical: list[dict[str, Any]], hotels: list[dict[str, Any]]
+    day: dict[str, Any], canonical: list[dict[str, Any]], hotels: list[dict[str, Any]],
+    hotel_locations: dict[int, dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Expose the recorded hotel assignment as presentation context, never as a canonical node."""
     assigned = next(
@@ -110,9 +128,12 @@ def _hotel_context(
     if not assigned:
         return [{**node, "presentation_sequence": index} for index, node in enumerate(canonical, 1)]
     types = {node.get("type") for node in canonical}
+    location = hotel_locations.get(assigned.get("hotel_id"), {})
+    metadata = ({"lat": location["lat"], "lon": location["lon"]}
+                if _has_coordinates(location) else {})
     context = {
         "name": assigned.get("name", "住宿"), "start_time": "", "end_time": "",
-        "duration_min": 0, "metadata": {},
+        "duration_min": 0, "metadata": metadata,
         "presentation_derived": True, "presentation_source": "hotel_assignment",
     }
     before = [] if types & {"hotel_departure", "hotel_checkout"} else [
@@ -122,6 +143,11 @@ def _hotel_context(
         {**context, "type": "hotel_return", "display": _node_display({**context, "type": "hotel_return"})}
     ]
     result = before + canonical + after
+    # A fixed hotel is one visual identity but remains both ends of the route.
+    # Re-use the departure sequence for the return so timeline/map interaction
+    # stays truthful without drawing two markers at identical coordinates.
+    if before and after and metadata:
+        after[0]["map_alias_of"] = "hotel_departure"
     return [{**node, "presentation_sequence": index} for index, node in enumerate(result, 1)]
 
 
