@@ -174,6 +174,33 @@ def test_review_failure_executes_only_event_evidenced_feedback_path():
     assert _edge(graph, "review", "requirement_refinement")["execution_status"] == "executed"
     assert _edge(graph, "requirement_refinement", "scoped_replanner")["execution_status"] == "available"
     assert _edge(graph, "scoped_replanner", "feedback_validator")["execution_status"] == "available"
+    states = _states(graph)
+    assert states["review"] == "completed"
+    assert states["requirement_refinement"] == "pending"
+
+
+def test_completed_demo_trace_has_no_stale_running_or_failed_nodes():
+    graph = workflow_graph([
+        {"event_type": "STAGE_STARTED", "stage": "PLANNER", "status": "RUNNING"},
+        {"event_type": "PLAN_GENERATED", "stage": "ROUTE_PLAN", "status": "COMPLETED"},
+        {"event_type": "REVIEW_COMPLETED", "stage": "REVIEW", "status": "COMPLETED",
+         "passed": False},
+        {"event_type": "STAGE_STARTED", "stage": "REQUIREMENT_REFINEMENT",
+         "status": "RUNNING"},
+        {"event_type": "STAGE_COMPLETED", "stage": "REQUIREMENT_REFINEMENT",
+         "status": "COMPLETED"},
+        {"event_type": "STAGE_COMPLETED", "stage": "SCOPED_REPLAN",
+         "status": "COMPLETED"},
+        {"event_type": "STAGE_COMPLETED", "stage": "FINAL_VALIDATION",
+         "status": "COMPLETED"},
+        {"event_type": "PLAN_VERSION_SAVED", "stage": "WORKFLOW", "status": "COMPLETED"},
+    ])
+
+    states = _states(graph)
+    assert states["planner"] == "completed"
+    assert states["review"] == "completed"
+    assert states["requirement_refinement"] == "completed"
+    assert not {"running", "failed"} & set(states.values())
 
 
 def test_explicit_started_event_marks_current_feedback_edge_active():
