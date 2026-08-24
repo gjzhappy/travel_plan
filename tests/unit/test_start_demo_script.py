@@ -1,69 +1,80 @@
+import importlib.util
 from pathlib import Path
-import re
+import subprocess
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = ROOT / "scripts" / "start_demo.bat"
+BAT = ROOT / "scripts" / "start_demo.bat"
+PYTHON = ROOT / "scripts" / "start_demo.py"
 
 
-def test_windows_demo_launcher_exists_and_has_reliability_checks():
-    assert SCRIPT.is_file()
-    content = SCRIPT.read_text(encoding="utf-8").lower()
-
-    assert "%~dp0" in content
-    assert 'set "script_dir=%~dp0"' in content
-    assert 'set "project_root=%%~fi"' in content
-    assert "cd /d" in content
-    assert "python --version" in content
-    assert "sys.version_info >= (3, 11)" in content
-    assert "set \"pythonpath=" in content
-    assert "src\\travel_plan\\web\\server.py" in content
-    assert "data\\demo\\shanghai_family_trip.json" in content
-    assert "import fastapi, uvicorn" in content
-    assert "port 8000 is already in use" in content
-    assert "logs\\start_demo.log" in content
-    assert "python -m travel_plan.web.server" in content
-    assert "pause" in content
-    assert "where opencode" in content
-    assert "--agent-mode" in content
-    assert "deterministic offline agent" in content
-    assert 'set "agent_mode=deterministic"' in content
+def load_launcher():
+    spec = importlib.util.spec_from_file_location("start_demo", PYTHON)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(module)
+    return module
 
 
-def test_windows_demo_launcher_uses_cmd_safe_status_output():
-    content = SCRIPT.read_text(encoding="utf-8")
-    lower = content.lower()
-
-    assert "echo   %AGENT_RUNTIME%" in content
-    assert "echo √ BAAI/bge-small-zh-v1.5" in content
-    assert "echo   Shanghai knowledge base" in content
-    assert '/b cmd /c "' not in lower
-
-    # Pipes and angle brackets in user-facing echo text must be escaped. Log
-    # redirections at the beginning or immediately after the text are allowed.
-    unsafe_echo = re.compile(r"^\s*echo\s+.*(?:[^\^][|<>])(?:\s+.*)?$", re.MULTILINE)
-    for line in content.splitlines():
-        if re.match(r'^\s*(?:>>?"[^\"]+"\s+)?echo\b', line, re.IGNORECASE):
-            text = re.sub(r'^\s*(?:>>?"[^\"]+"\s+)?echo\s*', '', line, flags=re.IGNORECASE)
-            text = re.sub(r'>>?"[^\"]+"\s*$', '', text)
-            assert not unsafe_echo.match(f"echo {text}"), line
+def test_bat_is_ascii_crlf_minimal_wrapper():
+    raw = BAT.read_bytes()
+    assert raw.isascii()
+    assert not raw.startswith((b"\xef\xbb\xbf", b"\xff\xfe", b"\xfe\xff"))
+    assert b"\n" in raw and raw.count(b"\r\n") == raw.count(b"\n")
+    content = raw.decode("ascii").lower()
+    forbidden = (
+        "cmd /c", "powershell", "pythonpath", "project_root", "agent_mode=",
+        "webbrowser", "xdg-open", 'start "" "http', "|",
+    )
+    assert all(item not in content for item in forbidden)
+    assert not any(line.rstrip().endswith("^") for line in content.splitlines())
+    assert content.count("(") == 0
 
 
-def test_posix_launcher_detects_runtime_and_supports_forcing_mode():
-    content = (ROOT / "scripts" / "start_demo.sh").read_text(encoding="utf-8").lower()
-    assert "command -v opencode" in content
-    assert "--agent-mode" in content
-    assert "[4/6] agent runtime" in content
-    assert "deterministic offline agent" in content
-    assert "agent_mode=deterministic" in content
+def test_bat_bootstrap_contract():
+    content = BAT.read_text(encoding="ascii").lower()
+    for expected in ("%~dp0", "start_demo.py", "where py", "where python", "%*"):
+        assert expected in content
 
 
-def test_launchers_print_demo_url_and_keep_browser_failure_non_fatal():
-    for name in ("start_demo.bat", "start_demo.sh"):
-        content = (ROOT / "scripts" / name).read_text(encoding="utf-8").lower()
-        assert "http://localhost:8000" in content
-        assert "browser auto open failed" in content
-    assert "start """ in (ROOT / "scripts/start_demo.bat").read_text(encoding="utf-8").lower()
-    posix = (ROOT / "scripts/start_demo.sh").read_text(encoding="utf-8").lower()
-    assert "xdg-open" in posix and "open http://localhost:8000" in posix
-    assert ") &" in posix
+def test_project_root_is_independent_of_working_directory(tmp_path):
+    command = (
+        "import importlib.util; "
+        f"s=importlib.util.spec_from_file_location('launcher', {str(PYTHON)!r}); "
+        "m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(m.project_root())"
+    )
+    result = subprocess.run([sys.executable, "-c", command], cwd=tmp_path, text=True, capture_output=True, check=True)
+    assert Path(result.stdout.strip()) == ROOT
+
+
+def test_agent_mode_defaults_and_explicit_opencode():
+    launcher = load_launcher()
+    assert launcher.parse_args([]).agent_mode == "deterministic"
+    assert launcher.parse_args(["--agent-mode", "opencode"]).agent_mode == "opencode"
+    assert launcher.parse_args(["--agent-mode", "auto"]).agent_mode == "auto"
+
+
+def test_validation_failure_reports_absolute_log_path(monkeypatch, tmp_path, capsys):
+    launcher = load_launcher()
+    monkeypatch.setattr(launcher, "project_root", lambda: tmp_path)
+    result = launcher.launch(launcher.parse_args([]))
+    error = capsys.readouterr().err
+    assert result != 0
+    assert f"Log saved: {(tmp_path / 'logs' / 'start_demo.log').resolve()}" in error
+
+
+def test_browser_failure_is_nonfatal(monkeypatch, capsys):
+    launcher = load_launcher()
+    monkeypatch.setattr(launcher.webbrowser, "open", lambda _url: False)
+    assert launcher.open_browser() is False
+    output = capsys.readouterr().out
+    assert "Browser could not be opened automatically." in output
+    assert launcher.DEMO_URL in output
+
+
+def test_posix_launcher_delegates_to_python_launcher():
+    content = (ROOT / "scripts" / "start_demo.sh").read_text(encoding="ascii")
+    assert "start_demo.py" in content
+    assert '"$@"' in content
+    assert "agent-mode" not in content
