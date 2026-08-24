@@ -1,7 +1,14 @@
 @echo off
 setlocal EnableExtensions
-set "SCRIPT_DIR=%~dp0"
 
+echo.
+echo ========================================
+echo  Shanghai AI Travel Planner Demo
+echo ========================================
+echo.
+echo [START] Launching demo...
+
+set "SCRIPT_DIR=%~dp0"
 where py >nul 2>&1
 if not errorlevel 1 goto use_py
 where python >nul 2>&1
