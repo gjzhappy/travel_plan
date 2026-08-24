@@ -33,6 +33,9 @@ def preserve_user_intent(original: Requirement, proposed: Requirement) -> Requir
     result.replacement_constraints = list(dict.fromkeys(
         original.replacement_constraints + proposed.replacement_constraints
     ))
+    # Agents cannot author executable values, but existing compiled constraints
+    # are part of state and must survive later interpretation rounds.
+    result.day_constraints = deepcopy(original.day_constraints)
     additions = proposed.retrieval_query.removeprefix(original.retrieval_query).strip()
     result.retrieval_query = " ".join(
         part for part in (original.retrieval_query, additions) if part

@@ -7,7 +7,7 @@ from travel_plan.agents.review_agent import OpenCodeReviewAgent
 from travel_plan.config import DEFAULT_CONFIG
 from travel_plan.conversation.state_manager import StateManager,TripState
 from travel_plan.conversation.replanner import Replanner
-from travel_plan.errors import AmbiguousTargetNodeError,LockedPlanConflict,ValidationError
+from travel_plan.errors import AmbiguousTargetNodeError,LockedPlanConflict,QualityReviewBlocked,ValidationError
 from travel_plan.models.requirement import Requirement
 from travel_plan.models.trip import Budget,TripPlan
 from travel_plan.observability.event_trace import EventTrace
@@ -18,6 +18,7 @@ from travel_plan.renderer.markdown_renderer import MarkdownRenderer
 from travel_plan.validation.repair import CodeRepair
 from travel_plan.validation.validator import HardValidator
 from travel_plan.planning.transport_quality import daily_transport_metrics
+from travel_plan.planning.review_constraints import compile_review_constraints
 
 log=logging.getLogger("travel_plan")
 class TravelWorkflow:
@@ -100,23 +101,53 @@ class TravelWorkflow:
             self._validator_event(plan.trip_id,version,parent_version,"AFTER_REPAIR",issues)
         self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","validator",{"stage":"VALIDATOR","duration_ms":self._elapsed(validation_started),"passed":not bool(issues)})
         review=None
+        previous_signature=previous_facts=previous_constraints=None
         for retry in range(self.config.review_max_retries+1):
             review_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","review-agent",{"stage":"REVIEW","review_number":plan.review_count+1})
             review=self.reviewer.review(req,plan,plan.evidence);plan.review_count+=1
             self._event(plan.trip_id,version,parent_version,"REVIEW_COMPLETED","review-agent",{"review_number":plan.review_count,"passed":review.passed,"issues":[asdict(issue) for issue in review.issues],"duration_ms":self._elapsed(review_started)})
             if review.passed:break
-            if retry==self.config.review_max_retries:break
+            signature=self._review_signature(review)
+            facts=self._review_facts(plan,review)
+            constraints=self._constraint_snapshot(req)
+            if (previous_signature == signature and previous_facts == facts
+                    and previous_constraints == constraints):
+                self._quality_blocked_event(plan,version,parent_version,review,"review_stagnation")
+                raise QualityReviewBlocked("review_stagnation: route quality did not improve")
+            if retry==self.config.review_max_retries:
+                self._quality_blocked_event(plan,version,parent_version,review,"review_retries_exhausted")
+                raise QualityReviewBlocked("review_retries_exhausted: final experience review did not pass")
             # The review message returns to the intent layer before any code acts.
             # Agents communicate JSON, while Python retains all planning authority.
             refinement_started=monotonic()
             self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","requirement-agent",{"stage":"REQUIREMENT_REFINEMENT","iteration":plan.review_count})
             req=self.requirements.refine(req,review,plan)
             self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","requirement-agent",{"stage":"REQUIREMENT_REFINEMENT","iteration":plan.review_count,"scope":req.scope,"duration_ms":self._elapsed(refinement_started)})
+            req,affected_days,constraint_changes=compile_review_constraints(req,review)
+            self._event(plan.trip_id,version,parent_version,"REVIEW_CONSTRAINTS_COMPILED","constraint-compiler",{
+                "iteration":plan.review_count,"affected_days":affected_days,"changes":constraint_changes,
+                "day_constraints":deepcopy(req.day_constraints),
+            })
             shortlist=self.retrieval.shortlist(req)
             scope=req.scope;affected=req.target_day;did_replan=False
             replan_started=monotonic()
-            self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected})
-            if scope=="GLOBAL":
+            self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected,"affected_days":affected_days})
+            if affected_days:
+                # One review/refinement iteration may perform several existing
+                # DAY replans. Each replacement sees the latest full plan so its
+                # protected POI set remains trip-wide and deterministic.
+                for day_number in affected_days:
+                    if f"DAY:{day_number}" in locked:
+                        continue
+                    candidates,required_ids=self._scoped_candidates(plan,shortlist,req,"DAY",day_number)
+                    replacement=self.route.plan_day(candidates,req,hotels[0],day_number,required_ids)
+                    self.meals.insert(replacement,restaurants,req,hotels[0])
+                    candidate=deepcopy(plan)
+                    old=next(d for d in candidate.days if d.day==day_number)
+                    candidate.days[candidate.days.index(old)]=replacement
+                    plan=Replanner().apply("DAY",plan,candidate,day_number,locked_items=locked)
+                    did_replan=True
+            elif scope=="GLOBAL":
                 review_count=plan.review_count
                 candidate=self._global(plan.trip_id,shortlist,req,hotels,restaurants,version,parent_version)
                 plan=Replanner().apply("GLOBAL",plan,candidate,locked_items=locked)
@@ -134,7 +165,7 @@ class TravelWorkflow:
                 plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
                 did_replan=True
             if did_replan:
-                self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"trigger_review_number":plan.review_count,"scope":scope,"target_day":affected,"duration_ms":self._elapsed(replan_started)})
+                self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"trigger_review_number":plan.review_count,"scope":"DAY" if affected_days else scope,"target_day":affected,"affected_days":affected_days,"duration_ms":self._elapsed(replan_started)})
             else:
                 self._event(plan.trip_id,version,parent_version,"STAGE_FAILED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected,"duration_ms":self._elapsed(replan_started)})
             revalidation_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","validator",{"stage":"HARD_VALIDATION","iteration":plan.review_count})
@@ -142,9 +173,11 @@ class TravelWorkflow:
             self._validator_event(plan.trip_id,version,parent_version,"AFTER_REPLAN",issues)
             if issues:plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
             self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","validator",{"stage":"HARD_VALIDATION","iteration":plan.review_count,"passed":not bool(issues),"duration_ms":self._elapsed(revalidation_started)})
-        # Acceptance is fail-closed: review exhaustion may leave experience
-        # findings for display, but no plan with a hard validation issue may be
-        # returned, rendered, or persisted as the current state.
+            previous_signature=signature
+            previous_facts=facts
+            previous_constraints=self._constraint_snapshot(req)
+        # Reaching this final hard gate implies the latest review passed; failed
+        # reviews raise above and therefore can never reach persistence.
         final_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","validator",{"stage":"FINAL_VALIDATION"})
         issues=self.validator.validate(plan,req)
         self._validator_event(plan.trip_id,version,parent_version,"FINAL_GATE",issues)
@@ -154,6 +187,22 @@ class TravelWorkflow:
             raise ValidationError(f"plan rejected by final validation gate: {details}")
         plan.remaining_issues=[asdict(x) for x in (review.issues if review and not review.passed else [])]
         return plan,req
+    @staticmethod
+    def _review_signature(review):
+        return tuple(sorted((issue.type,issue.day,issue.scope) for issue in review.issues))
+    @staticmethod
+    def _review_facts(plan,review):
+        days={issue.day for issue in review.issues if issue.type=="too_tiring" and issue.day is not None}
+        return tuple((day.day,sum(node.type=="attraction" for node in day.nodes)) for day in plan.days if day.day in days)
+    @staticmethod
+    def _constraint_snapshot(req):
+        return tuple(sorted((day,value.get("max_attractions")) for day,value in req.day_constraints.items()))
+    def _quality_blocked_event(self,plan,version,parent_version,review,reason):
+        plan.remaining_issues=[asdict(issue) for issue in review.issues]
+        self._event(plan.trip_id,version,parent_version,"QUALITY_REVIEW_BLOCKED","workflow",{
+            "reason":reason,"last_review":{"passed":False,"issues":plan.remaining_issues},
+            "message":"当前路线在时间和交通上可以执行，但体验审核仍认为行程过于紧凑，因此没有生成最终方案。",
+        })
     @staticmethod
     def _scoped_candidates(plan,shortlist,req,scope,day_number,target_poi_id=None):
         """Exclude stable attraction identities owned by unaffected trip scope."""

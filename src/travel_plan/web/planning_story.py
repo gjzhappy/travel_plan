@@ -31,6 +31,14 @@ def planning_story(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
         event_type = str(event.get("event_type", "")).upper()
         stage, status = str(event.get("stage", "")).upper(), str(event.get("status", "")).upper()
         if event_type in {"AGENT_HEARTBEAT", "WORKFLOW_STARTED"}: continue
+        if event_type == "QUALITY_REVIEW_BLOCKED":
+            put(("QUALITY_REVIEW_BLOCKED", 1), {
+                "id": "quality-review-blocked", "stage": "QUALITY_REVIEW_BLOCKED",
+                "node_id": "output", "title": "未生成最终方案", "status": "failed",
+                "detail": event.get("message") or "行程虽然在时间上可执行，但体验审核仍认为安排过于紧凑。",
+                "issues": (event.get("last_review") or {}).get("issues", []),
+            })
+            continue
         stage = {"AGENT_COMPLETED": "REQUIREMENT", "PLAN_GENERATED": "PLANNER", "VALIDATOR_PASSED": "VALIDATOR", "VALIDATOR_BLOCKED": "VALIDATOR", "PLAN_VERSION_SAVED": "PERSIST"}.get(event_type, stage)
         if stage == "REVIEW" or event_type == "REVIEW_COMPLETED":
             stage = "REVIEW"

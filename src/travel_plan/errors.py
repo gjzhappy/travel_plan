@@ -16,6 +16,8 @@ class ValidationError(TravelError):
     """A plan remains invalid after safe repair."""
 class ReviewError(TravelError):
     """Review output is malformed."""
+class QualityReviewBlocked(TravelError):
+    """The executable plan did not pass the final experience quality gate."""
 class AgentOutputValidationError(TravelError):
     """A named agent returned JSON that does not satisfy its boundary schema."""
 class AmbiguousTargetNodeError(TravelError):

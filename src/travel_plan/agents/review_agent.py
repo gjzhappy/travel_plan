@@ -1,12 +1,14 @@
 from travel_plan.models.review import ReviewIssue, ReviewResult
 from travel_plan.agents.client import load_schema
+from travel_plan.planning.pace_policy import max_attractions_for
 
 class ReviewAgent:
     def review(self,req,plan,evidence=None):
         issues=[]
         for day in plan.days:
             attractions=[n for n in day.nodes if n.type=="attraction"]
-            if (req.pace=="relaxed" and len(attractions)>3) or (req.party.child and len(attractions)>4): issues.append(ReviewIssue("DAY","too_tiring","景点数量对当前节奏偏多",day.day))
+            limit=max_attractions_for(req)
+            if limit is not None and len(attractions)>limit: issues.append(ReviewIssue("DAY","too_tiring","景点数量对当前节奏偏多",day.day))
             cats=[n.metadata.get("category") for n in attractions]
             if len(cats)>=3 and len(set(cats))==1:issues.append(ReviewIssue("DAY","content_repetitive","同类内容连续重复",day.day))
         scheduled=" ".join(n.name+str(n.metadata.get("category","")) for d in plan.days for n in d.nodes)

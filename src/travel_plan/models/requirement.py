@@ -39,6 +39,8 @@ class Requirement:
     must_eat: list[str] = field(default_factory=list)
     # Filled by the deterministic repository boundary, not by the requirement agent.
     resolved_must_visit: list[dict[str, Any]] = field(default_factory=list)
+    # Deterministic, planner-owned repair constraints keyed by one-based day.
+    day_constraints: dict[int, dict[str, int]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         errors = []
@@ -50,6 +52,15 @@ class Requirement:
         if self.walking not in {"low", "medium", "high"}: errors.append("invalid walking")
         if self.lodging_strategy not in {"fixed", "flexible"}: errors.append("invalid lodging_strategy")
         if self.scope not in {"GLOBAL", "DAY", "NODE", "MEAL"}: errors.append("invalid scope")
+        normalized = {}
+        for raw_day, constraint in self.day_constraints.items():
+            day = int(raw_day)
+            maximum = constraint.get("max_attractions")
+            if day < 1 or day > self.days: errors.append("day constraint is outside trip")
+            if maximum is not None and (not isinstance(maximum, int) or maximum < 1):
+                errors.append("max_attractions must be a positive integer")
+            normalized[day] = dict(constraint)
+        self.day_constraints = normalized
         try: date.fromisoformat(self.start_date)
         except ValueError: errors.append("start_date must be ISO date")
         if self.party.adult < 0 or self.party.child < 0 or self.party.adult + self.party.child < 1: errors.append("invalid party")
