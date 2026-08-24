@@ -24,8 +24,8 @@ def test_events_map_to_runtime_graph_nodes():
     ])
     states = _states(graph)
     assert states["requirement"] == "completed"
-    assert states["planner"] == states["route"] == "running"
-    assert states["meal"] == states["hotel"] == "running"
+    assert states["planner"] == "running"
+    assert states["route"] == states["meal"] == states["hotel"] == "pending"
 
 
 def test_unexecuted_nodes_are_pending_and_running_node_is_highlightable():
@@ -43,7 +43,7 @@ def test_validator_failure_exposes_replan_loop_without_reasoning():
     ])
     states = _states(graph)
     assert states["validator"] == "failed"
-    assert states["repair"] == "running"
+    assert states["repair"] == "pending"
     assert {("validator", "repair"), ("repair", "validator")} <= {
         (edge["from"], edge["to"]) for edge in graph["edges"]
     }
@@ -117,7 +117,7 @@ def test_graph_exposes_deterministic_architecture_layout_and_trace_summary():
 
 
 def test_event_mapping_is_explicit_and_unknown_events_are_not_guessed():
-    assert workflow_node_id({"event_type": "PLAN_GENERATED", "stage": "ROUTE_PLAN"}) == "route"
+    assert workflow_node_id({"event_type": "PLAN_GENERATED", "stage": "ROUTE_PLAN"}) == "planner"
     assert workflow_node_id({"event_type": "STAGE_STARTED", "stage": "REVIEW"}) == "review"
     assert workflow_node_id({"event_type": "UNRECOGNIZED", "stage": "REVIEW"}) is None
 
@@ -188,8 +188,8 @@ def test_explicit_started_event_marks_current_feedback_edge_active():
 def test_feedback_execution_advances_only_with_explicit_trace_events():
     graph = workflow_graph([
         {"event_type": "REVIEW_FAILED", "stage": "REVIEW"},
-        {"event_type": "AGENT_COMPLETED", "task": "refine_intent_from_review"},
-        {"event_type": "REPLAN_COMPLETED", "scope": "DAY"},
+        {"event_type": "STAGE_COMPLETED", "stage": "REQUIREMENT_REFINEMENT"},
+        {"event_type": "STAGE_COMPLETED", "stage": "SCOPED_REPLAN", "scope": "DAY"},
     ])
 
     feedback = [edge for edge in graph["edges"] if edge["edge_type"] == "feedback"]
@@ -217,12 +217,12 @@ def test_feedback_edges_use_short_hidden_labels_with_tooltips_and_position_dto()
 
 def test_feedback_validator_state_follows_only_post_replan_validation_events():
     graph = workflow_graph([
-        {"event_type": "REPLAN_COMPLETED", "scope": "DAY"},
-        {"event_type": "VALIDATOR_PASSED", "stage": "VALIDATOR",
+        {"event_type": "STAGE_COMPLETED", "stage": "SCOPED_REPLAN", "scope": "DAY"},
+        {"event_type": "STAGE_COMPLETED", "stage": "HARD_VALIDATION",
          "status": "COMPLETED", "duration_ms": 42},
     ])
     node = next(node for node in graph["nodes"] if node["id"] == "feedback_validator")
 
     assert node["status"] == "completed"
-    assert node["event_type"] == "VALIDATOR_PASSED"
+    assert node["event_type"] == "STAGE_COMPLETED"
     assert node["duration_ms"] == 42

@@ -9,7 +9,7 @@ STATIC = Path(__file__).parents[2] / "src" / "travel_plan" / "web" / "static"
 
 def test_stream_dto_links_real_event_to_workflow_node():
     event = _stream_event({"sequence": 7, "event_type": "PLAN_GENERATED", "actor": "planner", "timestamp": "2026-08-22T15:01:15Z", "details": {"duration_ms": 15300}})
-    assert event["workflow_node_id"] == "route"
+    assert event["workflow_node_id"] == "planner"
 
 
 def test_unknown_stream_event_has_no_workflow_link():

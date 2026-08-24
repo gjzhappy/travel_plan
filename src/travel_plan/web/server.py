@@ -268,7 +268,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             _hotel_locations(self.root),
         )
         raw_events = [asdict(event) for event in TraceReader(workflow.events.root).read(plan_id)]
-        events = _present_events(raw_events, state.version)
+        events = [_stream_event(event) for event in raw_events if event["plan_version"] == state.version]
         review = _review_result(raw_events, state.version)
         explainability = build_explainability(
             plan, raw_events, state.version, getattr(state, "requirements", {})
@@ -293,7 +293,8 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
 
     @staticmethod
     def _plan_response(record):
-        return {"plan_id": record.plan_id, "version": record.version, "plan": record.display_result}
+        return {"plan_id": record.plan_id, "version": record.version, "plan": record.display_result,
+                "events": record.events, "workflow_graph": workflow_graph(record.events)}
 
     @staticmethod
     def _version_response(record):
@@ -303,6 +304,7 @@ class TravelRequestHandler(BaseHTTPRequestHandler):
             "version": record.version,
             "plan": record.display_result,
             "events": record.events,
+            "workflow_graph": workflow_graph(record.events),
             "review": record.review,
             "explainability": record.explainability,
             "change": {
@@ -463,26 +465,27 @@ def datetime_now():
 
 def _stream_event(event):
     """Expose operational facts only; never expose prompts or model reasoning."""
-    details = event.get("details", {})
+    details = event.get("details", event.get("payload", {}))
     stage = details.get("stage")
-    if not stage:
-        label = EVENT_PRESENTATION.get((event["event_type"], event["actor"]))
-        stage = label[0] if label else None
+    label = EVENT_PRESENTATION.get((event["event_type"], event["actor"]))
+    if label and event["event_type"] not in {"STAGE_STARTED", "STAGE_COMPLETED", "STAGE_FAILED"}:
+        stage = label[0]
     status = "RUNNING" if event["event_type"] in {"WORKFLOW_STARTED", "STAGE_STARTED"} else "COMPLETED"
+    if event["event_type"] in {"STAGE_FAILED", "AGENT_FAILED"}:
+        status = "FAILED"
     if event["event_type"] == "VALIDATOR_BLOCKED":
         status = "WARNING"
     message = STAGE_PRESENTATION.get(stage)
     if event["event_type"] != "STAGE_STARTED":
-        label = EVENT_PRESENTATION.get((event["event_type"], event["actor"]))
         message = label[1] if label else message
     presented = {
-        "event_id": event["sequence"], "event_type": event["event_type"], "stage": stage or "WORKFLOW", "status": status,
+        "event_id": event.get("sequence", event.get("event_id")), "event_type": event["event_type"], "stage": stage or "WORKFLOW", "status": status,
         "actor": event["actor"], "message": message or "工作流正在执行",
         "timestamp": event.get("timestamp", ""), "duration_ms": details.get("duration_ms"),
     }
     # These are deterministic routing facts used by the visualization.  Prompts,
     # review text, and model reasoning stay behind the presentation boundary.
-    for key in ("passed", "task", "scope", "review_number", "trigger_review_number"):
+    for key in ("passed", "task", "scope", "target_day", "iteration", "review_number", "trigger_review_number"):
         if key in details:
             presented[key] = details[key]
     presented["workflow_node_id"] = workflow_node_id(presented)

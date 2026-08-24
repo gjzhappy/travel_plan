@@ -45,16 +45,21 @@ class TravelWorkflow:
         self._event(trip_id,version,parent_version,"STAGE_COMPLETED","retrieval",{"stage":"RETRIEVAL","duration_ms":self._elapsed(started),"candidate_count":len(shortlist)})
         started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","planner",{"stage":"PLANNER"})
         if prior and lock_day: plan=_plan_from_dict(prior.current_plan)
-        elif not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants)
-        else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items)
+        elif not prior or intent["scope"]=="GLOBAL": plan=self._global(trip_id,shortlist,req,hotels,restaurants,version,parent_version)
+        else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items,version,parent_version)
         self._event(trip_id,version,parent_version,"PLAN_GENERATED","planner",{"scope":intent["scope"],"duration_ms":self._elapsed(started)})
         plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,locked,version,parent_version)
         version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(include_resolution=True),locked,req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
         self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"LOCK_DAY" if lock_day else "PLAN","lock_day":lock_day})
         return plan.to_dict(),state,MarkdownRenderer().render(plan)
-    def _global(self,trip_id,shortlist,req,hotels,restaurants):
+    def _global(self,trip_id,shortlist,req,hotels,restaurants,version,parent_version):
+        started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","route-planner",{"stage":"ROUTE_PLANNING"})
         days=self.route.plan(shortlist,req,hotels[0])
+        self._event(trip_id,version,parent_version,"STAGE_COMPLETED","route-planner",{"stage":"ROUTE_PLANNING","duration_ms":self._elapsed(started)})
+        started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","hotel-optimizer",{"stage":"HOTEL_PLANNING"})
         segments,decision=self.hotels.optimize(days,hotels,req)
+        self._event(trip_id,version,parent_version,"STAGE_COMPLETED","hotel-optimizer",{"stage":"HOTEL_PLANNING","duration_ms":self._elapsed(started)})
+        started=monotonic();self._event(trip_id,version,parent_version,"STAGE_STARTED","meal-planner",{"stage":"MEAL_PLANNING"})
         hotel_by_id={hotel.hotel_id:hotel for hotel in hotels}
         for day in days:
             assigned=next(segment for segment in segments if segment.start_day<=day.day<=segment.end_day)
@@ -66,8 +71,9 @@ class TravelWorkflow:
                 first.transport_mode=leg.mode;first.distance_km=leg.distance_km;first.duration_min=leg.duration_min
                 first.metadata.update({"previous_node":hotel.name,"transport_source":leg.source})
             self.meals.insert(day,restaurants,req,hotel)
+        self._event(trip_id,version,parent_version,"STAGE_COMPLETED","meal-planner",{"stage":"MEAL_PLANNING","duration_ms":self._elapsed(started)})
         plan=TripPlan(trip_id,days,segments,Budget(),asdict(decision));self.recompute_derived(plan,req);return plan
-    def _local(self,plan,shortlist,req,hotels,restaurants,intent,locked):
+    def _local(self,plan,shortlist,req,hotels,restaurants,intent,locked,version,parent_version):
         day_no=intent.get("day") or req.target_day
         if not day_no: raise AmbiguousTargetNodeError("local modification has no target day")
         if f"DAY:{day_no}" in locked: raise LockedPlanConflict(f"day {day_no} is locked")
@@ -100,13 +106,17 @@ class TravelWorkflow:
             if retry==self.config.review_max_retries:break
             # The review message returns to the intent layer before any code acts.
             # Agents communicate JSON, while Python retains all planning authority.
+            refinement_started=monotonic()
+            self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","requirement-agent",{"stage":"REQUIREMENT_REFINEMENT","iteration":plan.review_count})
             req=self.requirements.refine(req,review,plan)
-            self._event(plan.trip_id,version,parent_version,"AGENT_COMPLETED","requirement-agent",{"task":"refine_intent_from_review","review_number":plan.review_count,"scope":req.scope})
+            self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","requirement-agent",{"stage":"REQUIREMENT_REFINEMENT","iteration":plan.review_count,"scope":req.scope,"duration_ms":self._elapsed(refinement_started)})
             shortlist=self.retrieval.shortlist(req)
             scope=req.scope;affected=req.target_day;did_replan=False
+            replan_started=monotonic()
+            self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected})
             if scope=="GLOBAL":
                 review_count=plan.review_count
-                candidate=self._global(plan.trip_id,shortlist,req,hotels,restaurants)
+                candidate=self._global(plan.trip_id,shortlist,req,hotels,restaurants,version,parent_version)
                 plan=Replanner().apply("GLOBAL",plan,candidate,locked_items=locked)
                 plan.review_count=review_count
                 did_replan=True
@@ -116,15 +126,21 @@ class TravelWorkflow:
                 plan=Replanner().apply(scope,plan,candidate,affected,req.target_meal,locked)
                 did_replan=True
             if did_replan:
-                self._event(plan.trip_id,version,parent_version,"REPLAN_COMPLETED","replanner",{"trigger_review_number":plan.review_count,"scope":scope,"target_day":affected})
+                self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"trigger_review_number":plan.review_count,"scope":scope,"target_day":affected,"duration_ms":self._elapsed(replan_started)})
+            else:
+                self._event(plan.trip_id,version,parent_version,"STAGE_FAILED","replanner",{"stage":"SCOPED_REPLAN","iteration":plan.review_count,"scope":scope,"target_day":affected,"duration_ms":self._elapsed(replan_started)})
+            revalidation_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","validator",{"stage":"HARD_VALIDATION","iteration":plan.review_count})
             self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
             self._validator_event(plan.trip_id,version,parent_version,"AFTER_REPLAN",issues)
             if issues:plan=CodeRepair().repair(plan,issues,req,restaurants);self.recompute_derived(plan,req);issues=self.validator.validate(plan,req)
+            self._event(plan.trip_id,version,parent_version,"STAGE_COMPLETED","validator",{"stage":"HARD_VALIDATION","iteration":plan.review_count,"passed":not bool(issues),"duration_ms":self._elapsed(revalidation_started)})
         # Acceptance is fail-closed: review exhaustion may leave experience
         # findings for display, but no plan with a hard validation issue may be
         # returned, rendered, or persisted as the current state.
+        final_started=monotonic();self._event(plan.trip_id,version,parent_version,"STAGE_STARTED","validator",{"stage":"FINAL_VALIDATION"})
         issues=self.validator.validate(plan,req)
         self._validator_event(plan.trip_id,version,parent_version,"FINAL_GATE",issues)
+        self._event(plan.trip_id,version,parent_version,"STAGE_FAILED" if issues else "STAGE_COMPLETED","validator",{"stage":"FINAL_VALIDATION","passed":not bool(issues),"duration_ms":self._elapsed(final_started)})
         if issues:
             details="; ".join(f"{issue.code}: {issue.message}" for issue in issues)
             raise ValidationError(f"plan rejected by final validation gate: {details}")

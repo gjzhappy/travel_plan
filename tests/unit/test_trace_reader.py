@@ -74,3 +74,24 @@ def test_reader_rejects_cross_trip_event(tmp_path):
 
     with pytest.raises(TraceReadError, match="does not match"):
         TraceReader(tmp_path).read("requested")
+
+
+def test_historical_graph_projection_is_trace_only_and_version_isolated(tmp_path):
+    write_trace(tmp_path, "history", [
+        {"sequence": 1, "trip_id": "history", "plan_version": 1,
+         "parent_version": None, "event_type": "STAGE_COMPLETED", "actor": "meal-planner",
+         "details": {"stage": "MEAL_PLANNING", "duration_ms": 37}},
+        {"sequence": 2, "trip_id": "history", "plan_version": 2,
+         "parent_version": 1, "event_type": "STAGE_COMPLETED", "actor": "replanner",
+         "details": {"stage": "SCOPED_REPLAN", "scope": "DAY", "iteration": 1}},
+    ])
+
+    reader = TraceReader(tmp_path)
+    version_one = {node["id"]: node for node in reader.workflow_projection("history", 1)["nodes"]}
+    version_two = {node["id"]: node for node in reader.workflow_projection("history", 2)["nodes"]}
+
+    assert version_one["meal"]["status"] == "completed"
+    assert version_one["meal"]["duration_ms"] == 37
+    assert version_one["scoped_replanner"]["status"] == "pending"
+    assert version_two["meal"]["status"] == "pending"
+    assert version_two["scoped_replanner"]["status"] == "completed"
