@@ -95,3 +95,25 @@ def test_historical_graph_projection_is_trace_only_and_version_isolated(tmp_path
     assert version_one["scoped_replanner"]["status"] == "pending"
     assert version_two["meal"]["status"] == "pending"
     assert version_two["scoped_replanner"]["status"] == "completed"
+
+
+def test_historical_story_projection_is_version_isolated_and_preserves_duration_truth(tmp_path):
+    write_trace(tmp_path, "story-history", [
+        {"sequence": 1, "trip_id": "story-history", "plan_version": 1,
+         "parent_version": None, "event_type": "STAGE_STARTED", "actor": "review-agent",
+         "details": {"stage": "REVIEW", "review_number": 1}},
+        {"sequence": 2, "trip_id": "story-history", "plan_version": 1,
+         "parent_version": None, "event_type": "REVIEW_COMPLETED", "actor": "review-agent",
+         "details": {"passed": False, "issues": [{"scope": "DAY", "day": 2, "type": "pace", "message": "节奏偏紧"}], "duration_ms": 42}},
+        {"sequence": 3, "trip_id": "story-history", "plan_version": 2,
+         "parent_version": 1, "event_type": "STAGE_COMPLETED", "actor": "replanner",
+         "details": {"stage": "SCOPED_REPLAN", "scope": "DAY", "target_day": 2}},
+    ])
+    reader = TraceReader(tmp_path)
+    v1 = reader.planning_story_projection("story-history", 1)
+    v2 = reader.planning_story_projection("story-history", 2)
+    assert [item["stage"] for item in v1] == ["REVIEW"]
+    assert v1[0]["status"] == "advisory"
+    assert [item["stage"] for item in v2] == ["SCOPED_REPLAN"]
+    # Story pacing is separate; the technical event keeps its measured duration.
+    assert reader.read("story-history", 1)[1].payload["duration_ms"] == 42

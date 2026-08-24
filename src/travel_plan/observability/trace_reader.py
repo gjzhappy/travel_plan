@@ -101,6 +101,20 @@ class TraceReader:
             events.append(_stream_event(raw))
         return workflow_graph(events)
 
+    def planning_story_projection(self, trip_id: str, plan_version: int) -> list[dict[str, Any]]:
+        """Rebuild one version's story solely from persisted trace facts."""
+        from dataclasses import asdict
+        from travel_plan.web.planning_story import planning_story
+        from travel_plan.web.server import _stream_event
+
+        events = []
+        for event in self.read(trip_id, plan_version):
+            raw = asdict(event)
+            raw["sequence"] = raw.pop("event_id")
+            raw["details"] = raw.pop("payload")
+            events.append(_stream_event(raw))
+        return planning_story(events)
+
     def render(self, trip_id: str) -> str:
         """Render the timeline as stable, human-readable text."""
 
