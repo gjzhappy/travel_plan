@@ -59,3 +59,18 @@ def test_home_runtime_copy_uses_user_facing_agent_names():
     assert "Deterministic Requirement Agent" in javascript
     assert "OpenCode Agent" in javascript
     assert "知识库：上海旅游知识库" in javascript
+
+
+def test_route_presentation_has_collision_avoidance_and_demo_playback_contracts():
+    javascript = (STATIC / "app.js").read_text(encoding="utf-8")
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+
+    assert "placeMapLabels" in javascript
+    assert "boxesOverlap" in javascript
+    assert "minimumVisibleMs" in javascript
+    assert "AGENT_MIN_VISIBLE_MS=900" in javascript
+    assert "PLANNING_MIN_VISIBLE_MS=550" in javascript
+    assert "CHECK_MIN_VISIBLE_MS=400" in javascript
+    assert "runtimeMode!=='deterministic'" in javascript
+    assert "isUrgentEvent" in javascript
+    assert "路线评分" not in html
