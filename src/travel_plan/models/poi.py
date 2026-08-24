@@ -12,6 +12,13 @@ class POI:
     special_dates: dict[str, Any] = field(default_factory=dict); latest_entry_time: str | None = None
     ticket_required: bool = False; family_friendly_score: int = 0; night_view_score: int = 0
     indoor: bool = False; crowd_level: str = "medium"
+    canonical_name: str = ""; aliases: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        # ``name`` remains a compatibility/display field for callers constructing
+        # POIs directly; persisted records always provide canonical_name.
+        if not self.canonical_name:
+            self.canonical_name = self.name
 
 
 @dataclass

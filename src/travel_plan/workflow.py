@@ -48,7 +48,7 @@ class TravelWorkflow:
         else: plan=self._local(_plan_from_dict(prior.current_plan),shortlist,req,hotels,restaurants,intent,prior.locked_items)
         self._event(trip_id,version,parent_version,"PLAN_GENERATED","planner",{"scope":intent["scope"],"duration_ms":self._elapsed(started)})
         plan,req=self._validate_review_replan(plan,shortlist,req,hotels,restaurants,locked,version,parent_version)
-        version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(),locked,req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
+        version=self.state.next_version(trip_id);state=TripState(trip_id,version,req.to_dict(include_resolution=True),locked,req.rejected_pois,req.rejected_categories,plan.to_dict());self.state.save(state)
         self._event(trip_id,version,parent_version,"PLAN_VERSION_SAVED","state-manager",{"change":"LOCK_DAY" if lock_day else "PLAN","lock_day":lock_day})
         return plan.to_dict(),state,MarkdownRenderer().render(plan)
     def _global(self,trip_id,shortlist,req,hotels,restaurants):

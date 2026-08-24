@@ -81,8 +81,10 @@ def _day_card(
 
 def _requirement_reason(requirement: dict[str, Any], attractions: list[dict[str, Any]]) -> dict[str, Any]:
     interests = [str(item) for item in requirement.get("interests", []) if item]
+    required_ids = {item["poi_id"] for item in requirement.get("resolved_must_visit", [])}
     must_visit = set(requirement.get("must_visit", []))
-    matches = [node.get("name", "") for node in attractions if node.get("name") in must_visit]
+    matches = [node.get("name", "") for node in attractions
+               if node.get("poi_id") in required_ids or node.get("name") in must_visit]
     details = []
     categories = {str(node.get("metadata", {}).get("category", "")) for node in attractions}
     matched_interests = [interest for interest in interests if interest in categories]

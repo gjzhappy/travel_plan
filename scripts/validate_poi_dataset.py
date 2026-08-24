@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/source/shanghai_pois.json"
 REQUIRED = {
-    "poi_id", "name", "category", "tags", "description", "latitude", "longitude",
+    "poi_id", "name", "canonical_name", "aliases", "category", "tags", "description", "latitude", "longitude",
     "district", "visit_duration_min", "opening_hours", "special_dates",
     "latest_entry_time", "ticket_required", "ticket_price", "reservation_required",
     "family_friendly_score", "night_view_score", "indoor", "crowd_level",

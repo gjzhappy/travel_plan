@@ -16,7 +16,8 @@ SEED_FILES = {
 
 SCHEMA = """
 CREATE TABLE poi(
-    poi_id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT NOT NULL,
+    poi_id INTEGER PRIMARY KEY, name TEXT NOT NULL, canonical_name TEXT NOT NULL,
+    aliases TEXT NOT NULL, city TEXT NOT NULL,
     district TEXT NOT NULL, lat REAL NOT NULL, lon REAL NOT NULL,
     category TEXT NOT NULL, ticket_price REAL NOT NULL,
     duration_min INTEGER NOT NULL, reservation_required INTEGER NOT NULL,
@@ -70,7 +71,7 @@ def _insert_rows(connection: sqlite3.Connection, table: str, rows: list[dict[str
     if any(set(row) != set(columns) for row in rows):
         raise DataUnavailableError(f"Inconsistent columns in {table} seed data")
     values = [
-        [json.dumps(row[column], ensure_ascii=False) if column in {"opening_hours", "tags", "special_dates"} else row[column] for column in columns]
+        [json.dumps(row[column], ensure_ascii=False) if column in {"opening_hours", "tags", "special_dates", "aliases"} else row[column] for column in columns]
         for row in rows
     ]
     placeholders = ",".join("?" for _ in columns)
@@ -134,7 +135,9 @@ def _source_poi_to_row(row: dict[str, Any]) -> dict[str, Any]:
         "latest_entry_time": row["latest_entry_time"],
     }
     return {
-        "poi_id": row["poi_id"], "name": row["name"], "city": "上海",
+        "poi_id": row["poi_id"], "name": row["name"],
+        "canonical_name": row.get("canonical_name", row["name"]),
+        "aliases": row.get("aliases", []), "city": "上海",
         "district": row["district"], "lat": row["latitude"], "lon": row["longitude"],
         "category": row["category"], "ticket_price": row["ticket_price"],
         "duration_min": row["visit_duration_min"],

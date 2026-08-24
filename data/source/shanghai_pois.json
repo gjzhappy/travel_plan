@@ -51,7 +51,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "外滩",
+    "aliases": []
   },
   {
     "poi_id": 1002,
@@ -105,7 +107,11 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "东方明珠广播电视塔",
+    "aliases": [
+      "东方明珠"
+    ]
   },
   {
     "poi_id": 1003,
@@ -159,7 +165,12 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海中心大厦上海之巅",
+    "aliases": [
+      "上海中心",
+      "上海之巅"
+    ]
   },
   {
     "poi_id": 1004,
@@ -213,7 +224,11 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "金茂大厦88层观光厅",
+    "aliases": [
+      "金茂大厦观光厅"
+    ]
   },
   {
     "poi_id": 1005,
@@ -267,7 +282,11 @@
     "family_friendly_score": 3,
     "night_view_score": 4,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海环球金融中心观光厅",
+    "aliases": [
+      "环球金融中心观光厅"
+    ]
   },
   {
     "poi_id": 1006,
@@ -321,7 +340,9 @@
     "family_friendly_score": 3,
     "night_view_score": 4,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "北外滩国客中心",
+    "aliases": []
   },
   {
     "poi_id": 1007,
@@ -375,7 +396,9 @@
     "family_friendly_score": 3,
     "night_view_score": 4,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "陆家嘴中心绿地",
+    "aliases": []
   },
   {
     "poi_id": 1008,
@@ -429,7 +452,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "世博文化公园",
+    "aliases": []
   },
   {
     "poi_id": 1009,
@@ -483,7 +508,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "豫园",
+    "aliases": []
   },
   {
     "poi_id": 1010,
@@ -537,7 +564,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海城隍庙",
+    "aliases": []
   },
   {
     "poi_id": 1011,
@@ -591,7 +620,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "田子坊",
+    "aliases": []
   },
   {
     "poi_id": 1012,
@@ -645,7 +676,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "武康大楼",
+    "aliases": []
   },
   {
     "poi_id": 1013,
@@ -696,7 +729,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "中共一大纪念馆",
+    "aliases": []
   },
   {
     "poi_id": 1014,
@@ -747,7 +782,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "孙中山故居纪念馆",
+    "aliases": []
   },
   {
     "poi_id": 1015,
@@ -798,7 +835,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "宋庆龄故居纪念馆",
+    "aliases": []
   },
   {
     "poi_id": 1016,
@@ -849,7 +888,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "鲁迅故居",
+    "aliases": []
   },
   {
     "poi_id": 1017,
@@ -903,7 +944,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "龙华寺",
+    "aliases": []
   },
   {
     "poi_id": 1018,
@@ -957,7 +1000,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "静安寺",
+    "aliases": []
   },
   {
     "poi_id": 1019,
@@ -1011,7 +1056,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "玉佛禅寺",
+    "aliases": []
   },
   {
     "poi_id": 1020,
@@ -1065,7 +1112,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "朱家角古镇",
+    "aliases": []
   },
   {
     "poi_id": 1021,
@@ -1119,7 +1168,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "七宝老街",
+    "aliases": []
   },
   {
     "poi_id": 1022,
@@ -1173,7 +1224,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "新场古镇",
+    "aliases": []
   },
   {
     "poi_id": 1023,
@@ -1227,7 +1280,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "枫泾古镇",
+    "aliases": []
   },
   {
     "poi_id": 1024,
@@ -1281,7 +1336,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "嘉定州桥老街",
+    "aliases": []
   },
   {
     "poi_id": 1025,
@@ -1332,7 +1389,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海博物馆人民广场馆",
+    "aliases": []
   },
   {
     "poi_id": 1026,
@@ -1383,7 +1442,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海博物馆东馆",
+    "aliases": []
   },
   {
     "poi_id": 1027,
@@ -1434,7 +1495,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海自然博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1028,
@@ -1485,7 +1548,11 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海科技馆",
+    "aliases": [
+      "科技馆"
+    ]
   },
   {
     "poi_id": 1029,
@@ -1539,7 +1606,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "中华艺术宫",
+    "aliases": []
   },
   {
     "poi_id": 1030,
@@ -1590,7 +1659,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海当代艺术博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1031,
@@ -1641,7 +1712,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海历史博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1032,
@@ -1690,7 +1763,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海天文馆",
+    "aliases": []
   },
   {
     "poi_id": 1033,
@@ -1740,7 +1815,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "中国航海博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1034,
@@ -1791,7 +1868,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海汽车博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1035,
@@ -1842,7 +1921,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海电影博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1036,
@@ -1893,7 +1974,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海邮政博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1037,
@@ -1944,7 +2027,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海铁路博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1038,
@@ -1995,7 +2080,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海玻璃博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1039,
@@ -2046,7 +2133,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海琉璃艺术博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1040,
@@ -2097,7 +2186,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海犹太难民纪念馆",
+    "aliases": []
   },
   {
     "poi_id": 1041,
@@ -2148,7 +2239,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "四行仓库抗战纪念馆",
+    "aliases": []
   },
   {
     "poi_id": 1042,
@@ -2199,7 +2292,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海世博会博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1043,
@@ -2250,7 +2345,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "龙美术馆西岸馆",
+    "aliases": []
   },
   {
     "poi_id": 1044,
@@ -2301,7 +2398,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "西岸美术馆",
+    "aliases": []
   },
   {
     "poi_id": 1045,
@@ -2352,7 +2451,9 @@
     "family_friendly_score": 4,
     "night_view_score": 5,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "浦东美术馆",
+    "aliases": []
   },
   {
     "poi_id": 1046,
@@ -2406,7 +2507,13 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海迪士尼乐园",
+    "aliases": [
+      "上海迪士尼",
+      "迪士尼乐园",
+      "上海Disney"
+    ]
   },
   {
     "poi_id": 1047,
@@ -2460,7 +2567,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海海昌海洋公园",
+    "aliases": []
   },
   {
     "poi_id": 1048,
@@ -2514,7 +2623,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海海洋水族馆",
+    "aliases": []
   },
   {
     "poi_id": 1049,
@@ -2567,7 +2678,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海野生动物园",
+    "aliases": []
   },
   {
     "poi_id": 1050,
@@ -2621,7 +2734,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海动物园",
+    "aliases": []
   },
   {
     "poi_id": 1051,
@@ -2675,7 +2790,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "锦江乐园",
+    "aliases": []
   },
   {
     "poi_id": 1052,
@@ -2729,7 +2846,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "乐高探索中心",
+    "aliases": []
   },
   {
     "poi_id": 1053,
@@ -2783,7 +2902,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海儿童博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1054,
@@ -2837,7 +2958,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "上海影视乐园",
+    "aliases": []
   },
   {
     "poi_id": 1055,
@@ -2891,7 +3014,9 @@
     "family_friendly_score": 5,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "广富林文化遗址",
+    "aliases": []
   },
   {
     "poi_id": 1056,
@@ -2945,7 +3070,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海植物园",
+    "aliases": []
   },
   {
     "poi_id": 1057,
@@ -2999,7 +3126,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "辰山植物园",
+    "aliases": []
   },
   {
     "poi_id": 1058,
@@ -3053,7 +3182,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "共青森林公园",
+    "aliases": []
   },
   {
     "poi_id": 1059,
@@ -3107,7 +3238,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "世纪公园",
+    "aliases": []
   },
   {
     "poi_id": 1060,
@@ -3161,7 +3294,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "顾村公园",
+    "aliases": []
   },
   {
     "poi_id": 1061,
@@ -3215,7 +3350,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "滨江森林公园",
+    "aliases": []
   },
   {
     "poi_id": 1062,
@@ -3269,7 +3406,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "东滩湿地公园",
+    "aliases": []
   },
   {
     "poi_id": 1063,
@@ -3323,7 +3462,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "东平国家森林公园",
+    "aliases": []
   },
   {
     "poi_id": 1064,
@@ -3377,7 +3518,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "佘山国家森林公园",
+    "aliases": []
   },
   {
     "poi_id": 1065,
@@ -3431,7 +3574,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海湾国家森林公园",
+    "aliases": []
   },
   {
     "poi_id": 1066,
@@ -3485,7 +3630,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "滴水湖",
+    "aliases": []
   },
   {
     "poi_id": 1067,
@@ -3539,7 +3686,9 @@
     "family_friendly_score": 4,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "长风公园",
+    "aliases": []
   },
   {
     "poi_id": 1068,
@@ -3593,7 +3742,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "南京路步行街",
+    "aliases": []
   },
   {
     "poi_id": 1069,
@@ -3647,7 +3798,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "新天地",
+    "aliases": []
   },
   {
     "poi_id": 1070,
@@ -3701,7 +3854,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": true,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "思南公馆",
+    "aliases": []
   },
   {
     "poi_id": 1071,
@@ -3755,7 +3910,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "愚园路历史风貌区",
+    "aliases": []
   },
   {
     "poi_id": 1072,
@@ -3809,7 +3966,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "衡山路复兴路历史文化风貌区",
+    "aliases": []
   },
   {
     "poi_id": 1073,
@@ -3863,7 +4022,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "前滩太古里",
+    "aliases": []
   },
   {
     "poi_id": 1074,
@@ -3917,7 +4078,9 @@
     "family_friendly_score": 3,
     "night_view_score": 5,
     "indoor": false,
-    "crowd_level": "high"
+    "crowd_level": "high",
+    "canonical_name": "徐家汇源景区",
+    "aliases": []
   },
   {
     "poi_id": 1075,
@@ -3971,7 +4134,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "苏州河华政段",
+    "aliases": []
   },
   {
     "poi_id": 1076,
@@ -4025,7 +4190,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "M50创意园",
+    "aliases": []
   },
   {
     "poi_id": 1077,
@@ -4079,7 +4246,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "1933老场坊",
+    "aliases": []
   },
   {
     "poi_id": 1078,
@@ -4133,7 +4302,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "杨浦滨江",
+    "aliases": []
   },
   {
     "poi_id": 1079,
@@ -4187,7 +4358,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "徐汇滨江",
+    "aliases": []
   },
   {
     "poi_id": 1080,
@@ -4241,7 +4414,9 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": true,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "上海工艺美术博物馆",
+    "aliases": []
   },
   {
     "poi_id": 1081,
@@ -4295,6 +4470,8 @@
     "family_friendly_score": 3,
     "night_view_score": 2,
     "indoor": false,
-    "crowd_level": "medium"
+    "crowd_level": "medium",
+    "canonical_name": "马勒别墅",
+    "aliases": []
   }
 ]

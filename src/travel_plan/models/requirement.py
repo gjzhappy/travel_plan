@@ -37,6 +37,8 @@ class Requirement:
     target_meal: str | None = None
     replacement_constraints: list[str] = field(default_factory=list)
     must_eat: list[str] = field(default_factory=list)
+    # Filled by the deterministic repository boundary, not by the requirement agent.
+    resolved_must_visit: list[dict[str, Any]] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         errors = []
@@ -53,7 +55,11 @@ class Requirement:
         if self.party.adult < 0 or self.party.child < 0 or self.party.adult + self.party.child < 1: errors.append("invalid party")
         if errors: raise RequirementError("; ".join(errors))
 
-    def to_dict(self) -> dict[str, Any]: return asdict(self)
+    def to_dict(self, include_resolution: bool = False) -> dict[str, Any]:
+        value = asdict(self)
+        if not include_resolution:
+            value.pop("resolved_must_visit", None)
+        return value
 
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> "Requirement":
